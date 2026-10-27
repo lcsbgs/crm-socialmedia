@@ -36,3 +36,14 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Linha do tempo é uma view `security_invoker`**, então herda o RLS das tabelas. Fases seguintes acrescentam fontes com `create or replace view`.
 - **Abas da ficha do cliente via `?aba=`** numa única rota. Entregas, Reuniões e Escopo ficam como placeholder até as fases correspondentes.
 - **Onboarding em duas etapas:** nome/negócio (Fase 1) e depois `/w/[slug]/comecar` (primeiro cliente + escolher ou criar pacote, com itens sugeridos). Pode pular.
+
+## 2026-10-27 · Fase 3
+
+- **`midia_urls` guarda caminhos do Storage, não URLs.** O bucket `midia` é privado; a UI gera URLs assinadas de 1 h na leitura. Caminho: `{workspace_id}/{client_id}/{deliverable_id}/{8 chars aleatórios}-{nome}`.
+- **Upload direto do navegador para o Storage** (sem passar pelo servidor do Next), com policy em `storage.objects` baseada em `can_access_media(name)`: a primeira pasta precisa ser um workspace do qual o usuário é membro. Depois a server action `attachMedia` valida o prefixo do caminho e registra na entrega. Limite de 50 MB e tipos imagem, vídeo (mp4/mov) e PDF definidos no bucket.
+- **Ordem no kanban fracionária** (`ordem double precision`): soltar um card grava a média dos vizinhos, sem renumerar a coluna. Atualização otimista; em erro, volta ao estado do servidor.
+- **`status_changed_at`** é mantido por trigger e alimenta "aprovação parada há mais de 2 dias" na tela Hoje e a linha do tempo.
+- **Drag and drop com `@dnd-kit`**: mouse (arraste após 5 px), toque (segurar 200 ms, para não brigar com a rolagem horizontal) e teclado (Espaço/setas). A etapa também pode ser trocada no editor da entrega, como alternativa acessível.
+- **Tela Hoje:** tarefas pendentes com vencimento até hoje, entregas em aprovação há mais de 2 dias e cobranças em aberto vencendo nos próximos 3 dias ou atrasadas, agrupadas por cliente ("Sem cliente" por último). Reuniões do dia entram na Fase 5. Inclui criação rápida de tarefa avulsa.
+- **Tarefas viraram feature própria** (`src/features/tasks`), usada pela tela Hoje e pela ficha do cliente.
+- **IDs fixos do seed precisam ser UUID válidos (RFC 4122)**, porque o Zod 4 valida a variante.

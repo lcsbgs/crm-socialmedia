@@ -78,21 +78,6 @@ export async function generateMonth(_: ActionState, formData: FormData): Promise
   return { message: `${formatMonth(competencia)}: ${t} tarefa(s) e ${c} cobrança(s) criadas.` };
 }
 
-export async function toggleTask(formData: FormData) {
-  await requireUser();
-  const workspaceId = z.uuid().parse(formData.get("workspaceId"));
-  const id = z.uuid().parse(formData.get("id"));
-  const done = formData.get("done") === "true";
-
-  const supabase = await createClient();
-  await supabase
-    .from("tasks")
-    .update({ status: done ? "feita" : "pendente" })
-    .eq("workspace_id", workspaceId)
-    .eq("id", id);
-  revalidatePath("/w", "layout");
-}
-
 // Onboarding: cria (ou escolhe) o pacote e o primeiro cliente de uma vez.
 export async function setupFirstClient(_: ActionState, formData: FormData): Promise<ActionState> {
   await requireUser();

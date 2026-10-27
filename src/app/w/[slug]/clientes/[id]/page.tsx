@@ -7,7 +7,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { deleteClient } from "@/features/clients/actions";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
-import { TaskList } from "@/features/clients/components/task-list";
+import { TaskList } from "@/features/tasks/components/task-list";
 import {
   getClient,
   getClientMonthTasks,
@@ -15,6 +15,8 @@ import {
   getClientTimeline,
 } from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
+import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
+import { getClientDeliverables } from "@/features/deliverables/queries";
 import { describeItems } from "@/features/packages/schemas";
 import { getPackages } from "@/features/packages/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
@@ -100,7 +102,9 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
         <FinanceTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "timeline" ? (
         <TimelineTab workspaceId={workspace.id} clientId={id} />
-      ) : aba === "entregas" || aba === "reunioes" || aba === "escopo" ? (
+      ) : aba === "entregas" ? (
+        <DeliverablesTab workspaceId={workspace.id} clientId={id} />
+      ) : aba === "reunioes" || aba === "escopo" ? (
         <Card>
           <p className="text-sm text-muted">Esta seção chega nas próximas etapas.</p>
         </Card>
@@ -302,4 +306,9 @@ async function TimelineTab({ workspaceId, clientId }: { workspaceId: string; cli
       )}
     </Card>
   );
+}
+
+async function DeliverablesTab({ workspaceId, clientId }: { workspaceId: string; clientId: string }) {
+  const deliverables = await getClientDeliverables(workspaceId, clientId);
+  return <KanbanBoard workspaceId={workspaceId} clientId={clientId} deliverables={deliverables} />;
 }
