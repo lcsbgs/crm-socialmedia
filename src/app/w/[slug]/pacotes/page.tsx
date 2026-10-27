@@ -19,7 +19,7 @@ export default async function PackagesPage({ params }: PageProps<"/w/[slug]/paco
     <div className="space-y-6">
       <PageHeader
         title="Pacotes"
-        description="Modelos de serviço que viram tarefas recorrentes todo mês."
+        description="Modelos de serviço. Todo mês, cada item vira entregas planejadas no calendário do cliente."
         action={
           <Link href={`/w/${slug}/pacotes/novo`} className={buttonClasses()}>
             Novo pacote

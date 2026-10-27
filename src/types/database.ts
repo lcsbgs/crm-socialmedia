@@ -151,6 +151,7 @@ export type Database = {
       deliverables: {
         Row: {
           client_id: string;
+          competencia: string | null;
           created_at: string;
           data_publicacao: string | null;
           formato: Database["public"]["Enums"]["deliverable_format"];
@@ -158,15 +159,19 @@ export type Database = {
           legenda: string | null;
           midia_urls: string[];
           ordem: number;
+          responsavel_id: string | null;
+          slot_key: string | null;
+          slot_label: string | null;
           status: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at: string;
-          titulo: string;
+          titulo: string | null;
           updated_at: string;
           workspace_id: string;
         };
         ComputedFields: never;
         Insert: {
           client_id: string;
+          competencia?: string | null;
           created_at?: string;
           data_publicacao?: string | null;
           formato?: Database["public"]["Enums"]["deliverable_format"];
@@ -174,14 +179,18 @@ export type Database = {
           legenda?: string | null;
           midia_urls?: string[];
           ordem?: number;
+          responsavel_id?: string | null;
+          slot_key?: string | null;
+          slot_label?: string | null;
           status?: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at?: string;
-          titulo: string;
+          titulo?: string | null;
           updated_at?: string;
           workspace_id: string;
         };
         Update: {
           client_id?: string;
+          competencia?: string | null;
           created_at?: string;
           data_publicacao?: string | null;
           formato?: Database["public"]["Enums"]["deliverable_format"];
@@ -189,9 +198,12 @@ export type Database = {
           legenda?: string | null;
           midia_urls?: string[];
           ordem?: number;
+          responsavel_id?: string | null;
+          slot_key?: string | null;
+          slot_label?: string | null;
           status?: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at?: string;
-          titulo?: string;
+          titulo?: string | null;
           updated_at?: string;
           workspace_id?: string;
         };
@@ -202,6 +214,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "clients";
             referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "deliverables_responsavel_id_fkey";
+            columns: ["responsavel_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
           },
           {
             foreignKeyName: "deliverables_workspace_id_fkey";
@@ -740,11 +759,15 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      format_from_tipo: {
+        Args: { p_tipo: string };
+        Returns: Database["public"]["Enums"]["deliverable_format"];
+      };
       generate_month: {
         Args: { p_competencia: string; p_workspace_id: string };
         Returns: {
           cobrancas_criadas: number;
-          tarefas_criadas: number;
+          entregas_criadas: number;
         }[];
       };
       get_invitation: {

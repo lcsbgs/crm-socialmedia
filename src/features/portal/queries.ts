@@ -1,5 +1,5 @@
 import "server-only";
-import { formatLabels } from "@/features/deliverables/schemas";
+import { deliverableLabel, formatLabels } from "@/features/deliverables/schemas";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type PortalItem = {
@@ -25,7 +25,7 @@ export async function getPortal(token: string) {
 
   const { data: rows } = await admin
     .from("deliverables")
-    .select("id, titulo, formato, data_publicacao, legenda, midia_urls")
+    .select("id, titulo, slot_label, formato, data_publicacao, legenda, midia_urls")
     .eq("workspace_id", client.workspace_id)
     .eq("client_id", client.id)
     .eq("status", "em_aprovacao")
@@ -39,8 +39,9 @@ export async function getPortal(token: string) {
     for (const s of data ?? []) if (s.path && s.signedUrl) signed.set(s.path, s.signedUrl);
   }
 
-  const items: PortalItem[] = (rows ?? []).map(({ midia_urls, ...r }) => ({
+  const items: PortalItem[] = (rows ?? []).map(({ midia_urls, slot_label, ...r }) => ({
     ...r,
+    titulo: deliverableLabel({ titulo: r.titulo, slot_label }),
     formato: formatLabels[r.formato],
     midia: midia_urls
       .filter((p) => signed.has(p))

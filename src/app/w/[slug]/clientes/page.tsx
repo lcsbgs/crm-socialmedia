@@ -51,7 +51,7 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
       <Card>
         <CardHeader
           title="Rotina do mês"
-          description="Cria as tarefas recorrentes dos pacotes e as cobranças de cada cliente ativo. Pode rodar mais de uma vez sem duplicar."
+          description="Planeja as entregas do pacote de cada cliente ativo, com datas sugeridas no mês, e cria as cobranças. Pode rodar mais de uma vez sem duplicar."
         />
         <GenerateMonthForm workspaceId={workspace.id} defaultMonth={currentMonthISO().slice(0, 7)} />
       </Card>

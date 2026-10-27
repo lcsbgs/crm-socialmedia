@@ -16,7 +16,8 @@ export default async function GetStartedPage({ params }: PageProps<"/w/[slug]/co
       <div className="space-y-1">
         <h1 className="text-lg font-semibold">Primeiros passos</h1>
         <p className="text-sm text-muted">
-          Cadastre um cliente e o pacote de serviços dele. A partir disso, a rotina do mês é montada sozinha.
+          Cadastre um cliente e o pacote de serviços dele. A partir disso, as entregas do mês são planejadas
+          sozinhas.
         </p>
       </div>
       <FirstClientForm workspaceId={workspace.id} slug={slug} packages={packages} />

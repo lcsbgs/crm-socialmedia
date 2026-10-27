@@ -107,3 +107,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Painel lateral da tarefa** (Sheet): editar título, cliente e data, concluir, excluir com confirmação, sem sair da tela.
 - **Criação rápida no topo** com cliente e data em popovers; o atalho C abre o mesmo fluxo em diálogo.
 - **`loading.tsx` e `error.tsx`** no workspace: skeleton enquanto carrega e tela de erro com "Tentar de novo".
+
+## 2026-10-27 · Passo 4: tarefa e entrega separadas
+
+- **Entrega é o conteúdo; tarefa é ação operacional.** `generate_month` agora cria **slots de entrega** (`deliverables` com `titulo` nulo, `slot_label` "Post 3 de 10", `competencia` e `slot_key`) em vez de tarefas-checkbox. O retorno passou a ser `(entregas_criadas, cobrancas_criadas)`.
+- **Idempotência por `(client_id, competencia, slot_key)`**: dar título, mudar data ou etapa de um slot não faz a próxima geração recriá-lo.
+- **Data sugerida:** mensal = N datas espalhadas no mês; semanal = N por semana a partir de cada segunda; diária = 1 entrega por semana ("Stories da semana 2 de 5"). Formato inferido do tipo do item (Reels, Carrossel, Stories, Relatório; o resto vira Post).
+- **Título obrigatório só para entrega avulsa** (constraint: título ou rótulo do slot). Na interface o nome exibido é `titulo ?? slot_label`, com rascunho em itálico.
+- **`deliverables.responsavel_id`** (membro do workspace, validado por trigger) já criado para o filtro do Passo 5.
+- **Tarefas antigas do pacote:** as pendentes foram removidas pela migration; as concluídas ficam como histórico.
+- **Seed:** dois meses gerados (atual e seguinte), títulos realistas por cliente, passado publicado, semana atual em produção ou aprovação, futuro como rascunho; tarefas operacionais (cobrar material, enviar relatório, confirmar gravação) e uma reunião hoje.
+- **Busca da ⌘K** procura só por título: rascunhos sem título não aparecem.

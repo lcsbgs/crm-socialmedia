@@ -37,7 +37,12 @@ export const createDeliverableSchema = z.object({
 export const updateDeliverableSchema = z.object({
   workspaceId: z.uuid(),
   id: z.uuid(),
-  titulo: z.string().trim().min(1, "Informe o título").max(200),
+  // Vazio mantém o rascunho do pacote sem título.
+  titulo: z
+    .string()
+    .trim()
+    .max(200)
+    .transform((v) => v || null),
   formato: formatEnum,
   status: statusEnum,
   data_publicacao: optionalDate,
@@ -58,6 +63,11 @@ export const moveDeliverableSchema = z.object({
 // Caminho no bucket: {workspace}/{cliente}/{entrega}/{arquivo}
 export function mediaPrefix(workspaceId: string, clientId: string, deliverableId: string) {
   return `${workspaceId}/${clientId}/${deliverableId}/`;
+}
+
+// Nome exibido: título real ou, no rascunho do pacote, o rótulo do slot.
+export function deliverableLabel(d: { titulo: string | null; slot_label?: string | null }) {
+  return d.titulo ?? d.slot_label ?? "Sem título";
 }
 
 export const MAX_MEDIA_BYTES = 50 * 1024 * 1024;

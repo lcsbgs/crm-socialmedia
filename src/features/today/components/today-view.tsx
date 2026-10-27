@@ -349,7 +349,9 @@ function Line({
         <div className="flex min-w-0 text-base sm:flex-1">{title}</div>
         {/* No celular, cliente e data ficam numa segunda linha. */}
         <div className="flex items-center gap-2 sm:contents">
-          {client ? <ClientTag name={client.nome} color={client.cor} className="shrink-0 max-sm:text-xs" /> : null}
+          {client ? (
+            <ClientTag name={client.nome} color={client.cor} className="shrink-0 max-sm:text-xs" />
+          ) : null}
           <span className="shrink-0 sm:w-28 sm:text-right max-sm:[&_*]:text-xs">{meta}</span>
         </div>
       </div>

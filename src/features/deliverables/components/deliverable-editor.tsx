@@ -35,8 +35,8 @@ export function DeliverableEditor({
         <Field
           label="Título"
           name="titulo"
-          defaultValue={deliverable.titulo}
-          required
+          defaultValue={deliverable.titulo ?? ""}
+          placeholder={deliverable.slot_label ?? "Título"}
           errors={state?.fieldErrors?.titulo}
         />
         <div className="grid gap-4 sm:grid-cols-3">

@@ -63,7 +63,7 @@ export function ClientForm({
           label="Pacote"
           name="package_template_id"
           defaultValue={client?.package_template_id ?? ""}
-          hint="Define as tarefas recorrentes geradas todo mês."
+          hint="Define as entregas planejadas todo mês."
           options={[
             { value: "", label: "Sem pacote" },
             ...packages.map((p) => ({ value: p.id, label: p.nome })),

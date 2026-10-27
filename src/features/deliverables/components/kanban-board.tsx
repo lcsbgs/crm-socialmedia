@@ -32,7 +32,7 @@ import { formatDate, plural } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { createDeliverable, moveDeliverable } from "../actions";
 import type { Deliverable } from "../queries";
-import { formatLabels, statusColumns, type DeliverableStatus } from "../schemas";
+import { deliverableLabel, formatLabels, statusColumns, type DeliverableStatus } from "../schemas";
 import { DeliverableEditor } from "./deliverable-editor";
 
 type Columns = Record<DeliverableStatus, Deliverable[]>;
@@ -175,7 +175,11 @@ export function KanbanBoard({
         <DragOverlay>{active ? <CardBody item={active} dragging /> : null}</DragOverlay>
       </DndContext>
 
-      <Dialog open={!!editing} onClose={() => setEditingId(null)} title={editing?.titulo ?? "Entrega"}>
+      <Dialog
+        open={!!editing}
+        onClose={() => setEditingId(null)}
+        title={editing ? deliverableLabel(editing) : "Entrega"}
+      >
         {editing ? (
           <DeliverableEditor
             workspaceId={workspaceId}
@@ -266,7 +270,9 @@ function CardBody({ item, dragging }: { item: Deliverable; dragging?: boolean })
         // eslint-disable-next-line @next/next/no-img-element -- URL assinada temporária do Storage
         <img src={thumb.url} alt="" className="aspect-video w-full rounded object-cover" />
       ) : null}
-      <p className="font-medium leading-snug">{item.titulo}</p>
+      <p className={cn("leading-snug", item.titulo ? "font-medium" : "text-muted italic")}>
+        {deliverableLabel(item)}
+      </p>
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
         <Badge>{formatLabels[item.formato]}</Badge>
         {item.data_publicacao ? <span>{formatDate(item.data_publicacao)}</span> : null}

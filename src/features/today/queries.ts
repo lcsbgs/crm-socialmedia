@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { contactSchema } from "@/features/clients/schemas";
+import { deliverableLabel } from "@/features/deliverables/schemas";
 import { publicEnv } from "@/lib/env";
 import { formatBRL, formatDate, formatMonth, todayISO } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -77,7 +78,7 @@ export async function getToday(workspaceId: string) {
       .limit(200),
     supabase
       .from("deliverables")
-      .select("id, titulo, data_publicacao, status, client_id")
+      .select("id, titulo, slot_label, data_publicacao, status, client_id")
       .eq("workspace_id", workspaceId)
       .in("status", ["planejar", "produzir"])
       .lte("data_publicacao", today)
@@ -85,7 +86,7 @@ export async function getToday(workspaceId: string) {
       .limit(200),
     supabase
       .from("deliverables")
-      .select("id, titulo, status_changed_at, client_id")
+      .select("id, titulo, slot_label, status_changed_at, client_id")
       .eq("workspace_id", workspaceId)
       .eq("status", "em_aprovacao")
       .lt("status_changed_at", staleBefore)
@@ -132,7 +133,7 @@ export async function getToday(workspaceId: string) {
     const item: TodayItem = {
       kind: "deliverable",
       id: d.id,
-      titulo: d.titulo,
+      titulo: deliverableLabel(d),
       date: d.data_publicacao,
       status: d.status,
       client: client(d.client_id),
@@ -159,7 +160,7 @@ export async function getToday(workspaceId: string) {
     sections.esperando.push({
       kind: "approval",
       id: a.id,
-      titulo: a.titulo,
+      titulo: deliverableLabel(a),
       since: a.status_changed_at,
       client: client(a.client_id),
       resendUrl: whatsappLink(contato?.telefone, msg),

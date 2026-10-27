@@ -71,12 +71,12 @@ export async function generateMonth(_: ActionState, formData: FormData): Promise
   if (error || !data) return fromDbError(error);
 
   revalidatePath("/w", "layout");
-  const { tarefas_criadas: t, cobrancas_criadas: c } = data;
+  const { entregas_criadas: t, cobrancas_criadas: c } = data;
   if (t === 0 && c === 0) {
     return { message: `${formatMonth(competencia)} já estava gerado. Nada novo para criar.` };
   }
   return {
-    message: `${formatMonth(competencia)}: ${plural(t, "tarefa criada", "tarefas criadas")} e ${plural(c, "cobrança criada", "cobranças criadas")}.`,
+    message: `${formatMonth(competencia)}: ${plural(t, "entrega planejada", "entregas planejadas")} e ${plural(c, "cobrança criada", "cobranças criadas")}.`,
   };
 }
 

@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-export const cadenceLabels = { diaria: "por dia útil", semanal: "por semana", mensal: "por mês" } as const;
+export const cadenceLabels = {
+  diaria: "diário, agrupado por semana",
+  semanal: "por semana",
+  mensal: "por mês",
+} as const;
 export type Cadence = keyof typeof cadenceLabels;
 
 export const packageItemSchema = z.object({

@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(24);
+select plan(29);
 
 create function pg_temp.create_user(p_id uuid, p_email text, p_nome text)
 returns void language sql as $$
@@ -31,7 +31,7 @@ grant select on ids to authenticated;
 -- Pacote: 2 posts por semana + 1 relatório mensal
 insert into package_templates (id, workspace_id, nome, itens) values (
   'aaaaaaaa-0000-4000-a000-000000000001', (select ws_ana from ids), 'Básico',
-  '[{"tipo":"Post","quantidade":2,"cadencia":"semanal"},{"tipo":"Relatório","quantidade":1,"cadencia":"mensal"}]'
+  '[{"tipo":"Post","quantidade":2,"cadencia":"semanal"},{"tipo":"Relatório","quantidade":1,"cadencia":"mensal"},{"tipo":"Stories","quantidade":1,"cadencia":"diaria"}]'
 );
 insert into package_templates (id, workspace_id, nome, itens) values (
   'bbbbbbbb-0000-4000-a000-000000000001', (select ws_bia from ids), 'Da Bia', '[]'
@@ -74,36 +74,60 @@ select throws_ok(
 -- ------------------------------------------------------------
 -- generate_month
 -- ------------------------------------------------------------
--- Novembro/2026: segundas em 2, 9, 16, 23, 30 => 5 semanas x 2 posts + 1 relatório = 11
+-- Novembro/2026: segundas em 2, 9, 16, 23, 30.
+-- 5 semanas x 2 posts + 1 relatório + 5 "Stories da semana" = 16 slots de entrega.
 select results_eq(
-  $$ select tarefas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-11-15') $$,
-  $$ values (11, 2) $$,
-  'generate_month cria tarefas do pacote e cobranças');
+  $$ select entregas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-11-15') $$,
+  $$ values (16, 2) $$,
+  'generate_month cria slots de entrega e cobranças');
 select results_eq(
-  $$ select tarefas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-11-01') $$,
+  $$ select entregas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-11-01') $$,
   $$ values (0, 0) $$,
   'generate_month é idempotente');
-select is((select count(*)::int from tasks where competencia = '2026-11-01'), 11, 'sem tarefas duplicadas');
+select is((select count(*)::int from deliverables where competencia = '2026-11-01'), 16, 'sem slots duplicados');
 select is((select count(*)::int from payments where competencia = '2026-11-01'), 2, 'sem cobranças duplicadas');
 select is((select vencimento from payments where client_id = 'cccccccc-0000-4000-a000-000000000002'),
   '2026-11-30'::date, 'dia de vencimento 31 vira o último dia do mês');
-select is((select titulo from tasks where template_key = '1:1' and competencia = '2026-11-01'), 'Post 1/10',
-  'título numerado');
-select ok((select bool_and(due_date between '2026-11-01' and '2026-11-30') from tasks where competencia = '2026-11-01'),
+select results_eq(
+  $$ select slot_label, titulo, formato::text, status::text from deliverables
+     where slot_key = '1:1' and competencia = '2026-11-01' $$,
+  $$ values ('Post 1 de 10', null::text, 'post', 'planejar') $$,
+  'slot é rascunho sem título, numerado e no formato do tipo');
+select is((select formato::text from deliverables where slot_key = '2:1' and competencia = '2026-11-01'), 'relatorio',
+  'tipo Relatório vira formato relatório');
+select is((select slot_label from deliverables where slot_key = '3:2' and competencia = '2026-11-01'),
+  'Stories da semana 2 de 5', 'cadência diária vira uma entrega por semana');
+select ok((select bool_and(data_publicacao between '2026-11-01' and '2026-11-30') from deliverables where competencia = '2026-11-01'),
   'todas as datas dentro do mês');
+select is((select count(*)::int from tasks where origem = 'template'), 0, 'generate_month não cria mais tarefas');
+
+-- Título real preserva o slot na próxima geração (não duplica nem sobrescreve)
+update deliverables set titulo = 'Promoção de Natal' where slot_key = '1:1' and competencia = '2026-11-01';
+select results_eq(
+  $$ select entregas_criadas from generate_month((select ws_ana from ids), '2026-11-01') $$,
+  $$ values (0) $$,
+  'slot com título continua contando como gerado');
 
 -- Cliente pausado não gera
 update clients set status = 'pausado' where id = 'cccccccc-0000-4000-a000-000000000001';
 select results_eq(
-  $$ select tarefas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-12-01') $$,
+  $$ select entregas_criadas, cobrancas_criadas from generate_month((select ws_ana from ids), '2026-12-01') $$,
   $$ values (0, 1) $$,
-  'cliente pausado não gera tarefas nem cobrança');
+  'cliente pausado não gera entregas nem cobrança');
 
--- Tarefa concluída preenche done_at e entra na linha do tempo
-update tasks set status = 'feita' where template_key = '1:1' and competencia = '2026-11-01';
-select isnt((select done_at from tasks where template_key = '1:1' and competencia = '2026-11-01'), null,
+-- Tarefa operacional concluída preenche done_at e entra na linha do tempo
+insert into tasks (workspace_id, client_id, titulo) values
+  ((select ws_ana from ids), 'cccccccc-0000-4000-a000-000000000001', 'Cobrar fotos do cardápio');
+update tasks set status = 'feita' where titulo = 'Cobrar fotos do cardápio';
+select isnt((select done_at from tasks where titulo = 'Cobrar fotos do cardápio'), null,
   'done_at preenchido ao concluir');
 select ok(exists(select 1 from client_timeline where tipo = 'tarefa_feita'), 'linha do tempo mostra tarefa concluída');
+
+-- Entrega avulsa precisa de título
+select throws_ok(
+  $$ insert into deliverables (workspace_id, client_id, titulo) values
+     ((select ws_ana from ids), 'cccccccc-0000-4000-a000-000000000001', null) $$,
+  '23514', null, 'entrega sem título e sem slot é recusada');
 
 -- ------------------------------------------------------------
 -- Isolamento

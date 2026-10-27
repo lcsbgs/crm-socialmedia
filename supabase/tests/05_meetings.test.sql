@@ -45,7 +45,7 @@ select throws_ok(
   '42501', null, 'Bia não cria reunião no workspace da Ana');
 update meetings set notas_brutas = 'hackeado';
 reset role; select set_config('request.jwt.claims', '', true);
-select is((select notas_brutas from meetings), 'notas', 'Bia não altera reunião da Ana');
+select is((select notas_brutas from meetings where id = 'ffffffff-0000-4000-a000-000000000001'), 'notas', 'Bia não altera reunião da Ana');
 
 select throws_ok(
   $$ insert into tasks (workspace_id, titulo, meeting_id)

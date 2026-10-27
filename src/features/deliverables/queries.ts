@@ -7,7 +7,8 @@ export type Media = { path: string; url: string | null; kind: "image" | "video" 
 export type Deliverable = {
   id: string;
   client_id: string;
-  titulo: string;
+  titulo: string | null;
+  slot_label: string | null;
   formato: DeliverableFormat;
   status: DeliverableStatus;
   data_publicacao: string | null;
@@ -43,7 +44,7 @@ export async function getClientDeliverables(workspaceId: string, clientId: strin
   const { data } = await supabase
     .from("deliverables")
     .select(
-      "id, client_id, titulo, formato, status, data_publicacao, legenda, ordem, midia_urls, approvals (decisao, comentario, autor_nome, created_at)",
+      "id, client_id, titulo, slot_label, formato, status, data_publicacao, legenda, ordem, midia_urls, approvals (decisao, comentario, autor_nome, created_at)",
     )
     .eq("workspace_id", workspaceId)
     .eq("client_id", clientId)
