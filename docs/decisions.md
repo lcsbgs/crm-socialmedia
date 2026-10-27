@@ -66,3 +66,11 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Excluir reunião mantém as tarefas** criadas por ela (FK com `on delete set null (meeting_id)`).
 - **Tela Hoje** passou a mostrar as reuniões do dia.
 - **Google Calendar fora do MVP.** A estrutura fica preparada em `meetings.data` (timestamptz); a integração entraria como um campo `external_event_id` e um job de sincronização.
+
+## 2026-10-27 · Fase 6
+
+- **Status `atrasado` derivado na leitura** (pendente com vencimento passado) e gravado por `generate_month` e por `mark_overdue_payments()`. Esta última atende todos os workspaces, não é exposta à API e tem o agendamento diário via pg_cron comentado na migration.
+- **`pago_em` e `status = 'pago'` andam juntos** (constraint). Desfazer um pagamento volta para pendente ou atrasado conforme o vencimento.
+- **Mensagem de cobrança no WhatsApp** muda de tom: lembrete antes do vencimento e cobrança educada depois. Usa o primeiro contato do cliente.
+- **Escopo:** pedido extra com valor sugerido e status pendente, cobrado ou absorvido; `resolvido_em` é mantido por trigger. Marcar como cobrado **não** cria cobrança automaticamente (sem gateway nem NF no MVP); a aba mostra o total cobrado e absorvido para dar visibilidade do escopo que escapa.
+- **Guarda de grants em teste** (`supabase/tests/00_function_grants.test.sql`): o `alter default privileges` não impede os grants padrão do Supabase em funções novas, então cada migration revoga explicitamente o que cria e esse teste falha se alguma função `security definer` ficar exposta fora da lista prevista. Ele pegou `mark_overdue_payments` e `regenerate_portal_token` nesta fase.

@@ -477,6 +477,58 @@ export type Database = {
           },
         ];
       };
+      scope_requests: {
+        Row: {
+          client_id: string;
+          created_at: string;
+          descricao: string;
+          id: string;
+          resolvido_em: string | null;
+          status: Database["public"]["Enums"]["scope_status"];
+          updated_at: string;
+          valor_sugerido: number | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          created_at?: string;
+          descricao: string;
+          id?: string;
+          resolvido_em?: string | null;
+          status?: Database["public"]["Enums"]["scope_status"];
+          updated_at?: string;
+          valor_sugerido?: number | null;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          created_at?: string;
+          descricao?: string;
+          id?: string;
+          resolvido_em?: string | null;
+          status?: Database["public"]["Enums"]["scope_status"];
+          updated_at?: string;
+          valor_sugerido?: number | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "scope_requests_client_id_workspace_id_fkey";
+            columns: ["client_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "scope_requests_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       tasks: {
         Row: {
           client_id: string | null;
@@ -707,6 +759,7 @@ export type Database = {
         Returns: boolean;
       };
       is_workspace_member: { Args: { p_workspace_id: string }; Returns: boolean };
+      mark_overdue_payments: { Args: Record<PropertyKey, never>; Returns: number };
       package_item_dates: {
         Args: {
           p_cadencia: Database["public"]["Enums"]["package_cadence"];
@@ -750,6 +803,7 @@ export type Database = {
       package_cadence: "diaria" | "semanal" | "mensal";
       payment_status: "pendente" | "pago" | "atrasado";
       plan_tier: "free" | "pro" | "estudio";
+      scope_status: "pendente" | "cobrado" | "absorvido";
       task_origin: "template" | "ata" | "manual";
       task_status: "pendente" | "feita";
       task_type: "recorrente" | "avulsa" | "reuniao";
@@ -874,6 +928,7 @@ export const Constants = {
       package_cadence: ["diaria", "semanal", "mensal"],
       payment_status: ["pendente", "pago", "atrasado"],
       plan_tier: ["free", "pro", "estudio"],
+      scope_status: ["pendente", "cobrado", "absorvido"],
       task_origin: ["template", "ata", "manual"],
       task_status: ["pendente", "feita"],
       task_type: ["recorrente", "avulsa", "reuniao"],

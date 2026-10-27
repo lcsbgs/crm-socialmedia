@@ -45,10 +45,38 @@ Outros comandos:
 O projeto está linkado ao Supabase remoto (`supabase/.temp/project-ref`). Sempre teste localmente antes (`pnpm db:reset && pnpm db:test`).
 
 ```bash
-pnpm exec supabase db push --dry-run   # confira o que será aplicado
-pnpm exec supabase db push
+pnpm exec supabase db push --linked --dry-run   # confira o que será aplicado
+pnpm exec supabase db push --linked
 pnpm db:types:remote
 ```
+
+O `db push` não roda o `seed.sql`. Depois do primeiro push, configure no painel do Supabase (Authentication > URL Configuration) o Site URL e o redirect `<APP_URL>/auth/callback`.
+
+### Trocar o plano de um workspace
+
+Não há gateway de pagamento. No SQL Editor do Supabase:
+
+```sql
+update public.workspaces set plano = 'pro' where slug = 'nome-do-workspace';
+```
+
+### Agendamentos (opcional)
+
+As migrations trazem, comentados, os comandos de pg_cron para gerar o mês todo dia 1 (`generate_month`) e marcar cobranças atrasadas diariamente (`mark_overdue_payments`).
+
+## Funcionalidades
+
+| Área | Onde |
+|---|---|
+| Cadastro, login (senha ou link), onboarding | `/cadastro`, `/login`, `/onboarding`, `/w/[slug]/comecar` |
+| Workspaces, equipe, convites, plano e limites | seletor no topo, `/w/[slug]/configuracoes`, `/convite/[token]` |
+| Tela Hoje | `/w/[slug]` |
+| Clientes e ficha (visão geral, entregas, reuniões, financeiro, escopo, linha do tempo) | `/w/[slug]/clientes` |
+| Pacotes e Gerar mês | `/w/[slug]/pacotes`, botão em Clientes |
+| Kanban de entregas com upload | aba Entregas do cliente |
+| Portal público de aprovação | `/p/[portal_token]`, botão "Portal do cliente" na ficha |
+| Reuniões e ata com IA | aba Reuniões do cliente |
+| Financeiro e inadimplentes | `/w/[slug]/financeiro` |
 
 ## Arquitetura
 
@@ -58,4 +86,7 @@ Detalhes e decisões em [`docs/decisions.md`](docs/decisions.md).
 - `src/lib/supabase`: `client.ts` (browser), `server.ts` (RSC e actions), `admin.ts` (service role, só servidor), `proxy.ts` (renovação de sessão).
 - **Multi-tenant:** todo dado de negócio tem `workspace_id`. RLS em todas as tabelas via `is_workspace_member(workspace_id)` e `has_workspace_role(workspace_id, roles[])`, ambas `security definer` com `search_path` vazio. Rotas em `/w/[slug]/...`; o último workspace usado fica em `profiles.last_workspace_id`.
 - **Limites de plano:** tabela `plan_limits`, validados por trigger no banco e exibidos na tela de configurações. Plano alterado manualmente no banco.
-- **Testes de banco:** `supabase/tests/*.test.sql` (pgTAP) cobrem isolamento entre workspaces, papéis, limites e grants.
+- **Testes de banco:** `supabase/tests/*.test.sql` (pgTAP) cobrem isolamento entre workspaces em todas as tabelas, papéis, limites de plano (2º membro e 3º cliente no free), idempotência do `generate_month`, Storage, portal (anon sem acesso) e grants de funções.
+- **Portal do cliente:** sem login e sem abrir RLS para `anon`. O servidor valida o token e usa o service role; a escrita passa por `portal_respond()`, executável só pelo `service_role`.
+- **IA:** `src/features/meetings/ai.ts` chama a API da Anthropic só no servidor, com structured outputs validados por Zod. Modelo em `ANTHROPIC_MODEL`.
+- **Storage:** bucket privado `midia`, caminhos `{workspace_id}/{client_id}/{deliverable_id}/arquivo`, URLs assinadas na leitura.

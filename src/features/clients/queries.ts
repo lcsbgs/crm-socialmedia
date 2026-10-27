@@ -54,17 +54,6 @@ export async function getClientMonthTasks(workspaceId: string, clientId: string,
   return data ?? [];
 }
 
-export async function getClientPayments(workspaceId: string, clientId: string) {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("payments")
-    .select("id, competencia, valor, vencimento, pago_em, status")
-    .eq("workspace_id", workspaceId)
-    .eq("client_id", clientId)
-    .order("competencia", { ascending: false });
-  return data ?? [];
-}
-
 export async function getClientTimeline(workspaceId: string, clientId: string) {
   const supabase = await createClient();
   const { data } = await supabase

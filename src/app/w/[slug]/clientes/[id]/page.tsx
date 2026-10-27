@@ -8,15 +8,16 @@ import { deleteClient } from "@/features/clients/actions";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import { TaskList } from "@/features/tasks/components/task-list";
-import {
-  getClient,
-  getClientMonthTasks,
-  getClientPayments,
-  getClientTimeline,
-} from "@/features/clients/queries";
+import { getClient, getClientMonthTasks, getClientTimeline } from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
 import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
 import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";
+import { PaymentRow } from "@/features/finance/components/payment-row";
+import { getClientPaymentViews } from "@/features/finance/queries";
+import { deleteScopeRequest, setScopeStatus } from "@/features/scope/actions";
+import { ScopeForm } from "@/features/scope/components/scope-form";
+import { getClientScopeRequests } from "@/features/scope/queries";
+import { scopeStatusLabels } from "@/features/scope/schemas";
 import { NewMeetingForm } from "@/features/meetings/components/new-meeting-form";
 import { getClientMeetings } from "@/features/meetings/queries";
 import { toLocalInput } from "@/features/meetings/schemas";
@@ -25,7 +26,7 @@ import { publicEnv } from "@/lib/env";
 import { describeItems } from "@/features/packages/schemas";
 import { getPackages } from "@/features/packages/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
-import { currentMonthISO, formatBRL, formatDate, formatMonth, todayISO } from "@/lib/format";
+import { currentMonthISO, formatBRL, formatDate, formatMonth } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
@@ -124,9 +125,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
       ) : aba === "reunioes" ? (
         <MeetingsTab workspaceId={workspace.id} clientId={id} slug={slug} />
       ) : aba === "escopo" ? (
-        <Card>
-          <p className="text-sm text-muted">Esta seção chega nas próximas etapas.</p>
-        </Card>
+        <ScopeTab workspaceId={workspace.id} clientId={id} />
       ) : (
         <OverviewTab workspaceId={workspace.id} client={client} />
       )}
@@ -259,12 +258,8 @@ async function EditTab({
   );
 }
 
-const paymentTone = { pago: "success", pendente: "neutral", atrasado: "danger" } as const;
-const paymentLabel = { pago: "Pago", pendente: "Pendente", atrasado: "Atrasado" } as const;
-
 async function FinanceTab({ workspaceId, clientId }: { workspaceId: string; clientId: string }) {
-  const payments = await getClientPayments(workspaceId, clientId);
-  const today = todayISO();
+  const payments = await getClientPaymentViews(workspaceId, clientId);
   return (
     <Card>
       <CardHeader title="Cobranças" />
@@ -272,27 +267,83 @@ async function FinanceTab({ workspaceId, clientId }: { workspaceId: string; clie
         <p className="text-sm text-muted">Nenhuma cobrança gerada ainda.</p>
       ) : (
         <ul className="divide-y divide-border">
-          {payments.map((p) => {
-            const status = p.status === "pendente" && p.vencimento < today ? "atrasado" : p.status;
-            return (
-              <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-                <div>
-                  <p className="font-medium">{formatMonth(p.competencia)}</p>
-                  <p className="text-muted">
-                    Vence {formatDate(p.vencimento)}
-                    {p.pago_em ? ` · pago em ${formatDate(p.pago_em)}` : ""}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span>{formatBRL(p.valor)}</span>
-                  <Badge tone={paymentTone[status]}>{paymentLabel[status]}</Badge>
-                </div>
-              </li>
-            );
-          })}
+          {payments.map((p) => (
+            <PaymentRow key={p.id} workspaceId={workspaceId} payment={p} />
+          ))}
         </ul>
       )}
     </Card>
+  );
+}
+
+const scopeTone = { pendente: "warning", cobrado: "success", absorvido: "neutral" } as const;
+
+async function ScopeTab({ workspaceId, clientId }: { workspaceId: string; clientId: string }) {
+  const requests = await getClientScopeRequests(workspaceId, clientId);
+  const total = (status: string) =>
+    requests.filter((r) => r.status === status).reduce((acc, r) => acc + Number(r.valor_sugerido ?? 0), 0);
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">
+      <Card>
+        <CardHeader title="Novo pedido extra" description="Registre o que o cliente pediu fora do pacote." />
+        <ScopeForm workspaceId={workspaceId} clientId={clientId} />
+      </Card>
+      <Card>
+        <CardHeader
+          title="Pedidos fora do escopo"
+          description={
+            requests.length
+              ? `Cobrado: ${formatBRL(total("cobrado"))} · Absorvido: ${formatBRL(total("absorvido"))} · Pendente: ${formatBRL(total("pendente"))}`
+              : undefined
+          }
+        />
+        {requests.length === 0 ? (
+          <p className="text-sm text-muted">Nenhum pedido extra registrado.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {requests.map((r) => (
+              <li key={r.id} className="space-y-2 py-3 text-sm">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="whitespace-pre-line">{r.descricao}</p>
+                  <div className="flex items-center gap-2">
+                    {r.valor_sugerido !== null ? (
+                      <span className="font-medium">{formatBRL(r.valor_sugerido)}</span>
+                    ) : null}
+                    <Badge tone={scopeTone[r.status]}>{scopeStatusLabels[r.status]}</Badge>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(["cobrado", "absorvido", "pendente"] as const)
+                    .filter((s) => s !== r.status)
+                    .map((s) => (
+                      <form key={s} action={setScopeStatus}>
+                        <input type="hidden" name="workspaceId" value={workspaceId} />
+                        <input type="hidden" name="id" value={r.id} />
+                        <input type="hidden" name="status" value={s} />
+                        <Button type="submit" variant="secondary" size="sm">
+                          {s === "cobrado"
+                            ? "Marcar como cobrado"
+                            : s === "absorvido"
+                              ? "Absorver"
+                              : "Reabrir"}
+                        </Button>
+                      </form>
+                    ))}
+                  <form action={deleteScopeRequest}>
+                    <input type="hidden" name="workspaceId" value={workspaceId} />
+                    <input type="hidden" name="id" value={r.id} />
+                    <Button type="submit" variant="ghost" size="sm">
+                      Excluir
+                    </Button>
+                  </form>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+    </div>
   );
 }
 

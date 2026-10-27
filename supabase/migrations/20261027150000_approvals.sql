@@ -100,6 +100,7 @@ begin
 end;
 $$;
 
+revoke execute on function public.regenerate_portal_token(uuid) from public, anon;
 grant execute on function public.regenerate_portal_token(uuid) to authenticated;
 
 -- ============================================================
