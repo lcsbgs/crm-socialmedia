@@ -9,17 +9,11 @@ type Usage = {
   max_clients: number | null;
   members: number;
   pending_invitations: number;
+  clients: number;
 };
 
-export function PlanCard({
-  usage,
-  clients = 0,
-  canUpgrade,
-}: {
-  usage: Usage;
-  clients?: number;
-  canUpgrade: boolean;
-}) {
+export function PlanCard({ usage, canUpgrade }: { usage: Usage; canUpgrade: boolean }) {
+  const clients = usage.clients;
   const seats = usage.members + usage.pending_invitations;
   const atSeatLimit = seats >= usage.max_members;
   const atClientLimit = usage.max_clients !== null && clients >= usage.max_clients;
@@ -41,7 +35,7 @@ export function PlanCard({
               : undefined
           }
         />
-        <UsageMeter label="Clientes" used={clients} max={usage.max_clients} />
+        <UsageMeter label="Clientes ativos" used={clients} max={usage.max_clients} />
       </dl>
       {canUpgrade && usage.plano !== "estudio" ? (
         <div className="mt-4 flex flex-col gap-3 rounded-md bg-background p-3 sm:flex-row sm:items-center sm:justify-between">

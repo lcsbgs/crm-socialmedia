@@ -53,6 +53,8 @@ export function AppHeader({
         <NavLink href={base} exact>
           Hoje
         </NavLink>
+        <NavLink href={`${base}/clientes`}>Clientes</NavLink>
+        <NavLink href={`${base}/pacotes`}>Pacotes</NavLink>
         <NavLink href={`${base}/configuracoes`}>Configurações</NavLink>
       </nav>
     </header>

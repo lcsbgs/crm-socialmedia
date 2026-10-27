@@ -23,3 +23,16 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Dropdowns com `<details>`** em vez de lib de UI: acessível por teclado, sem dependência.
 - **Onboarding em uma etapa nesta fase** (nome + nome do negócio). Primeiro cliente e pacote entram na Fase 2.
 - **Tipos gerados do banco local** (`pnpm db:types`) enquanto o remoto não tem as migrations; depois do push, usar `pnpm db:types:remote`.
+
+## 2026-10-27 · Fase 2
+
+- **FKs compostas `(client_id, workspace_id)`.** Tarefas, cobranças e o pacote do cliente referenciam `(id, workspace_id)` da tabela pai. O banco impede que um registro aponte para cliente ou pacote de outro workspace, além do RLS.
+- **Limite de clientes conta só ativos e pausados.** Encerrar um cliente libera a vaga; reativar respeita o limite. O trigger checa membership antes de revelar o limite.
+- **`generate_month` é `security definer` com checagem de membership** (pela API) e livre sem auth (pg_cron/SQL). Idempotência por índices únicos: tarefas em `(client_id, competencia, template_key)` e cobranças em `(client_id, competencia)`, com `on conflict do nothing`.
+- **Distribuição das tarefas no mês:** mensal = N datas espalhadas pelo mês; semanal = N por semana a partir de cada segunda que cai no mês (seg a sex, limitado ao último dia do mês); diária = N por dia útil. Título "Tipo n/total". Clientes pausados/encerrados e com contrato começando depois do mês não geram nada.
+- **Vencimento:** `dia_vencimento` aceita 1 a 31; em meses mais curtos vira o último dia. Sem dia definido, usa 10. Clientes sem `valor_mensal` não geram cobrança.
+- **Status `atrasado`** é gravado quando `generate_month` roda e, na UI, também é derivado (pendente com vencimento passado). A Fase 6 revisa isso.
+- **Fuso:** datas de negócio usam America/Sao_Paulo (UI e banco). A linha do tempo converte colunas `date` para meia-noite de São Paulo.
+- **Linha do tempo é uma view `security_invoker`**, então herda o RLS das tabelas. Fases seguintes acrescentam fontes com `create or replace view`.
+- **Abas da ficha do cliente via `?aba=`** numa única rota. Entregas, Reuniões e Escopo ficam como placeholder até as fases correspondentes.
+- **Onboarding em duas etapas:** nome/negócio (Fase 1) e depois `/w/[slug]/comecar` (primeiro cliente + escolher ou criar pacote, com itens sugeridos). Pode pular.

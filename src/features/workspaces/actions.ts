@@ -140,5 +140,5 @@ export async function completeOnboarding(_: ActionState, formData: FormData): Pr
   });
   if (error || !slug) return fromDbError(error);
 
-  redirect(`/w/${slug}`);
+  redirect(`/w/${slug}/comecar`);
 }
