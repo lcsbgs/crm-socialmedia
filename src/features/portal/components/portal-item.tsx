@@ -72,7 +72,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
 
       {item.legenda ? (
         <div>
-          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted">Legenda</p>
+          <p className="mb-1 text-xs font-medium text-muted">Legenda</p>
           <p className="whitespace-pre-line text-sm">{item.legenda}</p>
         </div>
       ) : null}
@@ -96,7 +96,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
                 localStorage.setItem(NAME_KEY, e.target.value);
               } catch {}
             }}
-            className="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+            className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-base focus-visible:border-accent focus-visible:outline-none"
           />
           {state?.fieldErrors?.autor_nome ? (
             <p className="text-sm text-danger">{state.fieldErrors.autor_nome[0]}</p>
@@ -110,17 +110,25 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
             id={`comentario-${item.id}`}
             name="comentario"
             rows={3}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border bg-surface px-2.5 py-2 text-base focus-visible:border-accent focus-visible:outline-none"
           />
           {state?.fieldErrors?.comentario ? (
             <p className="text-sm text-danger">{state.fieldErrors.comentario[0]}</p>
           ) : null}
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Button type="submit" name="decisao" value="aprovado" disabled={pending}>
+          <Button type="submit" name="decisao" value="aprovado" disabled={pending} size="md" className="h-9">
             Aprovar
           </Button>
-          <Button type="submit" name="decisao" value="ajuste" variant="secondary" disabled={pending}>
+          <Button
+            type="submit"
+            name="decisao"
+            value="ajuste"
+            variant="secondary"
+            disabled={pending}
+            size="md"
+            className="h-9"
+          >
             Pedir ajuste
           </Button>
         </div>

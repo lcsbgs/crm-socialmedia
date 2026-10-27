@@ -30,6 +30,8 @@ import {
 import { Kbd } from "@/components/ui/kbd";
 import { Tooltip } from "@/components/ui/tooltip";
 import { signOut } from "@/features/auth/actions";
+import { NotificationBell } from "@/features/notifications/components/notification-bell";
+import type { NotificationItem } from "@/features/notifications/queries";
 import { planLabels, type PlanTier } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 import type { ShellClient } from "./shell-context";
@@ -41,6 +43,7 @@ export function Sidebar({
   workspaces,
   clients,
   todayCount,
+  notifications,
   user,
   collapsed,
   onToggleCollapse,
@@ -51,6 +54,7 @@ export function Sidebar({
   workspaces: Workspace[];
   clients: ShellClient[];
   todayCount: number;
+  notifications: { items: NotificationItem[]; unread: number };
   user: { nome: string; email: string };
   collapsed: boolean;
   onToggleCollapse?: () => void;
@@ -132,6 +136,12 @@ export function Sidebar({
       </div>
 
       <SideButton collapsed={collapsed} label="Buscar" icon={Search} onClick={onOpenPalette} kbd="⌘K" />
+      <NotificationBell
+        workspaceId={workspace.id}
+        items={notifications.items}
+        unread={notifications.unread}
+        collapsed={collapsed}
+      />
 
       <div className="mt-2 space-y-px">
         {nav.map((item) => (

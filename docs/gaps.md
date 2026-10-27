@@ -105,3 +105,18 @@ Todas como migrations novas, testadas só no local:
 1. **Migrations pendentes no remoto (Fases 3 a 6):** sigo empilhando migrations novas por cima delas (o caminho mais seguro), certo?
 2. **Tarefas recorrentes já geradas** (origem `template`): no novo `generate_month` elas deixam de ser criadas. Removo as existentes numa migration, ou deixo como histórico?
 3. **Cadência diária (Stories):** viram cerca de 22 slots por cliente por mês. Gero mesmo assim, ou cadência diária fica como uma entrega semanal agrupada ("Stories da semana")?
+
+## Atualização após os Passos 2 a 7
+
+| Área | Agora |
+|---|---|
+| Design system e shell | Existe: tokens com dark mode, Hanken Grotesk, componentes Radix, sidebar recolhível, drawer no mobile, ⌘K e atalhos |
+| Tela Hoje | Existe: seções, ações inline, criação rápida, painel da tarefa |
+| Pacotes e generate_month | Existe: cria slots de entrega, não mais tarefas |
+| Entregas e kanban | Existe: quadro de todos os clientes com filtros, painel lateral com comentários e histórico, responsável |
+| Calendário | Existe: semana com arrastar e mês com reuniões |
+| Clientes | Existe: cor, página de registro, resumo do mês, aba Calendário |
+| Portal do cliente | Existe: marca do workspace, histórico de respostas, notificação in-app |
+| Financeiro | Existe: receita do mês, inadimplentes, situação por cliente |
+
+Ainda fora: recuperação de senha, edição de perfil, troca de papel e transferência de posse na UI, cobrança avulsa, testes de interface/e2e, chamada real à Anthropic sem chave configurada.

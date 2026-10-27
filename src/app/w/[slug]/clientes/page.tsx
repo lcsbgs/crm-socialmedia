@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { Alert } from "@/components/ui/alert";
 import { buttonClasses } from "@/components/ui/button";
+import { ClientAvatar } from "@/components/ui/avatar";
 import { Card, CardHeader } from "@/components/ui/card";
 import { GenerateMonthForm } from "@/features/clients/components/generate-month-form";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
@@ -64,11 +65,9 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
         <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
           {clients.map((c) => (
             <li key={c.id}>
-              <Link
-                href={`${base}/${c.id}`}
-                className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 hover:bg-background"
-              >
-                <div className="min-w-0">
+              <Link href={`${base}/${c.id}`} className="flex items-center gap-3 px-4 py-2.5 hover:bg-hover">
+                <ClientAvatar name={c.nome} color={c.cor ?? 0} size="md" />
+                <div className="min-w-0 flex-1">
                   <p className="flex items-center gap-2 font-medium">
                     <span className="truncate">{c.nome}</span>
                     <ClientStatusBadge status={c.status} />
@@ -79,21 +78,17 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
                       .join(" · ")}
                   </p>
                 </div>
-                <div className="text-right text-sm">
+                <div className="tabular shrink-0 text-right text-sm">
                   {c.proximoVencimento ? (
                     <>
-                      <p
-                        className={cn(
-                          c.proximoVencimento.atrasado ? "font-medium text-danger" : "text-muted",
-                        )}
-                      >
+                      <p className={cn(c.proximoVencimento.atrasado ? "text-late" : "text-muted")}>
                         {c.proximoVencimento.atrasado ? "Atrasado desde " : "Vence "}
                         {formatDate(c.proximoVencimento.vencimento)}
                       </p>
                       <p className="text-muted">{formatBRL(c.proximoVencimento.valor)}</p>
                     </>
                   ) : (
-                    <p className="text-muted">Sem cobrança em aberto</p>
+                    <p className="text-muted">Em dia</p>
                   )}
                 </div>
               </Link>

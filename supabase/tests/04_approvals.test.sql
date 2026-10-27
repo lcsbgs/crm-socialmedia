@@ -62,7 +62,7 @@ select results_eq(
   $$ select status::text from deliverables where id in ('dddddddd-0000-4000-a000-000000000001', 'dddddddd-0000-4000-a000-000000000002') order by titulo $$,
   $$ values ('aprovado'), ('produzir') $$,
   'aprovação move para aprovado e ajuste volta para produzir');
-select is((select count(*)::int from client_timeline where tipo like 'aprovacao_%'), 2, 'respostas na linha do tempo');
+select is((select count(*)::int from client_timeline where tipo like 'aprovacao_%' and workspace_id = (select ws from ids)), 2, 'respostas na linha do tempo');
 
 select * from finish();
 rollback;

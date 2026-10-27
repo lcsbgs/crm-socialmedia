@@ -73,3 +73,11 @@ export async function getPendingInvitations(workspaceId: string) {
     .order("created_at", { ascending: false });
   return data ?? [];
 }
+
+export async function getWorkspaceLogoUrl(workspaceId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase.from("workspaces").select("logo_path").eq("id", workspaceId).single();
+  if (!data?.logo_path) return null;
+  const { data: signed } = await supabase.storage.from("midia").createSignedUrl(data.logo_path, 60 * 60);
+  return signed?.signedUrl ?? null;
+}

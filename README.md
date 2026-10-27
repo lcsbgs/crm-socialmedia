@@ -70,13 +70,18 @@ As migrations trazem, comentados, os comandos de pg_cron para gerar o mês todo 
 |---|---|
 | Cadastro, login (senha ou link), onboarding | `/cadastro`, `/login`, `/onboarding`, `/w/[slug]/comecar` |
 | Workspaces, equipe, convites, plano e limites | seletor no topo, `/w/[slug]/configuracoes`, `/convite/[token]` |
-| Tela Hoje | `/w/[slug]` |
-| Clientes e ficha (visão geral, entregas, reuniões, financeiro, escopo, linha do tempo) | `/w/[slug]/clientes` |
-| Pacotes e Gerar mês | `/w/[slug]/pacotes`, botão em Clientes |
-| Kanban de entregas com upload | aba Entregas do cliente |
-| Portal público de aprovação | `/p/[portal_token]`, botão "Portal do cliente" na ficha |
+| Tela Hoje (atrasadas, para hoje, esperando o cliente, para receber, reuniões) | `/w/[slug]` |
+| Clientes e ficha (visão geral, entregas, calendário, reuniões, financeiro, escopo, linha do tempo) | `/w/[slug]/clientes` |
+| Pacotes e Gerar mês (cria slots de entrega e cobranças) | `/w/[slug]/pacotes`, botão em Clientes |
+| Quadro de entregas de todos os clientes, visão de semana | `/w/[slug]/entregas` |
+| Calendário do mês | `/w/[slug]/calendario` |
+| Painel da entrega (legenda, mídia, comentários, histórico, enviar para aprovação) | `?entrega=<id>` em qualquer tela |
+| Portal público de aprovação com marca do workspace | `/p/[portal_token]`, botão "Enviar link do portal" na ficha |
+| Notificações quando o cliente responde | sino no menu lateral |
 | Reuniões e ata com IA | aba Reuniões do cliente |
 | Financeiro e inadimplentes | `/w/[slug]/financeiro` |
+
+Atalhos: ⌘K ou `/` busca, `C` nova tarefa, `E` nova entrega, `G` `H` Hoje, `G` `C` clientes.
 
 ## Arquitetura
 

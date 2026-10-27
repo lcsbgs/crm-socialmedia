@@ -142,3 +142,33 @@ export async function completeOnboarding(_: ActionState, formData: FormData): Pr
 
   redirect(`/w/${slug}/comecar`);
 }
+
+// Logo do workspace (aparece no portal do cliente). O arquivo já foi enviado
+// ao Storage pelo navegador, em {workspace}/marca/.
+export async function setWorkspaceLogo(input: { workspaceId: string; path: string | null }) {
+  await requireUser();
+  const workspaceId = z.uuid().parse(input.workspaceId);
+  const path = input.path;
+  if (path !== null && (!path.startsWith(`${workspaceId}/marca/`) || path.includes(".."))) {
+    return { error: "Arquivo inválido." };
+  }
+
+  const supabase = await createClient();
+  const { data: current } = await supabase
+    .from("workspaces")
+    .select("logo_path")
+    .eq("id", workspaceId)
+    .single();
+  const { data, error } = await supabase
+    .from("workspaces")
+    .update({ logo_path: path })
+    .eq("id", workspaceId)
+    .select("id");
+  if (error || !data?.length) return { error: "Só proprietário ou administrador pode mudar a marca." };
+
+  if (current?.logo_path && current.logo_path !== path) {
+    await supabase.storage.from("midia").remove([current.logo_path]);
+  }
+  revalidatePath("/w", "layout");
+  return { ok: true };
+}

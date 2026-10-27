@@ -7,7 +7,7 @@ export async function getClients(workspaceId: string) {
   const [{ data: clients }, { data: payments }] = await Promise.all([
     supabase
       .from("clients")
-      .select("id, nome, segmento, status, valor_mensal, package:package_templates (nome)")
+      .select("id, nome, cor, segmento, status, valor_mensal, package:package_templates (nome)")
       .eq("workspace_id", workspaceId)
       .order("nome"),
     supabase

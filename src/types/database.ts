@@ -453,6 +453,65 @@ export type Database = {
           },
         ];
       };
+      notifications: {
+        Row: {
+          corpo: string | null;
+          created_at: string;
+          deliverable_id: string | null;
+          id: string;
+          lida_em: string | null;
+          tipo: string;
+          titulo: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          corpo?: string | null;
+          created_at?: string;
+          deliverable_id?: string | null;
+          id?: string;
+          lida_em?: string | null;
+          tipo: string;
+          titulo: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          corpo?: string | null;
+          created_at?: string;
+          deliverable_id?: string | null;
+          id?: string;
+          lida_em?: string | null;
+          tipo?: string;
+          titulo?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       package_templates: {
         Row: {
           created_at: string;
@@ -778,6 +837,7 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
+          logo_path: string | null;
           nome: string;
           owner_id: string;
           plano: Database["public"]["Enums"]["plan_tier"];
@@ -788,6 +848,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           id?: string;
+          logo_path?: string | null;
           nome: string;
           owner_id: string;
           plano?: Database["public"]["Enums"]["plan_tier"];
@@ -797,6 +858,7 @@ export type Database = {
         Update: {
           created_at?: string;
           id?: string;
+          logo_path?: string | null;
           nome?: string;
           owner_id?: string;
           plano?: Database["public"]["Enums"]["plan_tier"];
@@ -837,6 +899,7 @@ export type Database = {
         Returns: {
           created_at: string;
           id: string;
+          logo_path: string | null;
           nome: string;
           owner_id: string;
           plano: Database["public"]["Enums"]["plan_tier"];
@@ -855,6 +918,7 @@ export type Database = {
         Returns: {
           created_at: string;
           id: string;
+          logo_path: string | null;
           nome: string;
           owner_id: string;
           plano: Database["public"]["Enums"]["plan_tier"];

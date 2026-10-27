@@ -137,3 +137,11 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Visão geral em duas colunas:** à esquerda o resumo do mês (entregas publicadas sobre o total, em aprovação, atrasadas, mensalidade, próxima reunião, escopo pendente), as próximas entregas (abrem o painel) e as tarefas abertas do cliente; à direita os atributos (status, segmento, pacote, valor, vencimento, início), contatos com WhatsApp e e-mail, links, briefing e tom de voz. No celular vira uma coluna.
 - **Abas:** Visão geral, Entregas (quadro do cliente), Calendário (mês do cliente com reuniões), Reuniões, Financeiro (histórico com recebido e em aberto), Escopo e Linha do tempo (com ícone por tipo de evento).
 - **Excluir cliente pede confirmação** em linha (antes era um clique).
+
+## 2026-10-27 · Passo 7: fluxos do MVP completos
+
+- **Portal com a marca do workspace:** cabeçalho com o logo (ou a inicial) e o nome do workspace, saudação ao cliente com quantos conteúdos esperam, cartões no design system e "Suas respostas recentes" (30 dias). O logo fica em `workspaces.logo_path`, dentro de `{workspace_id}/marca/` (constraint garante a pasta do próprio workspace), e é enviado em Ajustes por proprietário ou administrador (PNG, JPG ou WebP até 2 MB; o anterior é apagado do Storage).
+- **Notificações in-app:** trigger em `approvals` cria uma notificação para cada membro do workspace quando o cliente aprova ou pede ajuste. Cada um só vê e só marca as suas; a única coluna editável é `lida_em` (grant por coluna). O sino fica no menu lateral com contador; abrir a lista marca tudo como lido e clicar leva ao painel da entrega.
+- **Financeiro:** receita do mês numa faixa só (previsto, recebido, em aberto, atrasado e barra do recebido), cobranças do mês, inadimplentes com a idade da dívida mais antiga e situação do mês por cliente. O histórico completo por cliente fica na aba Financeiro da ficha.
+- **Reuniões, ata com IA e escopo** seguem o fluxo das Fases 5 e 6, agora com os componentes novos; os próximos passos confirmados viram tarefas operacionais e aparecem na Hoje.
+- **Testes de banco filtram pelo próprio workspace**, para passarem também num banco local já usado.

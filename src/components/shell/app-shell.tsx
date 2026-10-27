@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DeliverableSheetHost } from "@/features/deliverables/components/deliverable-sheet";
 import { NewDeliverableDialog } from "@/features/deliverables/components/new-deliverable-dialog";
 import { NewTaskDialog } from "@/features/tasks/components/new-task-dialog";
+import type { NotificationItem } from "@/features/notifications/queries";
 import type { PlanTier } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 import { CommandPalette } from "./command-palette";
@@ -34,6 +35,7 @@ export function AppShell({
   workspaces,
   clients,
   todayCount,
+  notifications,
   user,
   initialCollapsed,
   children,
@@ -42,6 +44,7 @@ export function AppShell({
   workspaces: Workspace[];
   clients: ShellClient[];
   todayCount: number;
+  notifications: { items: NotificationItem[]; unread: number };
   user: { nome: string; email: string };
   initialCollapsed: boolean;
   children: ReactNode;
@@ -112,6 +115,7 @@ export function AppShell({
     workspaces,
     clients,
     todayCount,
+    notifications,
     user,
     onOpenPalette: () => {
       setDrawer(false);

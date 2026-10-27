@@ -4,11 +4,13 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { CopyButton } from "@/components/ui/copy-button";
 import { revokeInvitation, removeMember } from "@/features/workspaces/actions";
 import { DeleteWorkspaceForm } from "@/features/workspaces/components/danger-zone";
+import { BrandForm } from "@/features/workspaces/components/brand-form";
 import { InviteForm } from "@/features/workspaces/components/invite-form";
 import { PlanCard } from "@/features/workspaces/components/plan-card";
 import { RenameWorkspaceForm } from "@/features/workspaces/components/rename-form";
 import {
   getPendingInvitations,
+  getWorkspaceLogoUrl,
   getWorkspaceBySlug,
   getWorkspaceMembers,
   getWorkspaceUsage,
@@ -31,6 +33,7 @@ export default async function SettingsPage({ params }: PageProps<"/w/[slug]/conf
     workspace.canManage ? getPendingInvitations(workspace.id) : Promise.resolve([]),
   ]);
   const isOwner = workspace.role === "owner";
+  const logoUrl = await getWorkspaceLogoUrl(workspace.id);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -43,6 +46,14 @@ export default async function SettingsPage({ params }: PageProps<"/w/[slug]/conf
           nome={workspace.nome}
           disabled={!workspace.canManage}
         />
+      </Card>
+
+      <Card>
+        <CardHeader
+          title="Marca no portal"
+          description="O logo aparece no topo do portal de aprovação dos seus clientes."
+        />
+        <BrandForm workspaceId={workspace.id} logoUrl={logoUrl} canEdit={workspace.canManage} />
       </Card>
 
       {usage ? <PlanCard usage={usage} canUpgrade={isOwner} /> : null}
