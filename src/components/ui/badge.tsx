@@ -1,19 +1,36 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Tone = "neutral" | "success" | "warning" | "danger";
+type Tone = "neutral" | "success" | "warning" | "danger" | "accent";
 
-const tones: Record<Tone, string> = {
-  neutral: "bg-border/60 text-foreground",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  danger: "bg-danger/10 text-danger",
+// Estados aparecem num ponto colorido, nunca em fundo grande.
+const dots: Record<Tone, string> = {
+  neutral: "bg-muted",
+  success: "bg-ok",
+  warning: "bg-waiting",
+  danger: "bg-late",
+  accent: "bg-accent",
 };
 
-export function Badge({ tone = "neutral", children }: { tone?: Tone; children: ReactNode }) {
+export function Badge({
+  tone = "neutral",
+  children,
+  dot = true,
+}: {
+  tone?: Tone;
+  children: ReactNode;
+  dot?: boolean;
+}) {
   return (
-    <span className={cn("inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium", tones[tone])}>
+    <span className="inline-flex h-5 items-center gap-1.5 rounded-md border border-border px-1.5 text-xs font-medium whitespace-nowrap text-ink">
+      {dot ? <span aria-hidden className={cn("size-1.5 rounded-full", dots[tone])} /> : null}
       {children}
     </span>
+  );
+}
+
+export function StatusDot({ tone, className }: { tone: Tone; className?: string }) {
+  return (
+    <span aria-hidden className={cn("inline-block size-2 shrink-0 rounded-full", dots[tone], className)} />
   );
 }

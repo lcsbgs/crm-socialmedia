@@ -65,3 +65,17 @@ export async function getClientTimeline(workspaceId: string, clientId: string) {
     .limit(100);
   return data ?? [];
 }
+
+export async function getNextDuePayment(workspaceId: string, clientId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("payments")
+    .select("vencimento, valor")
+    .eq("workspace_id", workspaceId)
+    .eq("client_id", clientId)
+    .neq("status", "pago")
+    .order("vencimento")
+    .limit(1)
+    .maybeSingle();
+  return data;
+}

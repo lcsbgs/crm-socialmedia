@@ -74,3 +74,26 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Mensagem de cobrança no WhatsApp** muda de tom: lembrete antes do vencimento e cobrança educada depois. Usa o primeiro contato do cliente.
 - **Escopo:** pedido extra com valor sugerido e status pendente, cobrado ou absorvido; `resolvido_em` é mantido por trigger. Marcar como cobrado **não** cria cobrança automaticamente (sem gateway nem NF no MVP); a aba mostra o total cobrado e absorvido para dar visibilidade do escopo que escapa.
 - **Guarda de grants em teste** (`supabase/tests/00_function_grants.test.sql`): o `alter default privileges` não impede os grants padrão do Supabase em funções novas, então cada migration revoga explicitamente o que cria e esse teste falha se alguma função `security definer` ficar exposta fora da lista prevista. Ele pegou `mark_overdue_payments` e `regenerate_portal_token` nesta fase.
+
+## 2026-10-27 · Refação: auditoria (Passo 1)
+
+Ver `docs/gaps.md`. Decisões tomadas a partir dela:
+
+- **Só migrations novas**, empilhadas sobre as Fases 3 a 6 (que ainda não estão no remoto). Nenhuma migration existente é editada.
+- **Tarefas recorrentes antigas** (`origem = 'template'`): quando o `generate_month` passar a criar slots de entrega (Passo 4), as pendentes serão removidas por migration; as concluídas ficam como histórico na linha do tempo.
+- **Cadência diária** (ex.: Stories) vira **uma entrega por semana** ("Stories da semana"), não um slot por dia útil. Evita ~22 itens por cliente por mês no quadro.
+
+## 2026-10-27 · Passo 2: design system e shell
+
+- **Tokens em CSS vars** (`src/app/globals.css`) com os valores pedidos e dark mode pronto (`prefers-color-scheme` e `data-theme`). Nomes antigos do Tailwind (`primary`, `danger`, `success`...) foram mapeados para os tokens novos, então telas ainda não refeitas já herdam a paleta. Estados (atraso, aguardando, ok) aparecem como ponto, ícone ou texto pequeno; o `Badge` virou "contorno + ponto".
+- **Escala de texto** redefinida no tema: `xs` 12, `sm` 13, `base` 14, `md` 16, `lg` 20, `xl` 28. Texto base 14px. Valores e datas com `tabular-nums` (classe `tabular`, `<time>`, `[data-numeric]`).
+- **Hanken Grotesk** via `next/font/google`.
+- **Componentes próprios sobre Radix:** Popover, Dialog, Sheet (painel lateral), Tooltip, Select, DropdownMenu; DatePicker e MonthPicker com `react-day-picker` (pt-BR) e atalhos Hoje/Amanhã/Próxima semana; Toast com `sonner`; EmptyState, Skeleton, Kbd, Avatar e etiqueta de cliente. `Field type="date" | "datetime-local" | "month"` agora renderiza os seletores próprios, então não sobrou input nativo de data ou select.
+- **Select envia o valor por input oculto próprio**, não pelo do Radix, porque o Radix não aceita valor vazio e enviaria o sentinela interno.
+- **Cor do cliente:** `clients.cor` guarda o índice (0 a 9) de uma paleta fixa em `src/config/client-colors.ts`; trigger atribui em rodízio por workspace. A coluna fica anulável (o trigger sempre preenche) para não virar obrigatória nos inserts da API.
+- **Shell:** sidebar fixa à esquerda com workspace, busca, Hoje (com contador de tarefas atrasadas e de hoje), Entregas, Calendário, Financeiro, lista de clientes com avatar, Pacotes, Ajustes e conta. Recolhível (estado em cookie, para não piscar no SSR) e drawer no mobile. Entregas e Calendário estão com página provisória até o Passo 5.
+- **⌘K com `cmdk`:** ações (nova tarefa, nova entrega, novo cliente), navegação, clientes filtrados no cliente e entregas/tarefas buscadas no servidor (`searchWorkspace`, com escape de `%` e `_`).
+- **Atalhos:** C nova tarefa, E nova entrega, G+H Hoje, G+C clientes (também G+E entregas, G+F financeiro), `/` e ⌘K buscar. Ignorados enquanto se digita ou com um diálogo aberto.
+- **Criação rápida** (tarefa e entrega) em diálogo do shell, com cliente em popover com busca e data em popover; botões "Nova tarefa" e "Nova entrega" das páginas abrem o mesmo diálogo.
+- **Movimento:** animações de 120 a 160 ms só em popover, diálogo e painel; `prefers-reduced-motion` zera todas.
+- **Microcopy:** plurais com `plural()` (sem "(s)"), datas relativas (`formatRelativeDay`, `formatRelativeTime`).

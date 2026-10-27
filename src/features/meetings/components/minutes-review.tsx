@@ -3,11 +3,13 @@
 import { useActionState, useState } from "react";
 import { FormAlert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { plural } from "@/lib/format";
 import { confirmMeetingMinutes } from "../actions";
 import type { Minutes } from "../schemas";
 
-const input = "h-10 w-full rounded-md border border-border bg-surface px-3 text-sm";
+const input = "h-8 w-full rounded-md border border-border bg-surface px-2.5 text-base";
 
 type Step = Minutes["proximos_passos"][number] & { incluir: boolean };
 
@@ -104,17 +106,16 @@ export function MinutesReview({
                 setPassos((prev) => prev.map((x, j) => (j === i ? { ...x, titulo: e.target.value } : x)))
               }
             />
-            <input
-              type="date"
-              aria-label={`Prazo do passo ${i + 1}`}
-              className={`${input} col-start-2 sm:col-start-auto`}
-              value={p.due_date ?? ""}
-              onChange={(e) =>
-                setPassos((prev) =>
-                  prev.map((x, j) => (j === i ? { ...x, due_date: e.target.value || null } : x)),
-                )
-              }
-            />
+            <div className="col-start-2 sm:col-start-auto">
+              <DatePicker
+                aria-label={`Prazo do passo ${i + 1}`}
+                value={p.due_date}
+                placeholder="Sem prazo"
+                onChange={(v) =>
+                  setPassos((prev) => prev.map((x, j) => (j === i ? { ...x, due_date: v } : x)))
+                }
+              />
+            </div>
           </div>
         ))}
         <Button
@@ -127,7 +128,9 @@ export function MinutesReview({
       </fieldset>
 
       <SubmitButton pendingText="Confirmando...">
-        Confirmar ata e criar {ata.proximos_passos.length} tarefa(s)
+        {ata.proximos_passos.length
+          ? `Confirmar ata e criar ${plural(ata.proximos_passos.length, "tarefa", "tarefas")}`
+          : "Confirmar ata"}
       </SubmitButton>
     </form>
   );

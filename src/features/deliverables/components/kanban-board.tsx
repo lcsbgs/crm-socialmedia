@@ -24,9 +24,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useActionState, useMemo, useState } from "react";
 import { Alert, FormAlert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Dialog } from "@/components/ui/dialog";
+import { Select } from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { formatDate } from "@/lib/format";
+import { formatDate, plural } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { createDeliverable, moveDeliverable } from "../actions";
 import type { Deliverable } from "../queries";
@@ -34,6 +36,8 @@ import { formatLabels, statusColumns, type DeliverableStatus } from "../schemas"
 import { DeliverableEditor } from "./deliverable-editor";
 
 type Columns = Record<DeliverableStatus, Deliverable[]>;
+
+const formatOptions = Object.entries(formatLabels).map(([value, label]) => ({ value, label }));
 
 function groupByStatus(items: Deliverable[]): Columns {
   const columns = Object.fromEntries(
@@ -266,7 +270,7 @@ function CardBody({ item, dragging }: { item: Deliverable; dragging?: boolean })
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
         <Badge>{formatLabels[item.formato]}</Badge>
         {item.data_publicacao ? <span>{formatDate(item.data_publicacao)}</span> : null}
-        {item.midia.length ? <span>{item.midia.length} arquivo(s)</span> : null}
+        {item.midia.length ? <span>{plural(item.midia.length, "arquivo", "arquivos")}</span> : null}
       </div>
     </article>
   );
@@ -299,26 +303,11 @@ function NewDeliverableForm({ workspaceId, clientId }: { workspaceId: string; cl
         placeholder="Título"
         required
         autoFocus
-        className="h-9 w-full rounded-md border border-border bg-surface px-2 text-sm"
+        className="h-7 w-full rounded-md border border-border bg-surface px-2 text-sm"
       />
       <div className="grid grid-cols-2 gap-2">
-        <select
-          name="formato"
-          aria-label="Formato"
-          className="h-9 rounded-md border border-border bg-surface px-2 text-sm"
-        >
-          {Object.entries(formatLabels).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <input
-          name="data_publicacao"
-          type="date"
-          aria-label="Data de publicação"
-          className="h-9 rounded-md border border-border bg-surface px-2 text-sm"
-        />
+        <Select name="formato" defaultValue="post" size="sm" aria-label="Formato" options={formatOptions} />
+        <DatePicker name="data_publicacao" size="sm" placeholder="Data" aria-label="Data de publicação" />
       </div>
       <div className="flex gap-2">
         <SubmitButton size="sm">Adicionar</SubmitButton>

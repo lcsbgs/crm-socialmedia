@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { fromDbError, fromZodError, type ActionState } from "@/lib/action-state";
 import { requireUser } from "@/lib/auth";
-import { formatMonth } from "@/lib/format";
+import { formatMonth, plural } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { packageSchema } from "@/features/packages/schemas";
 import { clientSchema } from "./schemas";
@@ -75,7 +75,9 @@ export async function generateMonth(_: ActionState, formData: FormData): Promise
   if (t === 0 && c === 0) {
     return { message: `${formatMonth(competencia)} já estava gerado. Nada novo para criar.` };
   }
-  return { message: `${formatMonth(competencia)}: ${t} tarefa(s) e ${c} cobrança(s) criadas.` };
+  return {
+    message: `${formatMonth(competencia)}: ${plural(t, "tarefa criada", "tarefas criadas")} e ${plural(c, "cobrança criada", "cobranças criadas")}.`,
+  };
 }
 
 // Onboarding: cria (ou escolhe) o pacote e o primeiro cliente de uma vez.

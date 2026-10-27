@@ -12,7 +12,7 @@ export default async function SignUpPage({ searchParams }: PageProps<"/cadastro"
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Criar conta</h1>
+        <h1 className="text-lg font-semibold">Criar conta</h1>
         <p className="text-sm text-muted">Comece grátis. Leva menos de um minuto.</p>
       </div>
       <SignUpForm next={next} />

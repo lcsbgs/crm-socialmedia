@@ -45,3 +45,45 @@ export function parseMoney(input: unknown): number | null {
   const n = Number(s);
   return Number.isFinite(n) ? n : NaN;
 }
+
+// plural(3, "tarefa", "tarefas") -> "3 tarefas"
+export function plural(n: number, singular: string, pluralForm: string, { withCount = true } = {}) {
+  const word = n === 1 ? singular : pluralForm;
+  return withCount ? `${n} ${word}` : word;
+}
+
+function diffDays(iso: string, today = todayISO()) {
+  const a = Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10));
+  const b = Date.UTC(+today.slice(0, 4), +today.slice(5, 7) - 1, +today.slice(8, 10));
+  return Math.round((a - b) / 86_400_000);
+}
+
+const weekday = new Intl.DateTimeFormat("pt-BR", { weekday: "long", timeZone: "UTC" });
+
+// Data relativa para dias: "hoje", "ontem", "amanhã", "há 4 dias", "sexta", "12/11".
+export function formatRelativeDay(iso: string | null | undefined) {
+  if (!iso) return "";
+  const d = diffDays(iso.slice(0, 10));
+  if (d === 0) return "hoje";
+  if (d === -1) return "ontem";
+  if (d === 1) return "amanhã";
+  if (d < 0 && d >= -30) return `há ${-d} dias`;
+  if (d > 1 && d < 7) return weekday.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`));
+  return formatDate(iso);
+}
+
+// Para timestamps: "agora", "há 5 min", "há 3 h", depois data relativa.
+export function formatRelativeTime(iso: string) {
+  const ms = Date.now() - new Date(iso).getTime();
+  const min = Math.round(ms / 60_000);
+  if (min < 1) return "agora";
+  if (min < 60) return `há ${min} min`;
+  const h = Math.round(min / 60);
+  if (h < 24) return `há ${h} h`;
+  const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date(iso));
+  return formatRelativeDay(day);
+}
+
+export function daysOverdue(iso: string) {
+  return -diffDays(iso);
+}

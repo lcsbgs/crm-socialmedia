@@ -1,24 +1,45 @@
-import { AppHeader } from "@/features/workspaces/components/app-header";
+import { cookies } from "next/headers";
+import { AppShell, SIDEBAR_COOKIE } from "@/components/shell/app-shell";
 import { getProfile, getUserWorkspaces, getWorkspaceBySlug } from "@/features/workspaces/queries";
+import { requireUser } from "@/lib/auth";
+import { todayISO } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function WorkspaceLayout({ children, params }: LayoutProps<"/w/[slug]">) {
   const { slug } = await params;
-  const [workspace, workspaces, profile] = await Promise.all([
+  const [user, workspace, workspaces, profile, cookieStore] = await Promise.all([
+    requireUser(`/w/${slug}`),
     getWorkspaceBySlug(slug),
     getUserWorkspaces(),
     getProfile(),
+    cookies(),
+  ]);
+
+  const supabase = await createClient();
+  const [{ data: clients }, { count: todayCount }] = await Promise.all([
+    supabase.from("clients").select("id, nome, cor, status").eq("workspace_id", workspace.id).order("nome"),
+    supabase
+      .from("tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("workspace_id", workspace.id)
+      .eq("status", "pendente")
+      .lte("due_date", todayISO()),
   ]);
 
   if (profile && profile.last_workspace_id !== workspace.id) {
-    const supabase = await createClient();
     await supabase.from("profiles").update({ last_workspace_id: workspace.id }).eq("id", profile.id);
   }
 
   return (
-    <>
-      <AppHeader current={workspace} workspaces={workspaces} userName={profile?.nome ?? ""} />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
-    </>
+    <AppShell
+      workspace={workspace}
+      workspaces={workspaces}
+      clients={(clients ?? []).map((c) => ({ ...c, cor: c.cor ?? 0 }))}
+      todayCount={todayCount ?? 0}
+      user={{ nome: profile?.nome || user.email, email: user.email }}
+      initialCollapsed={cookieStore.get(SIDEBAR_COOKIE)?.value === "1"}
+    >
+      {children}
+    </AppShell>
   );
 }

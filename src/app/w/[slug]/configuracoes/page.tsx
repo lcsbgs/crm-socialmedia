@@ -15,6 +15,7 @@ import {
 } from "@/features/workspaces/queries";
 import { requireUser } from "@/lib/auth";
 import { publicEnv } from "@/lib/env";
+import { plural } from "@/lib/format";
 import { roleLabels } from "@/lib/labels";
 
 export const metadata: Metadata = { title: "Configurações" };
@@ -33,7 +34,7 @@ export default async function SettingsPage({ params }: PageProps<"/w/[slug]/conf
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+      <h1 className="text-lg font-semibold">Configurações</h1>
 
       <Card>
         <CardHeader title="Workspace" />
@@ -47,7 +48,10 @@ export default async function SettingsPage({ params }: PageProps<"/w/[slug]/conf
       {usage ? <PlanCard usage={usage} canUpgrade={isOwner} /> : null}
 
       <Card>
-        <CardHeader title="Equipe" description={`${members.length} pessoa(s) neste workspace.`} />
+        <CardHeader
+          title="Equipe"
+          description={`${plural(members.length, "pessoa", "pessoas")} neste workspace.`}
+        />
         <ul className="divide-y divide-border">
           {members.map((m) => {
             const isSelf = m.user_id === user.id;

@@ -32,10 +32,15 @@ export function InviteForm({ workspaceId, atLimit }: { workspaceId: string; atLi
       <input type="hidden" name="workspaceId" value={workspaceId} />
       <div className="grid gap-3 sm:grid-cols-[1fr_180px_auto] sm:items-end">
         <Field label="E-mail" name="email" type="email" required errors={state?.fieldErrors?.email} />
-        <SelectField label="Papel" name="role" defaultValue="member">
-          <option value="member">Membro</option>
-          <option value="admin">Administrador</option>
-        </SelectField>
+        <SelectField
+          label="Papel"
+          name="role"
+          defaultValue="member"
+          options={[
+            { value: "member", label: "Membro" },
+            { value: "admin", label: "Administrador" },
+          ]}
+        />
         <SubmitButton pendingText="Gerando...">Gerar convite</SubmitButton>
       </div>
     </form>

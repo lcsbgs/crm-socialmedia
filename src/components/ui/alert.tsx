@@ -1,13 +1,11 @@
+import { CircleAlert, CircleCheck, Info } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type Tone = "error" | "success" | "info";
 
-const tones: Record<Tone, string> = {
-  error: "border-danger/30 bg-danger/5 text-danger",
-  success: "border-success/30 bg-success/5 text-success",
-  info: "border-border bg-surface text-foreground",
-};
+const icons = { error: CircleAlert, success: CircleCheck, info: Info };
+const iconColor = { error: "text-late", success: "text-ok", info: "text-muted" };
 
 export function Alert({
   tone = "info",
@@ -18,12 +16,17 @@ export function Alert({
   children: ReactNode;
   className?: string;
 }) {
+  const Icon = icons[tone];
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={cn("rounded-md border px-3 py-2 text-sm", tones[tone], className)}
+      className={cn(
+        "flex items-start gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm",
+        className,
+      )}
     >
-      {children}
+      <Icon className={cn("mt-px size-4 shrink-0", iconColor[tone])} aria-hidden />
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }

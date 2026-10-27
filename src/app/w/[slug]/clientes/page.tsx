@@ -8,7 +8,7 @@ import { GenerateMonthForm } from "@/features/clients/components/generate-month-
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import { getClients } from "@/features/clients/queries";
 import { getWorkspaceBySlug, getWorkspaceUsage } from "@/features/workspaces/queries";
-import { currentMonthISO, formatBRL, formatDate } from "@/lib/format";
+import { currentMonthISO, formatBRL, formatDate, plural } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Clientes" };
@@ -27,7 +27,7 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
         description={
           usage?.max_clients
             ? `${usage.clients} de ${usage.max_clients} clientes ativos no seu plano.`
-            : `${clients.length} cliente(s).`
+            : `${plural(clients.length, "cliente", "clientes")}.`
         }
         action={
           atLimit ? null : (

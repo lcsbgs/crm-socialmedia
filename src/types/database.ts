@@ -76,6 +76,7 @@ export type Database = {
         Row: {
           briefing: string | null;
           contatos: NonNullable<Json>;
+          cor: number | null;
           created_at: string;
           dia_vencimento: number | null;
           id: string;
@@ -95,6 +96,7 @@ export type Database = {
         Insert: {
           briefing?: string | null;
           contatos?: NonNullable<Json>;
+          cor?: number | null;
           created_at?: string;
           dia_vencimento?: number | null;
           id?: string;
@@ -113,6 +115,7 @@ export type Database = {
         Update: {
           briefing?: string | null;
           contatos?: NonNullable<Json>;
+          cor?: number | null;
           created_at?: string;
           dia_vencimento?: number | null;
           id?: string;

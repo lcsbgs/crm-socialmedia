@@ -19,7 +19,7 @@ export default async function InvitationPage({ params }: PageProps<"/convite/[to
   if (!user) {
     return (
       <Shell>
-        <h1 className="text-2xl font-semibold tracking-tight">Você recebeu um convite</h1>
+        <h1 className="text-lg font-semibold">Você recebeu um convite</h1>
         <p className="text-sm text-muted">
           Entre ou crie sua conta com o e-mail que recebeu o convite para participar do workspace.
         </p>
@@ -44,7 +44,7 @@ export default async function InvitationPage({ params }: PageProps<"/convite/[to
   if (!invite) {
     return (
       <Shell>
-        <h1 className="text-2xl font-semibold tracking-tight">Convite não encontrado</h1>
+        <h1 className="text-lg font-semibold">Convite não encontrado</h1>
         <Alert tone="error">Este link de convite é inválido. Peça um novo para quem convidou você.</Alert>
       </Shell>
     );
@@ -60,7 +60,7 @@ export default async function InvitationPage({ params }: PageProps<"/convite/[to
 
   return (
     <Shell>
-      <h1 className="text-2xl font-semibold tracking-tight">Entrar em {invite.workspace_nome}</h1>
+      <h1 className="text-lg font-semibold">Entrar em {invite.workspace_nome}</h1>
       <p className="text-sm text-muted">Você foi convidado como {roleLabels[invite.role].toLowerCase()}.</p>
       {problem ? <Alert tone="error">{problem}</Alert> : <AcceptInvitationForm token={token} />}
       <Link href="/w" className="text-sm text-muted hover:text-foreground">

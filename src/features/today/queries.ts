@@ -14,6 +14,7 @@ function addDays(iso: string, days: number) {
 export type TodayGroup = {
   clientId: string | null;
   nome: string;
+  cor: number;
   tasks: { id: string; titulo: string; due_date: string | null; status: "pendente" | "feita" }[];
   approvals: { id: string; titulo: string; status_changed_at: string }[];
   payments: { id: string; valor: number; vencimento: string; competencia: string }[];
@@ -53,7 +54,7 @@ export async function getToday(workspaceId: string) {
       .neq("status", "pago")
       .lte("vencimento", addDays(today, PAYMENT_LOOKAHEAD_DAYS))
       .order("vencimento"),
-    supabase.from("clients").select("id, nome").eq("workspace_id", workspaceId),
+    supabase.from("clients").select("id, nome, cor").eq("workspace_id", workspaceId),
     supabase
       .from("meetings")
       .select("id, titulo, data, client_id")
@@ -63,7 +64,7 @@ export async function getToday(workspaceId: string) {
       .order("data"),
   ]);
 
-  const names = new Map((clients.data ?? []).map((c) => [c.id, c.nome]));
+  const byId = new Map((clients.data ?? []).map((c) => [c.id, c]));
   const groups = new Map<string, TodayGroup>();
   const group = (clientId: string | null) => {
     const key = clientId ?? "";
@@ -71,7 +72,8 @@ export async function getToday(workspaceId: string) {
     if (!g) {
       g = {
         clientId,
-        nome: clientId ? (names.get(clientId) ?? "Cliente") : "Sem cliente",
+        nome: clientId ? (byId.get(clientId)?.nome ?? "Cliente") : "Sem cliente",
+        cor: clientId ? (byId.get(clientId)?.cor ?? 0) : 0,
         tasks: [],
         approvals: [],
         payments: [],

@@ -54,15 +54,17 @@ export function FirstClientForm({
 
       <section className="space-y-4">
         <h2 className="font-medium">2. O que você entrega para ele</h2>
-        <SelectField label="Pacote" name="pacote" value={pacote} onChange={(e) => setPacote(e.target.value)}>
-          {packages.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nome}
-            </option>
-          ))}
-          <option value="novo">Criar um pacote novo</option>
-          <option value="">Sem pacote por enquanto</option>
-        </SelectField>
+        <SelectField
+          label="Pacote"
+          name="pacote"
+          value={pacote}
+          onValueChange={setPacote}
+          options={[
+            ...packages.map((p) => ({ value: p.id, label: p.nome })),
+            { value: "novo", label: "Criar um pacote novo" },
+            { value: "", label: "Sem pacote por enquanto" },
+          ]}
+        />
         {pacote === "novo" ? (
           <div className="space-y-4 rounded-md border border-border p-3">
             <Field

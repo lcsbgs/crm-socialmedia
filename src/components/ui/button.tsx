@@ -1,24 +1,27 @@
-import type { ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
-type Size = "sm" | "md";
+type Size = "xs" | "sm" | "md" | "icon";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-primary text-primary-foreground hover:opacity-90",
-  secondary: "border border-border bg-surface hover:bg-background",
-  ghost: "hover:bg-border/50",
-  danger: "bg-danger text-white hover:opacity-90",
+  primary: "bg-accent text-accent-ink hover:brightness-110",
+  secondary: "border border-border bg-surface text-ink hover:bg-hover",
+  ghost: "text-ink hover:bg-hover",
+  danger: "border border-border bg-surface text-late hover:bg-hover",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
+  xs: "h-6 gap-1 px-2 text-xs",
+  sm: "h-7 gap-1.5 px-2.5 text-sm",
+  md: "h-8 gap-2 px-3 text-sm",
+  icon: "size-7 justify-center",
 };
 
 export function buttonClasses(variant: Variant = "primary", size: Size = "md") {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-md font-medium transition disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex shrink-0 items-center justify-center rounded-md font-medium whitespace-nowrap transition-colors select-none",
+    "disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
     variants[variant],
     sizes[size],
   );
@@ -29,6 +32,9 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: Size;
 };
 
-export function Button({ variant, size, className, type = "button", ...props }: ButtonProps) {
-  return <button type={type} className={cn(buttonClasses(variant, size), className)} {...props} />;
-}
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant, size, className, type = "button", ...props },
+  ref,
+) {
+  return <button ref={ref} type={type} className={cn(buttonClasses(variant, size), className)} {...props} />;
+});

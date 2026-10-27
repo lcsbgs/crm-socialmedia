@@ -40,20 +40,18 @@ export function DeliverableEditor({
           errors={state?.fieldErrors?.titulo}
         />
         <div className="grid gap-4 sm:grid-cols-3">
-          <SelectField label="Formato" name="formato" defaultValue={deliverable.formato}>
-            {Object.entries(formatLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </SelectField>
-          <SelectField label="Etapa" name="status" defaultValue={deliverable.status}>
-            {statusColumns.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
-            ))}
-          </SelectField>
+          <SelectField
+            label="Formato"
+            name="formato"
+            defaultValue={deliverable.formato}
+            options={Object.entries(formatLabels).map(([value, label]) => ({ value, label }))}
+          />
+          <SelectField
+            label="Etapa"
+            name="status"
+            defaultValue={deliverable.status}
+            options={statusColumns.map((c) => ({ value: c.id, label: c.label }))}
+          />
           <Field
             label="Publicação"
             name="data_publicacao"

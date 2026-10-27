@@ -6,7 +6,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { PaymentRow } from "@/features/finance/components/payment-row";
 import { getMonthPayments, getOverduePayments } from "@/features/finance/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
-import { currentMonthISO, formatBRL, formatMonth } from "@/lib/format";
+import { currentMonthISO, formatBRL, formatMonth, plural } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Financeiro" };
 
@@ -102,7 +102,9 @@ export default async function FinancePage({ params, searchParams }: PageProps<"/
                 <li key={clientId} className="flex items-center justify-between gap-2 py-2 text-sm">
                   <Link href={`/w/${slug}/clientes/${clientId}?aba=financeiro`} className="hover:underline">
                     {c.nome}
-                    <span className="block text-xs text-muted">{c.count} cobrança(s)</span>
+                    <span className="block text-xs text-muted">
+                      {plural(c.count, "cobrança", "cobranças")}
+                    </span>
                   </Link>
                   <span className="font-medium text-danger">{formatBRL(c.total)}</span>
                 </li>

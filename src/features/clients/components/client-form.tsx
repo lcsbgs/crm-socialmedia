@@ -53,26 +53,22 @@ export function ClientForm({
           defaultValue={client?.segmento ?? ""}
           placeholder="Ex.: Alimentação"
         />
-        <SelectField label="Status" name="status" defaultValue={client?.status ?? "ativo"}>
-          {Object.entries(clientStatusLabels).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </SelectField>
+        <SelectField
+          label="Status"
+          name="status"
+          defaultValue={client?.status ?? "ativo"}
+          options={Object.entries(clientStatusLabels).map(([value, label]) => ({ value, label }))}
+        />
         <SelectField
           label="Pacote"
           name="package_template_id"
           defaultValue={client?.package_template_id ?? ""}
           hint="Define as tarefas recorrentes geradas todo mês."
-        >
-          <option value="">Sem pacote</option>
-          {packages.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nome}
-            </option>
-          ))}
-        </SelectField>
+          options={[
+            { value: "", label: "Sem pacote" },
+            ...packages.map((p) => ({ value: p.id, label: p.nome })),
+          ]}
+        />
         <Field
           label="Valor mensal (R$)"
           name="valor_mensal"

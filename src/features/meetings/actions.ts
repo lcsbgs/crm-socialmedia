@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { fromDbError, fromZodError, type ActionState } from "@/lib/action-state";
 import { requireUser } from "@/lib/auth";
+import { plural } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { generateMinutes } from "./ai";
 import { confirmMinutesSchema, meetingSchema, updateNotesSchema } from "./schemas";
@@ -136,7 +137,9 @@ export async function confirmMeetingMinutes(_: ActionState, formData: FormData):
   }
 
   revalidatePath("/w", "layout");
-  return { message: `Ata confirmada. ${ata.proximos_passos.length} tarefa(s) criada(s).` };
+  return {
+    message: `Ata confirmada. ${plural(ata.proximos_passos.length, "tarefa criada", "tarefas criadas")}.`,
+  };
 }
 
 export async function deleteMeeting(formData: FormData) {

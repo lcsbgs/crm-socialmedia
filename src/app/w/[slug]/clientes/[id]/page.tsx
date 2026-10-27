@@ -8,7 +8,7 @@ import { deleteClient } from "@/features/clients/actions";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import { TaskList } from "@/features/tasks/components/task-list";
-import { getClient, getClientMonthTasks, getClientTimeline } from "@/features/clients/queries";
+import { getClient, getClientMonthTasks, getClientTimeline, getNextDuePayment } from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
 import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
 import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";
@@ -26,7 +26,17 @@ import { publicEnv } from "@/lib/env";
 import { describeItems } from "@/features/packages/schemas";
 import { getPackages } from "@/features/packages/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
-import { currentMonthISO, formatBRL, formatDate, formatMonth } from "@/lib/format";
+import { NewDeliverableButton } from "@/components/shell/shell-actions";
+import { ClientAvatar } from "@/components/ui/avatar";
+import {
+  currentMonthISO,
+  formatBRL,
+  formatDate,
+  formatMonth,
+  formatRelativeDay,
+  todayISO,
+} from "@/lib/format";
+import { Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
@@ -53,31 +63,53 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
 
   const aba = (typeof query.aba === "string" ? query.aba : "visao") as Tab;
   const contatos = z.array(contactSchema).catch([]).parse(client.contatos);
-  const pendingApprovals = await countPendingApprovals(workspace.id, id);
+  const [pendingApprovals, nextDue] = await Promise.all([
+    countPendingApprovals(workspace.id, id),
+    getNextDuePayment(workspace.id, id),
+  ]);
+  const today = todayISO();
   const base = `/w/${slug}/clientes/${id}`;
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <Link href={`/w/${slug}/clientes`} className="text-sm text-muted hover:text-foreground">
-          Clientes
-        </Link>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1">
-            <h1 className="flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight">
-              {client.nome} <ClientStatusBadge status={client.status} />
-            </h1>
-            <p className="text-sm text-muted">
-              {[
-                client.segmento,
-                client.package?.nome,
-                client.valor_mensal ? `${formatBRL(client.valor_mensal)}/mês` : null,
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
+      <header className="space-y-4">
+        <nav aria-label="Trilha" className="text-sm text-muted">
+          <Link href={`/w/${slug}/clientes`} className="hover:text-ink">
+            Clientes
+          </Link>
+          <span aria-hidden> / </span>
+          <span className="text-ink">{client.nome}</span>
+        </nav>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <ClientAvatar name={client.nome} color={client.cor ?? 0} size="lg" />
+            <div className="min-w-0">
+              <h1 className="flex flex-wrap items-center gap-2 text-lg font-semibold">
+                <span className="truncate">{client.nome}</span>
+                <ClientStatusBadge status={client.status} />
+              </h1>
+              <dl className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
+                {client.segmento ? <Meta label="Segmento" value={client.segmento} /> : null}
+                <Meta label="Pacote" value={client.package?.nome ?? "Sem pacote"} />
+                {client.valor_mensal ? (
+                  <Meta label="Valor" value={`${formatBRL(client.valor_mensal)}/mês`} numeric />
+                ) : null}
+                {nextDue ? (
+                  <Meta
+                    label="Próximo vencimento"
+                    value={
+                      nextDue.vencimento < today
+                        ? `atrasado desde ${formatDate(nextDue.vencimento)}`
+                        : formatRelativeDay(nextDue.vencimento)
+                    }
+                    tone={nextDue.vencimento < today ? "late" : undefined}
+                    numeric
+                  />
+                ) : null}
+              </dl>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <PortalShare
               workspaceId={workspace.id}
               clientId={client.id}
@@ -86,25 +118,33 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
               contactPhone={contatos[0]?.telefone || null}
               pending={pendingApprovals}
             />
-            <Link href={`${base}?aba=editar`} className={buttonClasses("secondary", "sm")}>
-              Editar dados
+            <NewDeliverableButton clientId={client.id} />
+            <Link href={`${base}?aba=reunioes`} className={buttonClasses("secondary", "sm")}>
+              Nova reunião
+            </Link>
+            <Link
+              href={`${base}?aba=editar`}
+              aria-label="Editar dados"
+              className={buttonClasses("ghost", "icon")}
+            >
+              <Pencil aria-hidden />
             </Link>
           </div>
         </div>
-      </div>
+      </header>
 
       <nav aria-label="Seções do cliente" className="-mx-4 overflow-x-auto px-4">
-        <ul className="flex gap-1 border-b border-border text-sm">
+        <ul className="flex gap-1 border-b border-border text-base">
           {tabs.map((t) => (
             <li key={t.id}>
               <Link
                 href={t.id === "visao" ? base : `${base}?aba=${t.id}`}
                 aria-current={aba === t.id ? "page" : undefined}
                 className={cn(
-                  "-mb-px block whitespace-nowrap border-b-2 px-3 py-2",
+                  "-mb-px block border-b-2 px-2.5 py-2 whitespace-nowrap",
                   aba === t.id
-                    ? "border-foreground font-medium"
-                    : "border-transparent text-muted hover:text-foreground",
+                    ? "border-accent font-medium text-ink"
+                    : "border-transparent text-muted hover:text-ink",
                 )}
               >
                 {t.label}
@@ -438,6 +478,25 @@ async function MeetingsTab({
           </ul>
         )}
       </Card>
+    </div>
+  );
+}
+
+function Meta({
+  label,
+  value,
+  tone,
+  numeric,
+}: {
+  label: string;
+  value: string;
+  tone?: "late";
+  numeric?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      <dt className="sr-only">{label}</dt>
+      <dd className={cn(numeric && "tabular", tone === "late" && "text-late")}>{value}</dd>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { brand } from "@/config/brand";
 import { buttonClasses } from "@/components/ui/button";
+import { plural } from "@/lib/format";
 import { planLabels, type PlanTier } from "@/lib/labels";
 
 type Usage = {
@@ -31,7 +32,7 @@ export function PlanCard({ usage, canUpgrade }: { usage: Usage; canUpgrade: bool
           max={usage.max_members}
           detail={
             usage.pending_invitations
-              ? `inclui ${usage.pending_invitations} convite(s) pendente(s)`
+              ? `inclui ${plural(usage.pending_invitations, "convite pendente", "convites pendentes")}`
               : undefined
           }
         />

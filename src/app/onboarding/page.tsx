@@ -17,7 +17,7 @@ export default async function OnboardingPage() {
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-12">
       <div className="space-y-1">
         <p className="text-sm text-muted">Boas-vindas ao {brand.name}</p>
-        <h1 className="text-2xl font-semibold tracking-tight">Vamos configurar seu espaço</h1>
+        <h1 className="text-lg font-semibold">Vamos configurar seu espaço</h1>
       </div>
       <OnboardingForm nome={profile.nome} workspaceNome={workspace?.nome ?? ""} />
     </main>

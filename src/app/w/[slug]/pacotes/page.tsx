@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { getPackages } from "@/features/packages/queries";
 import { describeItems } from "@/features/packages/schemas";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
+import { plural } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Pacotes" };
 
@@ -39,7 +40,11 @@ export default async function PackagesPage({ params }: PageProps<"/w/[slug]/paco
               >
                 <p className="font-medium">{p.nome}</p>
                 <p className="mt-1 text-sm text-muted">{describeItems(p.itens)}</p>
-                <p className="mt-2 text-xs text-muted">{p.clientes} cliente(s) usando</p>
+                <p className="mt-2 text-xs text-muted">
+                  {p.clientes === 0
+                    ? "Nenhum cliente usando"
+                    : `${plural(p.clientes, "cliente usando", "clientes usando")}`}
+                </p>
               </Link>
             </li>
           ))}

@@ -13,7 +13,7 @@ export default async function NewWorkspacePage() {
         Voltar
       </Link>
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Novo workspace</h1>
+        <h1 className="text-lg font-semibold">Novo workspace</h1>
         <p className="text-sm text-muted">
           Cada workspace tem seus próprios clientes, equipe e plano. Ideal para separar negócios diferentes.
         </p>

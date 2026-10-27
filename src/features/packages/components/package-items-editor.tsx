@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { cadenceLabels, type Cadence, type PackageItem } from "../schemas";
 
-const inputClasses = "h-10 w-full rounded-md border border-border bg-surface px-3 text-sm";
+const inputClasses = "h-8 w-full rounded-md border border-border bg-surface px-2.5 text-base";
 
 // Lista editável de itens do pacote. Envia tudo como JSON no campo "itens".
 export function PackageItemsEditor({ initial, error }: { initial: PackageItem[]; error?: string }) {
@@ -38,22 +39,16 @@ export function PackageItemsEditor({ initial, error }: { initial: PackageItem[];
             value={item.quantidade}
             onChange={(e) => update(index, { quantidade: Number(e.target.value) })}
           />
-          <select
+          <Select
             aria-label={`Frequência do item ${index + 1}`}
-            className={inputClasses}
             value={item.cadencia}
-            onChange={(e) => update(index, { cadencia: e.target.value as Cadence })}
-          >
-            {Object.entries(cadenceLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+            onValueChange={(v) => update(index, { cadencia: v as Cadence })}
+            options={Object.entries(cadenceLabels).map(([value, label]) => ({ value, label }))}
+          />
           <Button
             variant="ghost"
             size="sm"
-            className="h-10"
+            className="h-8"
             disabled={items.length === 1}
             onClick={() => setItems((prev) => prev.filter((_, i) => i !== index))}
           >
