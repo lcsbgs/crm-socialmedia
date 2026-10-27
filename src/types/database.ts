@@ -1,6 +1,11 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.18";
+  };
   graphql_public: {
     Tables: {
       [_ in never]: never;
@@ -10,7 +15,12 @@ export type Database = {
     };
     Functions: {
       graphql: {
-        Args: { extensions?: Json; operationName?: string; query?: string; variables?: Json };
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
         Returns: Json;
       };
     };
@@ -36,7 +46,6 @@ export type Database = {
           updated_at: string;
           workspace_id: string;
         };
-        ComputedFields: never;
         Insert: {
           accepted_at?: string | null;
           created_at?: string;
@@ -86,7 +95,6 @@ export type Database = {
           plano: Database["public"]["Enums"]["plan_tier"];
           updated_at: string;
         };
-        ComputedFields: never;
         Insert: {
           created_at?: string;
           max_clients?: number | null;
@@ -113,7 +121,6 @@ export type Database = {
           onboarded_at: string | null;
           updated_at: string;
         };
-        ComputedFields: never;
         Insert: {
           avatar_url?: string | null;
           created_at?: string;
@@ -150,7 +157,6 @@ export type Database = {
           user_id: string;
           workspace_id: string;
         };
-        ComputedFields: never;
         Insert: {
           created_at?: string;
           role?: Database["public"]["Enums"]["workspace_role"];
@@ -192,7 +198,6 @@ export type Database = {
           slug: string;
           updated_at: string;
         };
-        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -227,7 +232,10 @@ export type Database = {
     };
     Functions: {
       accept_invitation: { Args: { p_token: string }; Returns: string };
-      complete_onboarding: { Args: { p_nome: string; p_workspace_nome: string }; Returns: string };
+      complete_onboarding: {
+        Args: { p_nome: string; p_workspace_nome: string };
+        Returns: string;
+      };
       create_workspace: {
         Args: { p_nome: string };
         Returns: {
@@ -275,14 +283,23 @@ export type Database = {
         }[];
       };
       has_workspace_role: {
-        Args: { p_roles: Database["public"]["Enums"]["workspace_role"][]; p_workspace_id: string };
+        Args: {
+          p_roles: Database["public"]["Enums"]["workspace_role"][];
+          p_workspace_id: string;
+        };
         Returns: boolean;
       };
-      is_workspace_member: { Args: { p_workspace_id: string }; Returns: boolean };
+      is_workspace_member: {
+        Args: { p_workspace_id: string };
+        Returns: boolean;
+      };
       shares_workspace_with: { Args: { p_user_id: string }; Returns: boolean };
       slugify: { Args: { value: string }; Returns: string };
       unique_workspace_slug: { Args: { p_nome: string }; Returns: string };
-      workspace_seat_usage: { Args: { p_workspace_id: string }; Returns: number };
+      workspace_seat_usage: {
+        Args: { p_workspace_id: string };
+        Returns: number;
+      };
       workspace_usage: {
         Args: { p_workspace_id: string };
         Returns: {
@@ -317,7 +334,9 @@ export type Tables<
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R;
@@ -340,7 +359,9 @@ export type TablesInsert<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
     }
@@ -362,7 +383,9 @@ export type TablesUpdate<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
     }
@@ -384,7 +407,9 @@ export type Enums<
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
@@ -398,7 +423,9 @@ export type CompositeTypes<
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
