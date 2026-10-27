@@ -264,6 +264,64 @@ export type Database = {
           },
         ];
       };
+      meetings: {
+        Row: {
+          ata_confirmada_em: string | null;
+          ata_ia: Json | null;
+          client_id: string;
+          created_at: string;
+          data: string;
+          decisoes: NonNullable<Json>;
+          id: string;
+          notas_brutas: string;
+          titulo: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          ata_confirmada_em?: string | null;
+          ata_ia?: Json | null;
+          client_id: string;
+          created_at?: string;
+          data?: string;
+          decisoes?: NonNullable<Json>;
+          id?: string;
+          notas_brutas?: string;
+          titulo?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          ata_confirmada_em?: string | null;
+          ata_ia?: Json | null;
+          client_id?: string;
+          created_at?: string;
+          data?: string;
+          decisoes?: NonNullable<Json>;
+          id?: string;
+          notas_brutas?: string;
+          titulo?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "meetings_client_id_workspace_id_fkey";
+            columns: ["client_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "meetings_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       package_templates: {
         Row: {
           created_at: string;
@@ -475,6 +533,13 @@ export type Database = {
             columns: ["client_id", "workspace_id"];
             isOneToOne: false;
             referencedRelation: "clients";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "tasks_meeting_fk";
+            columns: ["meeting_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "meetings";
             referencedColumns: ["id", "workspace_id"];
           },
           {

@@ -17,6 +17,12 @@ const longToday = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "America/Sao_Paulo",
 });
 
+const timeFormat = new Intl.DateTimeFormat("pt-BR", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "America/Sao_Paulo",
+});
+
 function daysSince(iso: string) {
   return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
 }
@@ -27,6 +33,7 @@ export default async function TodayPage({ params }: PageProps<"/w/[slug]">) {
   const { today, groups, totals, clients } = await getToday(workspace.id);
 
   const summary = [
+    totals.meetings ? `${totals.meetings} reunião(ões)` : null,
     totals.tasks
       ? `${totals.tasks} tarefa(s)${totals.lateTasks ? `, ${totals.lateTasks} atrasada(s)` : ""}`
       : null,
@@ -71,6 +78,22 @@ export default async function TodayPage({ params }: PageProps<"/w/[slug]">) {
                   g.nome
                 )}
               </h2>
+
+              {g.meetings.length ? (
+                <ul className="mb-3 space-y-1">
+                  {g.meetings.map((m) => (
+                    <li key={m.id} className="flex items-center gap-2 text-sm">
+                      <Badge>Reunião {timeFormat.format(new Date(m.data))}</Badge>
+                      <Link
+                        href={`/w/${slug}/clientes/${g.clientId}/reunioes/${m.id}`}
+                        className="truncate hover:underline"
+                      >
+                        {m.titulo}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
 
               {g.payments.length ? (
                 <ul className="mb-3 space-y-1">

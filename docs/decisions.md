@@ -57,3 +57,12 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Mensagem de WhatsApp** usa o primeiro contato do cliente; telefone com 10 ou 11 dígitos ganha DDI 55. Sem telefone, abre o wa.me para escolher o contato.
 - **Nome de quem respondeu fica no localStorage** do navegador do cliente, só como conveniência.
 - **Sem rate limit no portal no MVP.** O token é um UUID aleatório; se virar problema, adicionar limite por IP no proxy.
+
+## 2026-10-27 · Fase 5
+
+- **Ata com structured outputs** (`client.messages.parse` + `zodOutputFormat`) e uma segunda validação Zod mais estrita antes de salvar. A chamada roda só no servidor (`src/features/meetings/ai.ts`, `server-only`). Modelo vem de `ANTHROPIC_MODEL`; o `.env.example` sugere `claude-opus-5-5`. Sem thinking/effort explícitos, para funcionar com qualquer modelo que você configurar. Não habilitei o fallback de recusa do lado do servidor (é beta e depende do modelo); recusas e respostas truncadas viram mensagem de erro amigável.
+- **Fluxo em duas etapas:** "Gerar ata" grava o rascunho em `meetings.ata_ia`; o usuário edita resumo, decisões e próximos passos (pode desmarcar passos) e confirma. A confirmação grava `decisoes`, `ata_confirmada_em` e cria as tarefas com `origem = 'ata'` e `meeting_id`. A confirmação é condicional (`ata_confirmada_em is null`) para um duplo clique não duplicar tarefas; se a criação das tarefas falhar, a confirmação é desfeita.
+- **Data da reunião** é digitada como horário de Brasília (`datetime-local` + `-03:00`). O Brasil não tem horário de verão desde 2019.
+- **Excluir reunião mantém as tarefas** criadas por ela (FK com `on delete set null (meeting_id)`).
+- **Tela Hoje** passou a mostrar as reuniões do dia.
+- **Google Calendar fora do MVP.** A estrutura fica preparada em `meetings.data` (timestamptz); a integração entraria como um campo `external_event_id` e um job de sincronização.

@@ -17,6 +17,9 @@ import {
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
 import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
 import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";
+import { NewMeetingForm } from "@/features/meetings/components/new-meeting-form";
+import { getClientMeetings } from "@/features/meetings/queries";
+import { toLocalInput } from "@/features/meetings/schemas";
 import { PortalShare } from "@/features/portal/components/portal-share";
 import { publicEnv } from "@/lib/env";
 import { describeItems } from "@/features/packages/schemas";
@@ -118,7 +121,9 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
         <TimelineTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "entregas" ? (
         <DeliverablesTab workspaceId={workspace.id} clientId={id} />
-      ) : aba === "reunioes" || aba === "escopo" ? (
+      ) : aba === "reunioes" ? (
+        <MeetingsTab workspaceId={workspace.id} clientId={id} slug={slug} />
+      ) : aba === "escopo" ? (
         <Card>
           <p className="text-sm text-muted">Esta seção chega nas próximas etapas.</p>
         </Card>
@@ -325,4 +330,63 @@ async function TimelineTab({ workspaceId, clientId }: { workspaceId: string; cli
 async function DeliverablesTab({ workspaceId, clientId }: { workspaceId: string; clientId: string }) {
   const deliverables = await getClientDeliverables(workspaceId, clientId);
   return <KanbanBoard workspaceId={workspaceId} clientId={clientId} deliverables={deliverables} />;
+}
+
+const meetingDate = new Intl.DateTimeFormat("pt-BR", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "America/Sao_Paulo",
+});
+
+async function MeetingsTab({
+  workspaceId,
+  clientId,
+  slug,
+}: {
+  workspaceId: string;
+  clientId: string;
+  slug: string;
+}) {
+  const meetings = await getClientMeetings(workspaceId, clientId);
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+      <Card>
+        <CardHeader title="Nova reunião" />
+        <NewMeetingForm
+          workspaceId={workspaceId}
+          clientId={clientId}
+          slug={slug}
+          now={toLocalInput(new Date().toISOString())}
+        />
+      </Card>
+      <Card>
+        <CardHeader title="Reuniões" />
+        {meetings.length === 0 ? (
+          <p className="text-sm text-muted">Nenhuma reunião registrada.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {meetings.map((m) => (
+              <li key={m.id}>
+                <Link
+                  href={`/w/${slug}/clientes/${clientId}/reunioes/${m.id}`}
+                  className="flex items-center justify-between gap-2 py-3 text-sm hover:underline"
+                >
+                  <span>
+                    <span className="font-medium">{m.titulo}</span>
+                    <span className="block text-muted">{meetingDate.format(new Date(m.data))}</span>
+                  </span>
+                  <Badge tone={m.ata_confirmada_em ? "success" : "neutral"}>
+                    {m.ata_confirmada_em ? "Ata confirmada" : "Sem ata"}
+                  </Badge>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+    </div>
+  );
 }

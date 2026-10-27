@@ -17,6 +17,7 @@ export type TodayGroup = {
   tasks: { id: string; titulo: string; due_date: string | null; status: "pendente" | "feita" }[];
   approvals: { id: string; titulo: string; status_changed_at: string }[];
   payments: { id: string; valor: number; vencimento: string; competencia: string }[];
+  meetings: { id: string; titulo: string; data: string }[];
 };
 
 // Tudo que pede atenção hoje, agrupado por cliente.
@@ -25,7 +26,11 @@ export async function getToday(workspaceId: string) {
   const today = todayISO();
   const staleBefore = new Date(Date.now() - APPROVAL_STALE_DAYS * 86_400_000).toISOString();
 
-  const [tasks, approvals, payments, clients] = await Promise.all([
+  // Limites do dia em Brasília (UTC-3, sem horário de verão).
+  const dayStart = new Date(`${today}T00:00:00-03:00`).toISOString();
+  const dayEnd = new Date(`${addDays(today, 1)}T00:00:00-03:00`).toISOString();
+
+  const [tasks, approvals, payments, clients, meetings] = await Promise.all([
     supabase
       .from("tasks")
       .select("id, titulo, due_date, status, client_id")
@@ -49,6 +54,13 @@ export async function getToday(workspaceId: string) {
       .lte("vencimento", addDays(today, PAYMENT_LOOKAHEAD_DAYS))
       .order("vencimento"),
     supabase.from("clients").select("id, nome").eq("workspace_id", workspaceId),
+    supabase
+      .from("meetings")
+      .select("id, titulo, data, client_id")
+      .eq("workspace_id", workspaceId)
+      .gte("data", dayStart)
+      .lt("data", dayEnd)
+      .order("data"),
   ]);
 
   const names = new Map((clients.data ?? []).map((c) => [c.id, c.nome]));
@@ -63,6 +75,7 @@ export async function getToday(workspaceId: string) {
         tasks: [],
         approvals: [],
         payments: [],
+        meetings: [],
       };
       groups.set(key, g);
     }
@@ -72,6 +85,7 @@ export async function getToday(workspaceId: string) {
   for (const t of tasks.data ?? []) group(t.client_id).tasks.push(t);
   for (const d of approvals.data ?? []) group(d.client_id).approvals.push(d);
   for (const p of payments.data ?? []) group(p.client_id).payments.push(p);
+  for (const m of meetings.data ?? []) group(m.client_id).meetings.push(m);
 
   const list = [...groups.values()].sort((a, b) => {
     if (!a.clientId) return 1;
@@ -87,6 +101,7 @@ export async function getToday(workspaceId: string) {
       lateTasks: (tasks.data ?? []).filter((t) => t.due_date && t.due_date < today).length,
       approvals: approvals.data?.length ?? 0,
       payments: payments.data?.length ?? 0,
+      meetings: meetings.data?.length ?? 0,
     },
     clients: (clients.data ?? []).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")),
   };
