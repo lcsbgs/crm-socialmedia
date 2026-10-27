@@ -79,3 +79,48 @@ export async function getNextDuePayment(workspaceId: string, clientId: string) {
     .maybeSingle();
   return data;
 }
+
+// Resumo do mês para a visão geral do cliente.
+export async function getClientMonthSummary(workspaceId: string, clientId: string, month: string) {
+  const supabase = await createClient();
+  const competencia = `${month}-01`;
+  const nowIso = new Date().toISOString();
+  const [tasks, meeting, payment, scope] = await Promise.all([
+    supabase
+      .from("tasks")
+      .select("id, titulo, due_date, status")
+      .eq("workspace_id", workspaceId)
+      .eq("client_id", clientId)
+      .eq("status", "pendente")
+      .order("due_date", { nullsFirst: false })
+      .limit(12),
+    supabase
+      .from("meetings")
+      .select("id, titulo, data")
+      .eq("workspace_id", workspaceId)
+      .eq("client_id", clientId)
+      .gte("data", nowIso)
+      .order("data")
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("payments")
+      .select("id, valor, vencimento, pago_em, status")
+      .eq("workspace_id", workspaceId)
+      .eq("client_id", clientId)
+      .eq("competencia", competencia)
+      .maybeSingle(),
+    supabase
+      .from("scope_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("workspace_id", workspaceId)
+      .eq("client_id", clientId)
+      .eq("status", "pendente"),
+  ]);
+  return {
+    tasks: tasks.data ?? [],
+    nextMeeting: meeting.data,
+    payment: payment.data,
+    pendingScope: scope.count ?? 0,
+  };
+}

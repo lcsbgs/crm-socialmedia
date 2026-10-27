@@ -42,3 +42,19 @@ export function monthLabel(month: string) {
   const t = monthLong.format(new Date(`${month}-01T00:00:00Z`));
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
+
+export function monthEndISO(month: string) {
+  return new Date(Date.UTC(+month.slice(0, 4), +month.slice(5, 7), 0)).toISOString().slice(0, 10);
+}
+
+// Timestamp -> "YYYY-MM-DD" e "HH:MM" em Brasília.
+export function spDate(iso: string) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date(iso));
+}
+export function spTime(iso: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(iso));
+}

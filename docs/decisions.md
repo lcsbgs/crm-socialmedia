@@ -130,3 +130,10 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Calendário do mês:** entregas por data (publicadas riscadas) e reuniões; no celular, só os dias que têm algo.
 - **`cn` agora usa `tailwind-merge`** (com a escala de texto própria), para classes passadas por quem usa o componente vencerem as padrão.
 - **dnd-kit recebe `id` estável (`useId`)**, senão o ID de acessibilidade diverge entre servidor e cliente e gera erro de hidratação.
+
+## 2026-10-27 · Passo 6: página do cliente
+
+- **Layout de registro (Attio):** cabeçalho com avatar, status, pacote, valor e próximo vencimento (vermelho se atrasado) e as ações Enviar link do portal, Nova entrega, Nova reunião e Editar.
+- **Visão geral em duas colunas:** à esquerda o resumo do mês (entregas publicadas sobre o total, em aprovação, atrasadas, mensalidade, próxima reunião, escopo pendente), as próximas entregas (abrem o painel) e as tarefas abertas do cliente; à direita os atributos (status, segmento, pacote, valor, vencimento, início), contatos com WhatsApp e e-mail, links, briefing e tom de voz. No celular vira uma coluna.
+- **Abas:** Visão geral, Entregas (quadro do cliente), Calendário (mês do cliente com reuniões), Reuniões, Financeiro (histórico com recebido e em aberto), Escopo e Linha do tempo (com ícone por tipo de evento).
+- **Excluir cliente pede confirmação** em linha (antes era um clique).
