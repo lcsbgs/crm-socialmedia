@@ -8,7 +8,12 @@ import { deleteClient } from "@/features/clients/actions";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import { TaskList } from "@/features/tasks/components/task-list";
-import { getClient, getClientMonthTasks, getClientTimeline, getNextDuePayment } from "@/features/clients/queries";
+import {
+  getClient,
+  getClientMonthTasks,
+  getClientTimeline,
+  getNextDuePayment,
+} from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
 import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
 import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";

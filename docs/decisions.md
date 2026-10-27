@@ -97,3 +97,13 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Criação rápida** (tarefa e entrega) em diálogo do shell, com cliente em popover com busca e data em popover; botões "Nova tarefa" e "Nova entrega" das páginas abrem o mesmo diálogo.
 - **Movimento:** animações de 120 a 160 ms só em popover, diálogo e painel; `prefers-reduced-motion` zera todas.
 - **Microcopy:** plurais com `plural()` (sem "(s)"), datas relativas (`formatRelativeDay`, `formatRelativeTime`).
+
+## 2026-10-27 · Passo 3: tela Hoje
+
+- **Seções fixas, nesta ordem:** Atrasadas, Para hoje, Esperando o cliente (em aprovação há 2 dias ou mais), Para receber (em aberto vencendo em até 3 dias ou atrasadas), Reuniões de hoje. Seção vazia não aparece; dia todo vazio mostra "Dia limpo" com atalho para as entregas.
+- **Atrasadas e Para hoje incluem entregas** em Planejar ou Produzir com publicação até hoje, além das tarefas. Sem isso, a Hoje ficaria cega para o conteúdo quando o `generate_month` passar a criar entregas (Passo 4).
+- **Ações reais na linha:** concluir (com Desfazer no toast), adiar para amanhã (tarefa ou data de publicação), abrir; Cobrar no WhatsApp e Marcar como paga nas cobranças; Reenviar link de aprovação, com mensagem que diz quantos conteúdos o cliente tem esperando. A linha some na hora e volta se o servidor recusar.
+- **Ações aparecem no hover ou foco no desktop** e ficam sempre visíveis, só com ícone, no celular (onde não existe hover). No celular, cliente e data vão para uma segunda linha.
+- **Painel lateral da tarefa** (Sheet): editar título, cliente e data, concluir, excluir com confirmação, sem sair da tela.
+- **Criação rápida no topo** com cliente e data em popovers; o atalho C abre o mesmo fluxo em diálogo.
+- **`loading.tsx` e `error.tsx`** no workspace: skeleton enquanto carrega e tela de erro com "Tentar de novo".

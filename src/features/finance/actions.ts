@@ -45,3 +45,18 @@ export async function undoPayment(formData: FormData) {
     .eq("id", id);
   revalidatePath("/w", "layout");
 }
+
+// Versão chamável direto da tela Hoje.
+export async function markPaid(input: { workspaceId: string; id: string }) {
+  await requireUser();
+  const workspaceId = z.uuid().parse(input.workspaceId);
+  const id = z.uuid().parse(input.id);
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("payments")
+    .update({ status: "pago", pago_em: todayISO() })
+    .eq("workspace_id", workspaceId)
+    .eq("id", id);
+  revalidatePath("/w", "layout");
+  return error ? { error: "Não foi possível marcar como paga." } : { ok: true };
+}

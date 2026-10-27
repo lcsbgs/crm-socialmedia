@@ -166,3 +166,19 @@ export async function removeMedia(input: { workspaceId: string; id: string; path
   revalidate();
   return { ok: true };
 }
+
+// Muda a data de publicação (Hoje: "adiar para amanhã"; quadro: mudar data no cartão).
+export async function setDeliverableDate(input: { workspaceId: string; id: string; date: string | null }) {
+  await requireUser();
+  const workspaceId = z.uuid().parse(input.workspaceId);
+  const id = z.uuid().parse(input.id);
+  const date = z.iso.date().nullable().parse(input.date);
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("deliverables")
+    .update({ data_publicacao: date })
+    .eq("workspace_id", workspaceId)
+    .eq("id", id);
+  revalidate();
+  return error ? { error: "Não foi possível mudar a data." } : { ok: true };
+}
