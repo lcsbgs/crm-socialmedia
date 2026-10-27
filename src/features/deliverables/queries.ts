@@ -14,6 +14,12 @@ export type Deliverable = {
   legenda: string | null;
   ordem: number;
   midia: Media[];
+  aprovacoes: {
+    decisao: "aprovado" | "ajuste";
+    comentario: string | null;
+    autor_nome: string;
+    created_at: string;
+  }[];
 };
 
 function mediaKind(path: string): Media["kind"] {
@@ -36,7 +42,9 @@ export async function getClientDeliverables(workspaceId: string, clientId: strin
   const supabase = await createClient();
   const { data } = await supabase
     .from("deliverables")
-    .select("id, client_id, titulo, formato, status, data_publicacao, legenda, ordem, midia_urls")
+    .select(
+      "id, client_id, titulo, formato, status, data_publicacao, legenda, ordem, midia_urls, approvals (decisao, comentario, autor_nome, created_at)",
+    )
     .eq("workspace_id", workspaceId)
     .eq("client_id", clientId)
     .order("ordem")
@@ -44,8 +52,20 @@ export async function getClientDeliverables(workspaceId: string, clientId: strin
 
   const rows = data ?? [];
   const urls = await signMedia(rows.flatMap((r) => r.midia_urls));
-  return rows.map(({ midia_urls, ...r }) => ({
+  return rows.map(({ midia_urls, approvals, ...r }) => ({
     ...r,
+    aprovacoes: [...approvals].sort((a, b) => b.created_at.localeCompare(a.created_at)),
     midia: midia_urls.map((path) => ({ path, url: urls.get(path) ?? null, kind: mediaKind(path) })),
   }));
+}
+
+export async function countPendingApprovals(workspaceId: string, clientId: string) {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("deliverables")
+    .select("id", { count: "exact", head: true })
+    .eq("workspace_id", workspaceId)
+    .eq("client_id", clientId)
+    .eq("status", "em_aprovacao");
+  return count ?? 0;
 }

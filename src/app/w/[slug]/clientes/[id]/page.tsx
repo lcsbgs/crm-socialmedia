@@ -16,7 +16,9 @@ import {
 } from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
 import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
-import { getClientDeliverables } from "@/features/deliverables/queries";
+import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";
+import { PortalShare } from "@/features/portal/components/portal-share";
+import { publicEnv } from "@/lib/env";
 import { describeItems } from "@/features/packages/schemas";
 import { getPackages } from "@/features/packages/queries";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
@@ -46,6 +48,8 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
   if (!client) notFound();
 
   const aba = (typeof query.aba === "string" ? query.aba : "visao") as Tab;
+  const contatos = z.array(contactSchema).catch([]).parse(client.contatos);
+  const pendingApprovals = await countPendingApprovals(workspace.id, id);
   const base = `/w/${slug}/clientes/${id}`;
 
   return (
@@ -69,9 +73,19 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
                 .join(" · ")}
             </p>
           </div>
-          <Link href={`${base}?aba=editar`} className={buttonClasses("secondary", "sm")}>
-            Editar dados
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <PortalShare
+              workspaceId={workspace.id}
+              clientId={client.id}
+              url={`${publicEnv.NEXT_PUBLIC_APP_URL}/p/${client.portal_token}`}
+              contactName={contatos[0]?.nome ?? ""}
+              contactPhone={contatos[0]?.telefone || null}
+              pending={pendingApprovals}
+            />
+            <Link href={`${base}?aba=editar`} className={buttonClasses("secondary", "sm")}>
+              Editar dados
+            </Link>
+          </div>
         </div>
       </div>
 

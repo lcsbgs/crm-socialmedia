@@ -47,3 +47,13 @@ Registro curto de escolhas feitas quando a especificação deixava margem. Mais 
 - **Tela Hoje:** tarefas pendentes com vencimento até hoje, entregas em aprovação há mais de 2 dias e cobranças em aberto vencendo nos próximos 3 dias ou atrasadas, agrupadas por cliente ("Sem cliente" por último). Reuniões do dia entram na Fase 5. Inclui criação rápida de tarefa avulsa.
 - **Tarefas viraram feature própria** (`src/features/tasks`), usada pela tela Hoje e pela ficha do cliente.
 - **IDs fixos do seed precisam ser UUID válidos (RFC 4122)**, porque o Zod 4 valida a variante.
+
+## 2026-10-27 · Fase 4
+
+- **Portal sem RLS para anon.** `anon` continua sem nenhum grant. `/p/[token]` é renderizado no servidor com o service role (`src/lib/supabase/admin.ts`, `server-only`), sempre filtrando pelo cliente do token. A escrita passa por `portal_respond()`, executável só pelo `service_role`, que valida token, cliente não encerrado, entrega do cliente e etapa `em_aprovacao` dentro de uma transação.
+- **Efeito da resposta:** aprovado move a entrega para Aprovado; ajuste volta para Produzir e exige comentário. Responder duas vezes a mesma entrega é recusado (ela sai de Em aprovação).
+- **O portal mostra todas as entregas em aprovação do cliente**, não só as do mês corrente: na prática é o que o cliente precisa ver, e evita esconder algo com data de publicação no mês seguinte.
+- **Novo link invalida o anterior** (`regenerate_portal_token`), para quando o link vazar ou a pessoa de contato mudar.
+- **Mensagem de WhatsApp** usa o primeiro contato do cliente; telefone com 10 ou 11 dígitos ganha DDI 55. Sem telefone, abre o wa.me para escolher o contato.
+- **Nome de quem respondeu fica no localStorage** do navegador do cliente, só como conveniência.
+- **Sem rate limit no portal no MVP.** O token é um UUID aleatório; se virar problema, adicionar limite por IP no proxy.

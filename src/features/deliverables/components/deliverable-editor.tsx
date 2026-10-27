@@ -65,6 +65,30 @@ export function DeliverableEditor({
         <SubmitButton>Salvar</SubmitButton>
       </form>
 
+      {deliverable.aprovacoes.length ? (
+        <section className="space-y-2">
+          <p className="text-sm font-medium">Respostas do cliente</p>
+          <ul className="space-y-2">
+            {deliverable.aprovacoes.map((a, i) => (
+              <li key={i} className="rounded-md border border-border p-2 text-sm">
+                <p>
+                  <span
+                    className={
+                      a.decisao === "aprovado" ? "font-medium text-success" : "font-medium text-warning"
+                    }
+                  >
+                    {a.decisao === "aprovado" ? "Aprovou" : "Pediu ajuste"}
+                  </span>{" "}
+                  · {a.autor_nome} ·{" "}
+                  {new Date(a.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}
+                </p>
+                {a.comentario ? <p className="mt-1 whitespace-pre-line text-muted">{a.comentario}</p> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <MediaUploader
         workspaceId={workspaceId}
         clientId={deliverable.client_id}

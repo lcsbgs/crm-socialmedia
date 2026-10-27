@@ -23,6 +23,55 @@ export type Database = {
   };
   public: {
     Tables: {
+      approvals: {
+        Row: {
+          autor_nome: string;
+          comentario: string | null;
+          created_at: string;
+          decisao: Database["public"]["Enums"]["approval_decision"];
+          deliverable_id: string;
+          id: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          autor_nome: string;
+          comentario?: string | null;
+          created_at?: string;
+          decisao: Database["public"]["Enums"]["approval_decision"];
+          deliverable_id: string;
+          id?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          autor_nome?: string;
+          comentario?: string | null;
+          created_at?: string;
+          decisao?: Database["public"]["Enums"]["approval_decision"];
+          deliverable_id?: string;
+          id?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "approvals_deliverable_id_workspace_id_fkey";
+            columns: ["deliverable_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "approvals_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       clients: {
         Row: {
           briefing: string | null;
@@ -601,6 +650,17 @@ export type Database = {
         };
         Returns: string[];
       };
+      portal_respond: {
+        Args: {
+          p_autor_nome: string;
+          p_comentario: string;
+          p_decisao: Database["public"]["Enums"]["approval_decision"];
+          p_deliverable_id: string;
+          p_token: string;
+        };
+        Returns: undefined;
+      };
+      regenerate_portal_token: { Args: { p_client_id: string }; Returns: string };
       shares_workspace_with: { Args: { p_user_id: string }; Returns: boolean };
       slugify: { Args: { value: string }; Returns: string };
       unique_workspace_slug: { Args: { p_nome: string }; Returns: string };
@@ -618,6 +678,7 @@ export type Database = {
       };
     };
     Enums: {
+      approval_decision: "aprovado" | "ajuste";
       client_status: "ativo" | "pausado" | "encerrado";
       deliverable_format: "post" | "reels" | "carrossel" | "story" | "relatorio";
       deliverable_status: "planejar" | "produzir" | "em_aprovacao" | "aprovado" | "publicado";
@@ -741,6 +802,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      approval_decision: ["aprovado", "ajuste"],
       client_status: ["ativo", "pausado", "encerrado"],
       deliverable_format: ["post", "reels", "carrossel", "story", "relatorio"],
       deliverable_status: ["planejar", "produzir", "em_aprovacao", "aprovado", "publicado"],
