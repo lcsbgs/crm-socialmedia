@@ -4,26 +4,7 @@ import type { DeliverableFormat, DeliverableStatus } from "./schemas";
 
 export type Media = { path: string; url: string | null; kind: "image" | "video" | "file" };
 
-export type Deliverable = {
-  id: string;
-  client_id: string;
-  titulo: string | null;
-  slot_label: string | null;
-  formato: DeliverableFormat;
-  status: DeliverableStatus;
-  data_publicacao: string | null;
-  legenda: string | null;
-  ordem: number;
-  midia: Media[];
-  aprovacoes: {
-    decisao: "aprovado" | "ajuste";
-    comentario: string | null;
-    autor_nome: string;
-    created_at: string;
-  }[];
-};
-
-function mediaKind(path: string): Media["kind"] {
+export function mediaKind(path: string): Media["kind"] {
   if (/\.(jpe?g|png|webp|gif)$/i.test(path)) return "image";
   if (/\.(mp4|mov)$/i.test(path)) return "video";
   return "file";
@@ -39,25 +20,75 @@ export async function signMedia(paths: string[]): Promise<Map<string, string | n
   return map;
 }
 
-export async function getClientDeliverables(workspaceId: string, clientId: string): Promise<Deliverable[]> {
+export type BoardDeliverable = {
+  id: string;
+  titulo: string | null;
+  slot_label: string | null;
+  formato: DeliverableFormat;
+  status: DeliverableStatus;
+  data_publicacao: string | null;
+  ordem: number;
+  client: { id: string; nome: string; cor: number };
+  responsavel: { id: string; nome: string } | null;
+  thumb: string | null;
+  midiaCount: number;
+};
+
+export type BoardFilters = {
+  clientId?: string;
+  formato?: string;
+  responsavelId?: string;
+  from?: string;
+  to?: string;
+  includeOldPublished?: boolean;
+};
+
+// Entregas para quadro, semana e calendário, com filtros.
+export async function getBoardDeliverables(
+  workspaceId: string,
+  filters: BoardFilters = {},
+): Promise<BoardDeliverable[]> {
   const supabase = await createClient();
-  const { data } = await supabase
+  let query = supabase
     .from("deliverables")
     .select(
-      "id, client_id, titulo, slot_label, formato, status, data_publicacao, legenda, ordem, midia_urls, approvals (decisao, comentario, autor_nome, created_at)",
+      "id, titulo, slot_label, formato, status, data_publicacao, ordem, midia_urls, client:clients!inner (id, nome, cor), responsavel:profiles (id, nome)",
     )
     .eq("workspace_id", workspaceId)
-    .eq("client_id", clientId)
     .order("ordem")
-    .order("created_at");
+    .order("created_at")
+    .limit(600);
 
+  if (filters.clientId) query = query.eq("client_id", filters.clientId);
+  if (filters.formato) query = query.eq("formato", filters.formato as DeliverableFormat);
+  if (filters.responsavelId === "ninguem") query = query.is("responsavel_id", null);
+  else if (filters.responsavelId) query = query.eq("responsavel_id", filters.responsavelId);
+  if (filters.from) query = query.gte("data_publicacao", filters.from);
+  if (filters.to) query = query.lte("data_publicacao", filters.to);
+
+  const { data } = await query;
   const rows = data ?? [];
-  const urls = await signMedia(rows.flatMap((r) => r.midia_urls));
-  return rows.map(({ midia_urls, approvals, ...r }) => ({
-    ...r,
-    aprovacoes: [...approvals].sort((a, b) => b.created_at.localeCompare(a.created_at)),
-    midia: midia_urls.map((path) => ({ path, url: urls.get(path) ?? null, kind: mediaKind(path) })),
-  }));
+
+  // Primeira imagem de cada entrega como miniatura.
+  const thumbs = rows.flatMap((r) => r.midia_urls.filter((p) => mediaKind(p) === "image").slice(0, 1));
+  const signed = await signMedia(thumbs);
+
+  return rows.map((r) => {
+    const firstImage = r.midia_urls.find((p) => mediaKind(p) === "image");
+    return {
+      id: r.id,
+      titulo: r.titulo,
+      slot_label: r.slot_label,
+      formato: r.formato,
+      status: r.status,
+      data_publicacao: r.data_publicacao,
+      ordem: r.ordem,
+      client: { id: r.client.id, nome: r.client.nome, cor: r.client.cor ?? 0 },
+      responsavel: r.responsavel ? { id: r.responsavel.id, nome: r.responsavel.nome } : null,
+      thumb: firstImage ? (signed.get(firstImage) ?? null) : null,
+      midiaCount: r.midia_urls.length,
+    };
+  });
 }
 
 export async function countPendingApprovals(workspaceId: string, clientId: string) {
@@ -69,4 +100,14 @@ export async function countPendingApprovals(workspaceId: string, clientId: strin
     .eq("client_id", clientId)
     .eq("status", "em_aprovacao");
   return count ?? 0;
+}
+
+export async function getMemberOptions(workspaceId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("workspace_members")
+    .select("user_id, profile:profiles!inner (nome)")
+    .eq("workspace_id", workspaceId)
+    .order("created_at");
+  return (data ?? []).map((m) => ({ id: m.user_id, nome: m.profile.nome || "Sem nome" }));
 }

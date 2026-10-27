@@ -148,6 +148,115 @@ export type Database = {
           },
         ];
       };
+      deliverable_activity: {
+        Row: {
+          actor_id: string | null;
+          created_at: string;
+          de: string | null;
+          deliverable_id: string;
+          id: string;
+          para: string | null;
+          tipo: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor_id?: string | null;
+          created_at?: string;
+          de?: string | null;
+          deliverable_id: string;
+          id?: string;
+          para?: string | null;
+          tipo: string;
+          workspace_id: string;
+        };
+        Update: {
+          actor_id?: string | null;
+          created_at?: string;
+          de?: string | null;
+          deliverable_id?: string;
+          id?: string;
+          para?: string | null;
+          tipo?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_activity_actor_id_fkey";
+            columns: ["actor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deliverable_activity_deliverable_id_workspace_id_fkey";
+            columns: ["deliverable_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "deliverable_activity_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      deliverable_comments: {
+        Row: {
+          author_id: string | null;
+          corpo: string;
+          created_at: string;
+          deliverable_id: string;
+          id: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          author_id?: string | null;
+          corpo: string;
+          created_at?: string;
+          deliverable_id: string;
+          id?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          author_id?: string | null;
+          corpo?: string;
+          created_at?: string;
+          deliverable_id?: string;
+          id?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_comments_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deliverable_comments_deliverable_id_workspace_id_fkey";
+            columns: ["deliverable_id", "workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id", "workspace_id"];
+          },
+          {
+            foreignKeyName: "deliverable_comments_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       deliverables: {
         Row: {
           client_id: string;

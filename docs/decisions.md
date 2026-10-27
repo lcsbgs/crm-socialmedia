@@ -118,3 +118,15 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Tarefas antigas do pacote:** as pendentes foram removidas pela migration; as concluídas ficam como histórico.
 - **Seed:** dois meses gerados (atual e seguinte), títulos realistas por cliente, passado publicado, semana atual em produção ou aprovação, futuro como rascunho; tarefas operacionais (cobrar material, enviar relatório, confirmar gravação) e uma reunião hoje.
 - **Busca da ⌘K** procura só por título: rascunhos sem título não aparecem.
+
+## 2026-10-27 · Passo 5: entregas e calendário
+
+- **Painel da entrega pela URL** (`?entrega=id`), montado no shell: abre por cima de qualquer tela (Hoje, quadro, semana, calendário, ficha do cliente, ⌘K) sem trocar de página, e o link pode ser compartilhado. Campos salvam sozinhos (selects na hora; título e legenda ao sair do campo).
+- **Enviar para aprovação** muda a etapa e oferece, no toast, abrir o WhatsApp com a mensagem e o link do portal. Em aprovação, o botão vira "Lembrar o cliente".
+- **Comentários da equipe** (`deliverable_comments`, só o autor apaga) e **histórico** (`deliverable_activity`, escrito por trigger com quem fez: criação, etapa, data, título, responsável). Slots gerados pelo pacote não entram no histórico ao nascer.
+- **Quadro de todos os clientes** com filtros na URL (cliente, formato, responsável). Mostra entregas a partir de 35 dias atrás para a coluna Publicado não crescer sem fim; a ficha do cliente mostra todas dele.
+- **Cartão:** faixa na cor do cliente, título ou rascunho em itálico, formato, data com popover de calendário (mudar a data sem abrir a entrega; atrasada em vermelho), contagem de arquivos e avatar do responsável.
+- **Semana:** sete colunas (segunda a domingo); arrastar muda a data de publicação.
+- **Calendário do mês:** entregas por data (publicadas riscadas) e reuniões; no celular, só os dias que têm algo.
+- **`cn` agora usa `tailwind-merge`** (com a escala de texto própria), para classes passadas por quem usa o componente vencerem as padrão.
+- **dnd-kit recebe `id` estável (`useId`)**, senão o ID de acessibilidade diverge entre servidor e cliente e gera erro de hidratação.

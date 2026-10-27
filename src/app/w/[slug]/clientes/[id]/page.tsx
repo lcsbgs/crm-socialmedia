@@ -15,8 +15,8 @@ import {
   getNextDuePayment,
 } from "@/features/clients/queries";
 import { contactSchema, linkSchema } from "@/features/clients/schemas";
-import { KanbanBoard } from "@/features/deliverables/components/kanban-board";
-import { countPendingApprovals, getClientDeliverables } from "@/features/deliverables/queries";
+import { DeliverableBoard } from "@/features/deliverables/components/deliverable-board";
+import { countPendingApprovals, getBoardDeliverables } from "@/features/deliverables/queries";
 import { PaymentRow } from "@/features/finance/components/payment-row";
 import { getClientPaymentViews } from "@/features/finance/queries";
 import { deleteScopeRequest, setScopeStatus } from "@/features/scope/actions";
@@ -424,8 +424,8 @@ async function TimelineTab({ workspaceId, clientId }: { workspaceId: string; cli
 }
 
 async function DeliverablesTab({ workspaceId, clientId }: { workspaceId: string; clientId: string }) {
-  const deliverables = await getClientDeliverables(workspaceId, clientId);
-  return <KanbanBoard workspaceId={workspaceId} clientId={clientId} deliverables={deliverables} />;
+  const items = await getBoardDeliverables(workspaceId, { clientId });
+  return <DeliverableBoard items={items} showClient={false} clientId={clientId} />;
 }
 
 const meetingDate = new Intl.DateTimeFormat("pt-BR", {

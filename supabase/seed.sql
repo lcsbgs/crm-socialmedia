@@ -127,7 +127,8 @@ begin
   update public.deliverables set titulo = 'Bastidores da semana', status = 'publicado'
   where workspace_id = ws_id and formato = 'story' and data_publicacao < hoje - 1;
 
-  update public.deliverables set titulo = 'Relatório de ' || to_char(hoje, 'MM/YYYY'), status = 'produzir'
+  update public.deliverables set titulo = 'Relatório de ' || to_char(competencia, 'MM/YYYY'),
+    status = case when competencia = date_trunc('month', hoje)::date then 'produzir' else 'planejar' end::public.deliverable_status
   where workspace_id = ws_id and formato = 'relatorio';
 
   -- Uma aprovação parada há 4 dias (aparece em "Esperando o cliente").
@@ -146,6 +147,9 @@ begin
     (ws_id, studio_id, 'Confirmar horário da gravação no studio', 'avulsa', hoje, 'manual'),
     (ws_id, null, 'Atualizar portfólio com os cases do mês', 'avulsa', hoje + 3, 'manual'),
     (ws_id, clinica_id, 'Ligar para o Dr. Paulo sobre a volta do contrato', 'avulsa', hoje + 5, 'manual');
+
+  -- Ajustes do seed não entram no histórico das entregas.
+  delete from public.deliverable_activity where workspace_id = ws_id;
 
   insert into public.meetings (workspace_id, client_id, titulo, data, notas_brutas) values
     (ws_id, studio_id, 'Planejamento do próximo mês',

@@ -165,7 +165,7 @@ export function CommandPalette({
                       value={`entrega ${d.titulo ?? ""} ${d.id}`}
                       keywords={[query]}
                       className={itemClass}
-                      onSelect={() => go(`${base}/clientes/${d.client_id}?aba=entregas&entrega=${d.id}`)}
+                      onSelect={() => go(`${base}/entregas?entrega=${d.id}`)}
                     >
                       <KanbanSquare />
                       <span className="min-w-0 flex-1 truncate">{d.titulo ?? "Sem título"}</span>

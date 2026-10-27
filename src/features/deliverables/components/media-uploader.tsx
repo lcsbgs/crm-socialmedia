@@ -25,11 +25,13 @@ export function MediaUploader({
   clientId,
   deliverableId,
   media,
+  onChanged,
 }: {
   workspaceId: string;
   clientId: string;
   deliverableId: string;
   media: Media[];
+  onChanged?: () => void;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +67,7 @@ export function MediaUploader({
       if (result.error) setError(result.error);
     }
     setUploading(false);
+    onChanged?.();
     router.refresh();
   }
 
@@ -72,13 +75,14 @@ export function MediaUploader({
     startTransition(async () => {
       const result = await removeMedia({ workspaceId, id: deliverableId, path });
       if (result.error) setError(result.error);
+      onChanged?.();
       router.refresh();
     });
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium">Mídia</p>
+      <p className="text-sm font-semibold">Mídia</p>
       {error ? <Alert tone="error">{error}</Alert> : null}
       {media.length ? (
         <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -106,7 +110,7 @@ export function MediaUploader({
           ))}
         </ul>
       ) : null}
-      <label className="flex cursor-pointer items-center justify-center rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted hover:bg-background">
+      <label className="flex cursor-pointer items-center justify-center rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted hover:bg-hover focus-within:outline-2 focus-within:outline-accent">
         <input
           type="file"
           multiple

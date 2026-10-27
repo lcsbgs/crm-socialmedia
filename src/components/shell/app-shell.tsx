@@ -3,8 +3,9 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Menu, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { DeliverableSheetHost } from "@/features/deliverables/components/deliverable-sheet";
 import { NewDeliverableDialog } from "@/features/deliverables/components/new-deliverable-dialog";
 import { NewTaskDialog } from "@/features/tasks/components/new-task-dialog";
 import type { PlanTier } from "@/lib/labels";
@@ -180,6 +181,9 @@ export function AppShell({
           onNewTask={() => openNewTask()}
           onNewDeliverable={() => openNewDeliverable()}
         />
+        <Suspense fallback={null}>
+          <DeliverableSheetHost />
+        </Suspense>
         <NewTaskDialog
           open={newTask !== null}
           onClose={() => setNewTask(null)}

@@ -218,7 +218,7 @@ function Row({
   }
 
   if (item.kind === "deliverable") {
-    const href = `${clientHref}?aba=entregas&entrega=${item.id}`;
+    const href = `?entrega=${item.id}`;
     return (
       <Line
         lead={<KanbanSquare className="size-4 text-muted" aria-hidden />}
@@ -252,7 +252,7 @@ function Row({
   }
 
   if (item.kind === "approval") {
-    const href = `${clientHref}?aba=entregas&entrega=${item.id}`;
+    const href = `?entrega=${item.id}`;
     return (
       <Line
         lead={<Hourglass className="size-4 text-waiting" aria-hidden />}
