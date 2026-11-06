@@ -177,3 +177,11 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Onboarding sem upload de logo e sem "Copiar link de convite" genérico.** Convites são por e-mail (o aceite exige o mesmo e-mail); o logo fica em Ajustes > Estúdio. O passo 3 deixa as contas Meta para a página do cliente (Fase 8).
 - **Pacote padrão "Essencial"** criado no passo 3 quando o espaço não tem pacote: 3 posts por semana, 1 reunião e 1 relatório por mês.
 - **`profiles.email`** sincronizado de `auth.users` por trigger, para a tela de Equipe.
+
+## 2026-11-06 · Pauta, Fase 3: Em pauta hoje
+
+- **"Minha pauta"**: o que tem a pessoa como responsável, mais o que não tem responsável e é de um cliente atribuído a ela. "Pauta do time": tudo. Contexto: tarefas não tinham responsável; ganharam `tasks.responsavel_id`. Alternativa: só itens com responsável (deixaria muito item órfão fora).
+- **Blocos e regras**: Com quem falar = reuniões do dia (a próxima em destaque) + ajustes pedidos nas últimas 48 h (um por cliente) + próximos passos de ata que vencem hoje. O que fazer = tarefas até hoje + posts em planejamento/produção com data até hoje. Com o cliente = posts em aprovação agrupados por cliente. Publicações e dinheiro = posts aprovados/publicados de hoje + cobranças vencidas ou de hoje (só owner/admin). Propostas e contratos entram quando o comercial existir (Fase 10).
+- **Saudação** escolhida no servidor entre opções por período, dia da semana e fatos reais (aprovações de ontem); a última vai num cookie para não repetir.
+- **`getDailyAgenda` = leitura + `buildDailyAgenda` puro**, testado com vitest. A leitura não inventa nada: bloco sem dado mostra estado vazio.
+- **`deliverables.hora_publicacao`** para ordenar as publicações do dia.

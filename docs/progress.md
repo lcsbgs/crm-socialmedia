@@ -18,3 +18,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261106100000_team_access.sql` com 16 testes novos; login, consentimento simulado, fluxo ChatGPT, onboarding em 3 passos, convite, Equipe; adapter de e-mail; `docs/oauth-setup.md` e `.env.example` completos.
 - Falta: aplicar as migrações no remoto (projeto estava pausado; pedi a reativação e ele está subindo). Regenerar `src/types/database.ts` do remoto depois disso (hoje ajustado à mão com `scripts/types_patch.py`).
 - Próxima: Fase 3, Em pauta hoje.
+
+## Fase 3: Em pauta hoje (concluída)
+- Feito: migração `20261106110000_daily_agenda.sql`, `src/features/today/{agenda,greeting}.ts` com testes, tela nova, componentes antigos da Hoje removidos.
+- Falta: seletor de responsável no diálogo de nova tarefa.
+- Próxima: Fase 4, clientes.

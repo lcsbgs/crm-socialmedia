@@ -286,6 +286,7 @@ export type Database = {
           created_at: string;
           data_publicacao: string | null;
           formato: Database["public"]["Enums"]["deliverable_format"];
+          hora_publicacao: string | null;
           id: string;
           legenda: string | null;
           midia_urls: string[];
@@ -306,6 +307,7 @@ export type Database = {
           created_at?: string;
           data_publicacao?: string | null;
           formato?: Database["public"]["Enums"]["deliverable_format"];
+          hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
           midia_urls?: string[];
@@ -325,6 +327,7 @@ export type Database = {
           created_at?: string;
           data_publicacao?: string | null;
           formato?: Database["public"]["Enums"]["deliverable_format"];
+          hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
           midia_urls?: string[];
@@ -760,6 +763,7 @@ export type Database = {
           id: string;
           meeting_id: string | null;
           origem: Database["public"]["Enums"]["task_origin"];
+          responsavel_id: string | null;
           status: Database["public"]["Enums"]["task_status"];
           template_key: string | null;
           tipo: Database["public"]["Enums"]["task_type"];
@@ -777,6 +781,7 @@ export type Database = {
           id?: string;
           meeting_id?: string | null;
           origem?: Database["public"]["Enums"]["task_origin"];
+          responsavel_id?: string | null;
           status?: Database["public"]["Enums"]["task_status"];
           template_key?: string | null;
           tipo?: Database["public"]["Enums"]["task_type"];
@@ -793,6 +798,7 @@ export type Database = {
           id?: string;
           meeting_id?: string | null;
           origem?: Database["public"]["Enums"]["task_origin"];
+          responsavel_id?: string | null;
           status?: Database["public"]["Enums"]["task_status"];
           template_key?: string | null;
           tipo?: Database["public"]["Enums"]["task_type"];
