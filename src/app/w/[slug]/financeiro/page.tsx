@@ -69,7 +69,7 @@ export default async function FinancePage({ params, searchParams }: PageProps<"/
       />
 
       {/* Receita do mês */}
-      <section aria-label="Receita do mês" className="rounded-lg border border-border bg-surface p-4">
+      <section aria-label="Receita do mês" className="rounded-card bg-surface p-4">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
           <Figure label="Previsto" value={formatBRL(previsto)} />
           <Figure label="Recebido" value={formatBRL(recebido)} />
@@ -200,7 +200,7 @@ function Figure({ label, value, late }: { label: string; value: string; late?: b
   return (
     <div>
       <dt className="text-xs text-muted">{label}</dt>
-      <dd className={cn("tabular text-lg font-semibold", late && "text-late")}>{value}</dd>
+      <dd className={cn("tabular font-display text-xl", late && "text-late")}>{value}</dd>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function PortalShare({
           Link público para o cliente aprovar as entregas. Não precisa de login.
           {pending ? ` ${plural(pending, "entrega aguardando", "entregas aguardando")}.` : ""}
         </p>
-        <code className="block truncate rounded-md bg-hover px-2 py-1 text-xs">{url}</code>
+        <code className="block truncate rounded-xl bg-hover px-2 py-1 text-xs">{url}</code>
         <div className="flex flex-wrap gap-2">
           <CopyButton value={url} />
           <a

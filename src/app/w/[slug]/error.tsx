@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 export default function WorkspaceError({ reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="rounded-lg border border-border bg-surface">
+    <div className="rounded-card bg-surface">
       <EmptyState
         title="Algo deu errado ao carregar esta tela"
         description="Pode ter sido uma instabilidade momentânea. Tente de novo."

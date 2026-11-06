@@ -14,7 +14,7 @@ export default async function GetStartedPage({ params }: PageProps<"/w/[slug]/co
   return (
     <div className="mx-auto max-w-lg space-y-6">
       <div className="space-y-1">
-        <h1 className="text-lg font-semibold">Primeiros passos</h1>
+        <h1 className="font-display text-xl">Primeiros passos</h1>
         <p className="text-sm text-muted">
           Cadastre um cliente e o pacote de serviços dele. A partir disso, as entregas do mês são planejadas
           sozinhas.

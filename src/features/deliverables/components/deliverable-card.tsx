@@ -39,7 +39,7 @@ export function DeliverableCard({
   return (
     <article
       className={cn(
-        "relative overflow-hidden rounded-md border border-border bg-surface text-sm transition-colors hover:border-[color-mix(in_srgb,var(--muted)_45%,var(--border))]",
+        "relative overflow-hidden rounded-xl border border-border bg-surface text-sm transition-colors hover:border-[color-mix(in_srgb,var(--muted)_45%,var(--border))]",
         dragging && "shadow-pop",
       )}
     >

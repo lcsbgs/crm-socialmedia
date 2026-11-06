@@ -27,7 +27,7 @@ export function QuickAdd() {
     <form
       ref={formRef}
       action={action}
-      className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-1.5 focus-within:border-[color-mix(in_srgb,var(--accent)_45%,var(--border))] sm:flex-row sm:items-center"
+      className="flex flex-col gap-2 rounded-card bg-surface p-1.5 focus-within:border-[color-mix(in_srgb,var(--accent)_45%,var(--border))] sm:flex-row sm:items-center"
     >
       <input type="hidden" name="workspaceId" value={workspace.id} />
       <input type="hidden" name="due_date" value={date ?? ""} />
@@ -66,7 +66,7 @@ export function QuickAdd() {
         <button
           type="submit"
           disabled={pending}
-          className="h-7 shrink-0 rounded-md bg-accent px-2.5 text-sm font-medium text-accent-ink disabled:opacity-50"
+          className="h-7 shrink-0 rounded-xl bg-accent px-2.5 text-sm font-medium text-accent-ink disabled:opacity-50"
         >
           Adicionar
         </button>

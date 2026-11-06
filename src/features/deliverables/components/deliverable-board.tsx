@@ -195,7 +195,7 @@ function Column({
     <section
       aria-label={label}
       className={cn(
-        "flex w-[80vw] max-w-72 shrink-0 snap-start flex-col rounded-lg border border-transparent bg-[color-mix(in_srgb,var(--border)_45%,transparent)] p-1.5 sm:w-64 lg:w-auto lg:max-w-none",
+        "flex w-[80vw] max-w-72 shrink-0 snap-start flex-col rounded-inner border border-transparent bg-[color-mix(in_srgb,var(--border)_45%,transparent)] p-1.5 sm:w-64 lg:w-auto lg:max-w-none",
         isOver && "border-[color-mix(in_srgb,var(--accent)_35%,transparent)]",
       )}
     >
@@ -262,7 +262,7 @@ function SortableCard({
           listeners?.onKeyDown?.(e);
           if (e.key === "Enter") onOpen(item.id);
         }}
-        className="cursor-grab touch-manipulation rounded-md active:cursor-grabbing"
+        className="cursor-grab touch-manipulation rounded-xl active:cursor-grabbing"
       >
         <DeliverableCard item={item} workspaceId={workspaceId} showClient={showClient} />
       </div>

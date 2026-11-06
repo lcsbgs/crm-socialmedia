@@ -7,3 +7,9 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: `docs/gaps.md` com módulos, schema x modelo, problemas visuais e riscos; harness de banco local; telas em `docs/design/`.
 - Problemas abertos: projeto remoto `dsfgrcdtczbkdkciwjaa` ainda subindo (`COMING_UP`), não deu para listar migrações aplicadas.
 - Próxima: Fase 1, design system e casca.
+
+## Fase 1: design system e casca (concluída)
+- Feito: tokens e fontes, componentes em `src/components/ui`, sidebar e barra superior do design, rotas novas com redirecionamento das antigas, varredura de classes antigas nas telas, vitest.
+- Falta: conferir visualmente telas logadas (o projeto remoto não respondia durante a fase); refazer telas específicas acontece nas fases seguintes.
+- Problemas abertos: banco remoto em `COMING_UP`, sem acesso SQL.
+- Próxima: Fase 2, autenticação, workspaces, convites e onboarding.

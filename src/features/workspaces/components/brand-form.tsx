@@ -48,7 +48,7 @@ export function BrandForm({
 
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <div className="flex h-14 w-28 items-center justify-center rounded-md border border-border bg-background">
+      <div className="flex h-14 w-28 items-center justify-center rounded-xl border border-border bg-background">
         {logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- URL assinada temporária do Storage
           <img src={logoUrl} alt="Logo atual" className="max-h-10 max-w-24 object-contain" />
@@ -58,7 +58,7 @@ export function BrandForm({
       </div>
       {canEdit ? (
         <div className="flex flex-wrap gap-2">
-          <label className="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 text-sm font-medium hover:bg-hover focus-within:outline-2 focus-within:outline-accent">
+          <label className="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-surface px-2.5 text-sm font-medium hover:bg-hover focus-within:outline-2 focus-within:outline-accent">
             <ImagePlus className="size-4 text-muted" aria-hidden />
             {uploading ? "Enviando" : logoUrl ? "Trocar logo" : "Enviar logo"}
             <input

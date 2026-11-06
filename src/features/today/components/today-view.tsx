@@ -83,14 +83,14 @@ export function TodayView({ sections }: { sections: TodaySections }) {
 
   if (total === 0) {
     return (
-      <div className="rounded-lg border border-border bg-surface">
+      <div className="rounded-card bg-surface">
         <EmptyState
           icon={SunMedium}
           title="Dia limpo"
           description="Nada atrasado, nada esperando por você. Bom momento para planejar as próximas entregas."
           action={
             <Link
-              href={`${base}/entregas`}
+              href={`${base}/producao`}
               className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
             >
               Ver entregas da semana
@@ -114,7 +114,7 @@ export function TodayView({ sections }: { sections: TodaySections }) {
               <span className="tabular font-normal text-muted">{items.length}</span>
               {hint ? <span className="hidden font-normal text-muted sm:inline">· {hint}</span> : null}
             </h2>
-            <ul className="overflow-hidden rounded-lg border border-border bg-surface">
+            <ul className="overflow-hidden rounded-card bg-surface">
               {items.map((item) => (
                 <Row
                   key={`${item.kind}:${item.id}`}
@@ -373,7 +373,7 @@ function DateLabel({ date, late, prefix = "" }: { date: string; late: boolean; p
 }
 
 const iconClass =
-  "inline-flex size-7 items-center justify-center rounded-md text-muted hover:bg-selected hover:text-ink [&_svg]:size-4";
+  "inline-flex size-7 items-center justify-center rounded-xl text-muted hover:bg-selected hover:text-ink [&_svg]:size-4";
 
 function IconAction({
   label,
@@ -404,7 +404,7 @@ function IconLink({ label, href, children }: { label: string; href: string; chil
 }
 
 const textActionClass =
-  "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-surface px-2 text-sm font-medium text-ink hover:bg-selected [&_svg]:size-3.5 [&_svg]:text-muted";
+  "inline-flex h-7 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 text-sm font-medium text-ink hover:bg-selected [&_svg]:size-3.5 [&_svg]:text-muted";
 
 function TextAction({ href, icon, children }: { href: string; icon: ReactNode; children: ReactNode }) {
   return (

@@ -39,7 +39,7 @@ export function PlanCard({ usage, canUpgrade }: { usage: Usage; canUpgrade: bool
         <UsageMeter label="Clientes ativos" used={clients} max={usage.max_clients} />
       </dl>
       {canUpgrade && usage.plano !== "estudio" ? (
-        <div className="mt-4 flex flex-col gap-3 rounded-md bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-3 rounded-xl bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm">
             {atSeatLimit || atClientLimit
               ? "Você atingiu um limite do plano. Faça upgrade para crescer sem travas."

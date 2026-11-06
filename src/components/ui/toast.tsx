@@ -10,7 +10,7 @@ export function Toaster() {
       position="bottom-right"
       toastOptions={{
         className:
-          "!rounded-lg !border !border-border !bg-surface !text-ink !shadow-pop !font-sans !text-base",
+          "!rounded-inner !border !border-border !bg-surface !text-ink !shadow-pop !font-sans !text-base",
       }}
     />
   );

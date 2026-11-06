@@ -152,3 +152,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Telas movidas para `docs/design/` e CLAUDE.md para a raiz.** Contexto: o commit "docs corrigidos" deixou tudo solto em `docs/`, mas o CLAUDE.md e o pedido citam `docs/design/`. Escolha: `git mv` sem mudar conteúdo. Alternativa: ajustar os textos que citam o caminho.
 - **Nomes de tabela atuais ficam.** `invitations` faz o papel de `invites`, `deliverables` o de posts e `approvals` o de `approval_responses`. Contexto: renomear tabela com dados quebra código e arrisca perda. Escolha: só migrações aditivas. Alternativa: renomear e criar views de compatibilidade.
 - **Testes de banco num Postgres 16 local.** Contexto: `supabase start` não baixa imagens neste ambiente. Escolha: `scripts/db-test-local.sh` sobe um Postgres descartável com um esqueleto de `auth`, `storage` e papéis (`scripts/supabase-stub.sql`) e roda os mesmos testes pgTAP. Alternativa: testar no remoto (descartado: risco de sujar dados).
+
+## 2026-11-06 · Pauta, Fase 1: design system e casca
+
+- **Tokens no `@theme` do `globals.css`.** Contexto: o projeto usa Tailwind 4, que não tem `tailwind.config`. Escolha: tokens do README como variáveis CSS e `@theme inline`; os nomes antigos (`accent`, `late`, `ok`, `muted`) apontam para os novos, então telas antigas já herdam o visual. Alternativa: criar `tailwind.config.ts` em modo de compatibilidade.
+- **Sem modo escuro.** Contexto: o design só define o tema claro. Escolha: remover o modo escuro em vez de inventar cores. Alternativa: derivar uma paleta escura.
+- **Paleta de cliente com 10 cores** (5 do README + Verde, Vermelho, Mostarda, Petróleo, Grafite), cada uma com forte, tonal, texto e miniatura. `clients.cor` continua guardando o índice, então clientes existentes mudam de tom sem migração.
+- **Sidebar fixa de 248px, sem recolher.** Contexto: o design não mostra a sidebar recolhida. Escolha: remover o recolhimento (e o cookie); no celular vira gaveta. Alternativa: manter o botão de recolher.
+- **Ajustes dentro da casca principal**, com submenu à esquerda (Estúdio, Equipe, Plano, Integrações, IA e ChatGPT, Minha conta). O design de Equipe troca a sidebar inteira por "Voltar para a pauta"; manter a casca evita uma segunda navegação. Alternativa: layout próprio como no design.
+- **Rotas do design:** `/producao` (antes `/entregas`) e `/ajustes/*` (antes `/configuracoes`). As rotas antigas redirecionam.
+- **Botão Novo abre menu** (Post, Tarefa, Reunião, Cliente). O design mostra só o botão.
+- **vitest para testes de TypeScript** (`pnpm test`), com `server-only` substituído por um módulo vazio.

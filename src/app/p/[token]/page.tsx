@@ -30,7 +30,7 @@ export default async function PortalPage({ params }: PageProps<"/p/[token]">) {
               className="h-8 w-auto max-w-32 object-contain"
             />
           ) : (
-            <span className="flex size-8 items-center justify-center rounded-md bg-ink text-sm font-semibold text-surface">
+            <span className="flex size-8 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-surface">
               {portal.workspaceNome.slice(0, 1).toUpperCase()}
             </span>
           )}
@@ -40,7 +40,7 @@ export default async function PortalPage({ params }: PageProps<"/p/[token]">) {
 
       <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 px-4 py-6">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold">Olá, {portal.clientNome}</h1>
+          <h1 className="font-display text-xl">Olá, {portal.clientNome}</h1>
           <p className="text-sm text-muted">
             {portal.items.length
               ? `${plural(portal.items.length, "conteúdo esperando", "conteúdos esperando")} sua aprovação. Veja cada um e responda com Aprovar ou Pedir ajuste. Não precisa criar conta.`
@@ -61,7 +61,7 @@ export default async function PortalPage({ params }: PageProps<"/p/[token]">) {
             <h2 id="historico" className="text-sm font-semibold">
               Suas respostas recentes
             </h2>
-            <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
+            <ul className="divide-y divide-border rounded-card bg-surface">
               {portal.history.map((h) => (
                 <li key={h.id} className="flex gap-2.5 px-3 py-2.5 text-sm">
                   {h.decisao === "aprovado" ? (

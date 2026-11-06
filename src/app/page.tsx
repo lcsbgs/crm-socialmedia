@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-16">
       <div className="space-y-2">
-        <h1 className="text-lg font-semibold">{brand.name}</h1>
+        <h1 className="font-display text-xl">{brand.name}</h1>
         <p className="text-muted">{brand.tagline}</p>
       </div>
       <p className="text-sm text-muted">{brand.description}</p>

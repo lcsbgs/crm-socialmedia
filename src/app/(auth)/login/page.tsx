@@ -13,7 +13,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-lg font-semibold">Entrar</h1>
+        <h1 className="font-display text-xl">Entrar</h1>
         <p className="text-sm text-muted">Acesse sua conta para continuar.</p>
       </div>
       {params.erro ? <Alert tone="error">O link expirou ou é inválido. Tente de novo.</Alert> : null}

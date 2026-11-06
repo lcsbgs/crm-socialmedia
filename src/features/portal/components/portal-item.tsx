@@ -24,7 +24,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
 
   if (state?.message) {
     return (
-      <article className="rounded-lg border border-border bg-surface p-4">
+      <article className="rounded-card bg-surface p-4">
         <p className="font-medium">{item.titulo}</p>
         <p className="mt-2 text-sm text-success" role="status">
           {state.message}
@@ -34,7 +34,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
   }
 
   return (
-    <article className="space-y-4 rounded-lg border border-border bg-surface p-4">
+    <article className="space-y-4 rounded-card bg-surface p-4">
       <header className="space-y-1">
         <h2 className="font-semibold">{item.titulo}</h2>
         <p className="text-sm text-muted">
@@ -52,14 +52,14 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
                 key={i}
                 src={m.url}
                 alt=""
-                className="max-h-96 w-auto snap-start rounded-md border border-border"
+                className="max-h-96 w-auto snap-start rounded-xl border border-border"
               />
             ) : m.kind === "video" ? (
               <video
                 key={i}
                 src={m.url}
                 controls
-                className="max-h-96 snap-start rounded-md border border-border"
+                className="max-h-96 snap-start rounded-xl border border-border"
               />
             ) : (
               <a key={i} href={m.url} target="_blank" rel="noreferrer" className="text-sm underline">
@@ -96,7 +96,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
                 localStorage.setItem(NAME_KEY, e.target.value);
               } catch {}
             }}
-            className="h-9 w-full rounded-md border border-border bg-surface px-2.5 text-base focus-visible:border-accent focus-visible:outline-none"
+            className="h-9 w-full rounded-xl border border-border bg-surface px-2.5 text-base focus-visible:border-accent focus-visible:outline-none"
           />
           {state?.fieldErrors?.autor_nome ? (
             <p className="text-sm text-danger">{state.fieldErrors.autor_nome[0]}</p>
@@ -110,7 +110,7 @@ export function PortalItemCard({ token, item }: { token: string; item: PortalIte
             id={`comentario-${item.id}`}
             name="comentario"
             rows={3}
-            className="w-full rounded-md border border-border bg-surface px-2.5 py-2 text-base focus-visible:border-accent focus-visible:outline-none"
+            className="w-full rounded-xl border border-border bg-surface px-2.5 py-2 text-base focus-visible:border-accent focus-visible:outline-none"
           />
           {state?.fieldErrors?.comentario ? (
             <p className="text-sm text-danger">{state.fieldErrors.comentario[0]}</p>

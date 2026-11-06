@@ -1,97 +1,123 @@
 @import "tailwindcss";
 
 /* Tokens. Estados (late/waiting/ok) só em pontos, ícones e texto pequeno. */
+/*
+ * Tokens do Pauta (docs/design/README.md). Tema único claro: o design não tem modo escuro.
+ * Nomes antigos (accent, late, waiting, ok, muted) continuam valendo e apontam para os novos.
+ */
 :root {
-  --bg: #fafaf9;
+  --bg: #f4f5f7;
   --surface: #ffffff;
-  --ink: #1d1e22;
-  --muted: #6e7079;
-  --border: #e7e7e4;
-  --hover: #f2f2f0;
-  --selected: #ececea;
-  --accent: #8e2f6b;
+  --surface-2: #f8f9fb;
+  --ink: #1d2433;
+  --ink-2: #3e4656;
+  --muted: #5e6675;
+  --faint: #a0a7b4;
+  --border: #e3e6ec;
+  --border-input: #d5d9e2;
+  --border-dashed: #c9ceda;
+  --hover: #eef0f4;
+  --selected: #eeeaff;
+
+  --accent: #6b4eff;
+  --accent-hover: #5a3df0;
   --accent-ink: #ffffff;
-  --late: #b4381f;
-  --waiting: #a16207;
-  --ok: #2f7d4f;
-  --overlay: rgb(29 30 34 / 0.32);
-  --shadow-pop: 0 8px 24px rgb(29 30 34 / 0.12), 0 1px 3px rgb(29 30 34 / 0.08);
+  --accent-tonal: #eeeaff;
+  --accent-tonal-ink: #3b23b8;
+
+  --today: #ffc93c;
+  --today-strong: #e0a800;
+  --today-tonal: #fff6d6;
+  --today-ink: #5a3d00;
+
+  --ok: #1f7a4d;
+  --ok-tonal: #ddf3e8;
+  --ok-ink: #135e3a;
+
+  --late: #c2410c;
+  --late-soft: #e08a55;
+  --late-tonal: #ffe9d6;
+  --late-tonal-2: #fff1e6;
+  --late-ink: #8a3a06;
+
+  --waiting: #8a6100;
+  --dark: #1d2433;
+  --dark-hover: #2c3547;
+  --chatgpt: #0d0d0d;
+
+  --overlay: rgb(29 36 51 / 0.36);
+  --shadow-pop: 0 12px 32px rgb(29 36 51 / 0.14), 0 1px 3px rgb(29 36 51 / 0.08);
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #141518;
-    --surface: #1b1c20;
-    --ink: #ececee;
-    --muted: #9a9ca5;
-    --border: #2b2d33;
-    --hover: #222329;
-    --selected: #2a2b31;
-    --accent: #d77fb6;
-    --accent-ink: #1d1e22;
-    --late: #e07a62;
-    --waiting: #d6a13c;
-    --ok: #6cbf8a;
-    --overlay: rgb(0 0 0 / 0.5);
-    --shadow-pop: 0 8px 24px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #141518;
-  --surface: #1b1c20;
-  --ink: #ececee;
-  --muted: #9a9ca5;
-  --border: #2b2d33;
-  --hover: #222329;
-  --selected: #2a2b31;
-  --accent: #d77fb6;
-  --accent-ink: #1d1e22;
-  --late: #e07a62;
-  --waiting: #d6a13c;
-  --ok: #6cbf8a;
-  --overlay: rgb(0 0 0 / 0.5);
-  --shadow-pop: 0 8px 24px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
-  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--ink);
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-border: var(--border);
+  --color-border-input: var(--border-input);
+  --color-border-dashed: var(--border-dashed);
   --color-hover: var(--hover);
   --color-selected: var(--selected);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-ink: var(--accent-ink);
+  --color-accent-tonal: var(--accent-tonal);
+  --color-accent-tonal-ink: var(--accent-tonal-ink);
   --color-primary: var(--accent);
   --color-primary-foreground: var(--accent-ink);
-  --color-late: var(--late);
-  --color-waiting: var(--waiting);
+  --color-today: var(--today);
+  --color-today-strong: var(--today-strong);
+  --color-today-tonal: var(--today-tonal);
+  --color-today-ink: var(--today-ink);
   --color-ok: var(--ok);
+  --color-ok-tonal: var(--ok-tonal);
+  --color-ok-ink: var(--ok-ink);
+  --color-late: var(--late);
+  --color-late-soft: var(--late-soft);
+  --color-late-tonal: var(--late-tonal);
+  --color-late-tonal-2: var(--late-tonal-2);
+  --color-late-ink: var(--late-ink);
+  --color-waiting: var(--waiting);
+  --color-dark: var(--dark);
+  --color-dark-hover: var(--dark-hover);
+  --color-chatgpt: var(--chatgpt);
   --color-danger: var(--late);
   --color-warning: var(--waiting);
   --color-success: var(--ok);
-  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   --shadow-pop: var(--shadow-pop);
 
-  /* Escala 12/13/14/16/20/28 */
+  --radius-tag: 6px;
+  --radius-card: 24px;
+  --radius-inner: 16px;
+  --radius-input: 14px;
+
+  /* Escala: 12/13/14/15/20/22/26/36/44 */
   --text-xs: 12px;
   --text-xs--line-height: 16px;
   --text-sm: 13px;
   --text-sm--line-height: 18px;
   --text-base: 14px;
   --text-base--line-height: 20px;
-  --text-md: 16px;
+  --text-md: 15px;
   --text-md--line-height: 22px;
   --text-lg: 20px;
   --text-lg--line-height: 26px;
-  --text-xl: 28px;
-  --text-xl--line-height: 34px;
+  --text-xl: 22px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 26px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 36px;
+  --text-3xl--line-height: 42px;
+  --text-4xl: 44px;
+  --text-4xl--line-height: 52px;
 }
 
 html {
@@ -103,6 +129,20 @@ body {
   color: var(--ink);
   font-size: 14px;
   line-height: 20px;
+}
+
+/* Títulos em Bricolage Grotesque, tracking negativo nos grandes. */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+h1.font-display {
+  letter-spacing: -0.02em;
+}
+
+a {
+  text-underline-offset: 2px;
 }
 
 /* Valores e datas alinhados. */

@@ -109,7 +109,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
           <div className="flex min-w-0 items-center gap-3">
             <ClientAvatar name={client.nome} color={client.cor ?? 0} size="lg" />
             <div className="min-w-0">
-              <h1 className="flex flex-wrap items-center gap-2 text-lg font-semibold">
+              <h1 className="flex flex-wrap items-center gap-2 font-display text-xl">
                 <span className="truncate">{client.nome}</span>
                 <ClientStatusBadge status={client.status} />
               </h1>

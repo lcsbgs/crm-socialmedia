@@ -87,7 +87,7 @@ export function MediaUploader({
       {media.length ? (
         <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {media.map((m) => (
-            <li key={m.path} className="overflow-hidden rounded-md border border-border">
+            <li key={m.path} className="overflow-hidden rounded-xl border border-border">
               <div className="flex aspect-square items-center justify-center bg-background">
                 {m.url && m.kind === "image" ? (
                   // eslint-disable-next-line @next/next/no-img-element -- URL assinada temporária do Storage
@@ -110,7 +110,7 @@ export function MediaUploader({
           ))}
         </ul>
       ) : null}
-      <label className="flex cursor-pointer items-center justify-center rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted hover:bg-hover focus-within:outline-2 focus-within:outline-accent">
+      <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-border px-3 py-4 text-sm text-muted hover:bg-hover focus-within:outline-2 focus-within:outline-accent">
         <input
           type="file"
           multiple

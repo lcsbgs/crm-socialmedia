@@ -97,3 +97,4 @@ Princípio: **nenhuma tabela com dados é renomeada nem apagada.** Onde o nome d
 | Fase | Data | Resumo |
 |---|---|---|
 | 0 | 2026-11-06 | Auditoria criada; telas movidas para `docs/design/`; CLAUDE.md na raiz |
+| 1 | 2026-11-06 | Design system: tokens, Bricolage + Figtree, Button/IconButton em pílula, Card 24, Tag, Avatar/AvatarStack, Tabs, SegmentedControl, Checkbox, RadioCard, ProgressBar, SegmentedBar, Drawer, EmptyState, DemoBadge. Casca do Main.dc.html (sidebar com seletor, Novo, contadores, clientes; barra com busca, Minha pauta/Pauta do time, sino, equipe). Rotas `/producao`, `/aprovacoes`, `/reunioes`, `/comercial`, `/relatorios`, `/ajustes/*`. vitest. Falta: comparação visual com login (banco remoto indisponível durante a fase) |

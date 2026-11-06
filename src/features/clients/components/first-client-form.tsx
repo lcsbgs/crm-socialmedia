@@ -66,7 +66,7 @@ export function FirstClientForm({
           ]}
         />
         {pacote === "novo" ? (
-          <div className="space-y-4 rounded-md border border-border p-3">
+          <div className="space-y-4 rounded-xl border border-border p-3">
             <Field
               label="Nome do pacote"
               name="pacote_nome"

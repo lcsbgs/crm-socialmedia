@@ -2,19 +2,19 @@ import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } fro
 import { cn } from "@/lib/utils";
 
 export const controlClasses =
-  "w-full rounded-md border border-border bg-surface px-2.5 text-base text-ink placeholder:text-muted transition-colors hover:border-[color-mix(in_srgb,var(--muted)_40%,var(--border))] focus-visible:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color-mix(in_srgb,var(--accent)_22%,transparent)] disabled:opacity-60 aria-[invalid=true]:border-late";
+  "w-full rounded-input border border-border-input bg-surface px-3.5 text-md text-ink placeholder:text-muted transition-colors hover:border-[#B8BFCC] focus-visible:border-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[color-mix(in_srgb,var(--accent)_20%,transparent)] disabled:opacity-60 aria-[invalid=true]:border-late";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input(
   { className, ...props },
   ref,
 ) {
-  return <input ref={ref} className={cn(controlClasses, "h-8", className)} {...props} />;
+  return <input ref={ref} className={cn(controlClasses, "h-11", className)} {...props} />;
 });
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(
   function Textarea({ className, ...props }, ref) {
     return (
-      <textarea ref={ref} className={cn(controlClasses, "min-h-20 py-2 leading-5", className)} {...props} />
+      <textarea ref={ref} className={cn(controlClasses, "min-h-24 py-2.5 leading-[22px]", className)} {...props} />
     );
   },
 );
@@ -29,7 +29,7 @@ export function Label({
   className?: string;
 }) {
   return (
-    <label htmlFor={htmlFor} className={cn("block text-sm font-medium text-ink", className)}>
+    <label htmlFor={htmlFor} className={cn("block text-sm font-semibold text-ink", className)}>
       {children}
     </label>
   );

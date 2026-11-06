@@ -9,7 +9,7 @@ import { plural } from "@/lib/format";
 import { confirmMeetingMinutes } from "../actions";
 import type { Minutes } from "../schemas";
 
-const input = "h-8 w-full rounded-md border border-border bg-surface px-2.5 text-base";
+const input = "h-8 w-full rounded-xl border border-border bg-surface px-2.5 text-base";
 
 type Step = Minutes["proximos_passos"][number] & { incluir: boolean };
 
@@ -56,7 +56,7 @@ export function MinutesReview({
           rows={4}
           value={resumo}
           onChange={(e) => setResumo(e.target.value)}
-          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm"
         />
       </div>
 

@@ -56,7 +56,7 @@ export function Calendar({
         week: "flex",
         day: "size-8 p-0",
         day_button:
-          "tabular flex size-8 items-center justify-center rounded-md text-sm hover:bg-hover focus-visible:outline-2 focus-visible:outline-accent",
+          "tabular flex size-8 items-center justify-center rounded-full text-sm hover:bg-hover focus-visible:outline-2 focus-visible:outline-accent",
         selected: "[&>button]:bg-accent [&>button]:text-accent-ink [&>button]:hover:bg-accent",
         today: "[&>button]:font-semibold [&>button]:text-accent",
         outside: "text-muted/60",
@@ -119,8 +119,8 @@ export function DatePicker({
         aria-label={ariaLabel}
         aria-invalid={ariaInvalid}
         className={cn(
-          "inline-flex w-full items-center gap-2 rounded-md border border-border bg-surface px-2.5 text-left text-base hover:bg-hover focus-visible:border-accent focus-visible:outline-none aria-[invalid=true]:border-late",
-          size === "sm" ? "h-7 text-sm" : "h-8",
+          "inline-flex w-full items-center gap-2 rounded-input border border-border-input bg-surface px-3.5 text-left text-md hover:bg-hover focus-visible:border-accent focus-visible:outline-none aria-[invalid=true]:border-late",
+          size === "sm" ? "h-9 rounded-full px-3 text-base" : "h-11",
           className,
         )}
       >

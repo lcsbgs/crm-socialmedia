@@ -285,7 +285,7 @@ function DeliverablePanel({
           <h3 className="text-sm font-semibold">Respostas do cliente</h3>
           <ul className="space-y-2">
             {detail.approvals.map((a, i) => (
-              <li key={i} className="rounded-md border border-border p-2.5 text-sm">
+              <li key={i} className="rounded-xl border border-border p-2.5 text-sm">
                 <p className="flex flex-wrap items-center gap-1.5">
                   <span
                     className={cn("size-1.5 rounded-full", a.decisao === "aprovado" ? "bg-ok" : "bg-waiting")}
@@ -321,7 +321,7 @@ function DeliverablePanel({
                   <button
                     type="button"
                     aria-label="Apagar comentário"
-                    className="h-7 rounded-md px-1.5 text-muted opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:bg-hover"
+                    className="h-7 rounded-xl px-1.5 text-muted opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:bg-hover"
                     onClick={() =>
                       start(async () => {
                         await deleteComment({ workspaceId: detail.workspaceId, id: c.id });
