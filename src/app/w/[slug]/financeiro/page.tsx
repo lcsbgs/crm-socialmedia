@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { Banknote } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -19,6 +20,8 @@ export const metadata: Metadata = { title: "Financeiro" };
 export default async function FinancePage({ params, searchParams }: PageProps<"/w/[slug]/financeiro">) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const workspace = await getWorkspaceBySlug(slug);
+  // Financeiro é só para owner e admin (o banco também barra pelo RLS).
+  if (!workspace.canManage) notFound();
   const thisMonth = todayISO().slice(0, 7);
   const mes = typeof query.mes === "string" && /^\d{4}-\d{2}$/.test(query.mes) ? query.mes : thisMonth;
   const competencia = `${mes}-01`;

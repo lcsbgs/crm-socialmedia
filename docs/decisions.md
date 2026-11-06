@@ -163,3 +163,17 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Rotas do design:** `/producao` (antes `/entregas`) e `/ajustes/*` (antes `/configuracoes`). As rotas antigas redirecionam.
 - **Botão Novo abre menu** (Post, Tarefa, Reunião, Cliente). O design mostra só o botão.
 - **vitest para testes de TypeScript** (`pnpm test`), com `server-only` substituído por um módulo vazio.
+
+## 2026-11-06 · Pauta, Fase 2: autenticação, equipe e onboarding
+
+- **Membro só vê clientes atribuídos; financeiro só owner/admin.** `client_assignees` + `can_access_client()` em todas as policies de tabelas ligadas a cliente (clientes, posts, tarefas com cliente, reuniões, escopo, aprovações, comentários, histórico). `payments` passou para owner/admin. Backfill: todo membro existente ficou atribuído a todos os clientes, para ninguém perder acesso. Alternativa: começar sem atribuições (descartada, quebraria quem já usa).
+- **Membro não cria nem exclui cliente**, só edita os atribuídos. Contexto: o design diz que membro "trabalha nos clientes atribuídos". Alternativa: deixar criar e atribuir automaticamente.
+- **`clients.valor_mensal` continua legível para membros no banco** (a coluna está na mesma linha do cliente); a interface esconde valores para quem não é owner/admin. Alternativa: mover preço para outra tabela (fica para quando houver necessidade real).
+- **Limite de lugares vale na entrada, não no convite.** Contexto: o design mostra "O convite do Rafa fica esperando um lugar livre". Escolha: convites além do limite são guardados; o aceite só passa se houver lugar. Alternativa (antiga): bloquear o convite.
+- **Login por provedor em modo demonstração** abre uma tela de consentimento simulada (`/auth/simulado/[provedor]`) onde a pessoa escolhe o e-mail da conta. Com service role, o usuário é criado confirmado e a sessão abre por link mágico gerado no servidor; sem ela, por senha derivada do e-mail com `MOCK_AUTH_SECRET`. Só funciona com `INTEGRATIONS_MODE=mock`.
+- **ChatGPT como fluxo próprio no servidor (PKCE)**, não como provedor OIDC do Supabase: o Supabase não aceita OIDC customizado em todos os planos. O vínculo é pelo e-mail verificado e a sessão abre com o mesmo mecanismo do login simulado.
+- **Convite pela página pública usa a service role** (`get_invitation_preview` só para service_role). Sem a chave, a prévia aparece depois do login. Segue a regra do CLAUDE.md de não liberar anon no banco.
+- **E-mail atrás de adapter** (`src/lib/email`): mock registra no log; real usa Resend.
+- **Onboarding sem upload de logo e sem "Copiar link de convite" genérico.** Convites são por e-mail (o aceite exige o mesmo e-mail); o logo fica em Ajustes > Estúdio. O passo 3 deixa as contas Meta para a página do cliente (Fase 8).
+- **Pacote padrão "Essencial"** criado no passo 3 quando o espaço não tem pacote: 3 posts por semana, 1 reunião e 1 relatório por mês.
+- **`profiles.email`** sincronizado de `auth.users` por trigger, para a tela de Equipe.

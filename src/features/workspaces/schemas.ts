@@ -17,6 +17,11 @@ export const inviteSchema = z.object({
   workspaceId: z.uuid(),
   email: z.email("Informe um e-mail válido").trim().toLowerCase(),
   role: z.enum(["admin", "member"]),
+  clientIds: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((v) => (v === undefined ? [] : Array.isArray(v) ? v : v ? [v] : []))
+    .pipe(z.array(z.uuid()).max(200)),
 });
 
 export const onboardingSchema = z.object({

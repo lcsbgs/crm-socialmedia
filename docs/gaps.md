@@ -82,7 +82,7 @@ Princípio: **nenhuma tabela com dados é renomeada nem apagada.** Onde o nome d
 
 | Risco | Gravidade | Onde | Plano |
 |---|---|---|---|
-| Membro vê **todos** os clientes e **todo o financeiro** (`payments`, `clients.valor_mensal`) | Alta | Policies `"payments: membros"`, `"clients: membros"` | Fase 2: `client_assignees`, policy de clientes por atribuição, financeiro só owner/admin |
+| ~~Membro vê todos os clientes e todo o financeiro~~ (resolvido na Fase 2; `valor_mensal` segue legível no banco) | Baixa | Policies `"payments: membros"`, `"clients: membros"` | Fase 2: `client_assignees`, policy de clientes por atribuição, financeiro só owner/admin |
 | Migrations das Fases 3 a 7 possivelmente não aplicadas no remoto | Alta | Projeto `dsfgrcdtczbkdkciwjaa` | Conferir `supabase_migrations.schema_migrations` e aplicar as pendentes, só aditivas, antes da Fase 1 de banco |
 | Service role usada no portal | Média (correto, mas sensível) | `src/lib/supabase/admin.ts` com `server-only` | Manter; revisar na Fase 13 |
 | Segredos no cliente | Nenhum encontrado | Só `NEXT_PUBLIC_SUPABASE_URL` e a chave anônima vão ao navegador | Revisar a cada fase |
@@ -98,3 +98,4 @@ Princípio: **nenhuma tabela com dados é renomeada nem apagada.** Onde o nome d
 |---|---|---|
 | 0 | 2026-11-06 | Auditoria criada; telas movidas para `docs/design/`; CLAUDE.md na raiz |
 | 1 | 2026-11-06 | Design system: tokens, Bricolage + Figtree, Button/IconButton em pílula, Card 24, Tag, Avatar/AvatarStack, Tabs, SegmentedControl, Checkbox, RadioCard, ProgressBar, SegmentedBar, Drawer, EmptyState, DemoBadge. Casca do Main.dc.html (sidebar com seletor, Novo, contadores, clientes; barra com busca, Minha pauta/Pauta do time, sino, equipe). Rotas `/producao`, `/aprovacoes`, `/reunioes`, `/comercial`, `/relatorios`, `/ajustes/*`. vitest. Falta: comparação visual com login (banco remoto indisponível durante a fase) |
+| 2 | 2026-11-06 | `client_assignees`, acesso por papel (membro só clientes atribuídos, financeiro só owner/admin), convites com clientes e lugar em espera, `profiles.email`. Login redesenhado com ChatGPT/Google/Apple em modo demonstração e estrutura real (Supabase OAuth, ChatGPT PKCE), link mágico e senha em desenvolvimento. Onboarding em 3 passos, Convite e Ajustes > Equipe do design. Adapter de e-mail. `docs/oauth-setup.md`. Risco resolvido: membro via todo o financeiro |

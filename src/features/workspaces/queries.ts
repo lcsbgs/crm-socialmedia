@@ -56,7 +56,7 @@ export async function getWorkspaceMembers(workspaceId: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("workspace_members")
-    .select("user_id, role, created_at, profile:profiles!inner (nome, avatar_url)")
+    .select("user_id, role, created_at, profile:profiles!inner (nome, avatar_url, email, auth_provider)")
     .eq("workspace_id", workspaceId)
     .order("created_at");
   return data ?? [];
@@ -66,11 +66,17 @@ export async function getPendingInvitations(workspaceId: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("invitations")
-    .select("id, email, role, token, expires_at")
+    .select("id, email, role, token, expires_at, client_ids, created_at")
     .eq("workspace_id", workspaceId)
     .is("accepted_at", null)
     .gt("expires_at", new Date().toISOString())
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
+  return data ?? [];
+}
+
+export async function getClientAssignments(workspaceId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase.from("client_assignees").select("client_id, user_id").eq("workspace_id", workspaceId);
   return data ?? [];
 }
 

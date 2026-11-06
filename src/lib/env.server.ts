@@ -5,7 +5,15 @@ const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().min(1),
   ANTHROPIC_MODEL: z.string().min(1),
+  ENCRYPTION_KEY: z.string().min(32),
+  MOCK_AUTH_SECRET: z.string().min(16),
 });
+
+// Variável opcional: devolve undefined em vez de falhar.
+export function optionalServerEnv(key: string): string | undefined {
+  const v = process.env[key];
+  return v && v.trim() ? v : undefined;
+}
 
 type ServerEnv = z.infer<typeof serverSchema>;
 

@@ -14,3 +14,9 @@ export const signUpSchema = z.object({
 });
 
 export const magicLinkSchema = z.object({ email });
+
+export const mockLoginSchema = z.object({
+  provider: z.enum(["google", "apple", "chatgpt"]),
+  email,
+  nome: z.string().trim().min(2, "Informe um nome").max(80),
+});

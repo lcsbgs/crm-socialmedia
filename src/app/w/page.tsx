@@ -6,7 +6,7 @@ import { getProfile, getUserWorkspaces } from "@/features/workspaces/queries";
 export default async function WorkspaceResolver() {
   const [profile, workspaces] = await Promise.all([getProfile(), getUserWorkspaces()]);
 
-  if (!profile?.onboarded_at) redirect("/onboarding");
+  if (!profile?.onboarded_at) redirect("/onboarding/espaco");
   if (workspaces.length === 0) redirect("/w/novo");
 
   const target = workspaces.find((w) => w.id === profile.last_workspace_id) ?? workspaces[0];

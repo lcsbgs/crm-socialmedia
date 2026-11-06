@@ -64,7 +64,12 @@ export async function deleteWorkspace(_: ActionState, formData: FormData): Promi
 
 export async function inviteMember(_: ActionState, formData: FormData): Promise<ActionState> {
   const user = await requireUser();
-  const parsed = inviteSchema.safeParse(Object.fromEntries(formData));
+  const parsed = inviteSchema.safeParse({
+    workspaceId: formData.get("workspaceId"),
+    email: formData.get("email"),
+    role: formData.get("role"),
+    clientIds: formData.getAll("clientIds").map(String),
+  });
   if (!parsed.success) return fromZodError(parsed.error);
 
   const supabase = await createClient();
@@ -75,6 +80,7 @@ export async function inviteMember(_: ActionState, formData: FormData): Promise<
       email: parsed.data.email,
       role: parsed.data.role,
       invited_by: user.id,
+      client_ids: parsed.data.clientIds,
     })
     .select("token")
     .single();
@@ -82,9 +88,22 @@ export async function inviteMember(_: ActionState, formData: FormData): Promise<
   if (error?.code === "23505") return { error: "Já existe um convite pendente para este e-mail." };
   if (error || !data) return fromDbError(error);
 
+  const link = `${publicEnv.NEXT_PUBLIC_APP_URL}/convite/${data.token}`;
+  const { emailAdapter } = await import("@/lib/email");
+  const { data: ws } = await supabase.from("workspaces").select("nome").eq("id", parsed.data.workspaceId).single();
+  const sent = await emailAdapter().send({
+    to: parsed.data.email,
+    subject: `Convite para o ${ws?.nome ?? "estúdio"}`,
+    text: `Você foi chamada para trabalhar no ${ws?.nome ?? "estúdio"}. Para aceitar, abra: ${link}\nO convite vale por 7 dias.`,
+  });
+
   revalidatePath("/w", "layout");
   return {
-    message: "Convite criado. Copie o link e envie para a pessoa.",
+    message: sent.ok
+      ? sent.simulated
+        ? "Convite criado. Envio de e-mail simulado: copie o link e mande para a pessoa."
+        : "Convite enviado por e-mail. Se preferir, copie o link."
+      : "Convite criado, mas o e-mail não saiu. Copie o link e mande para a pessoa.",
     data: { link: `${publicEnv.NEXT_PUBLIC_APP_URL}/convite/${data.token}` },
   };
 }
@@ -140,7 +159,7 @@ export async function completeOnboarding(_: ActionState, formData: FormData): Pr
   });
   if (error || !slug) return fromDbError(error);
 
-  redirect(`/w/${slug}/comecar`);
+  redirect("/onboarding/ia");
 }
 
 // Logo do workspace (aparece no portal do cliente). O arquivo já foi enviado
@@ -171,4 +190,29 @@ export async function setWorkspaceLogo(input: { workspaceId: string; path: strin
   }
   revalidatePath("/w", "layout");
   return { ok: true };
+}
+
+export async function changeMemberRole(formData: FormData) {
+  await requireUser();
+  const workspaceId = z.uuid().parse(formData.get("workspaceId"));
+  const userId = z.uuid().parse(formData.get("userId"));
+  const role = z.enum(["admin", "member"]).parse(formData.get("role"));
+  const supabase = await createClient();
+  await supabase.from("workspace_members").update({ role }).eq("workspace_id", workspaceId).eq("user_id", userId);
+  revalidatePath("/w", "layout");
+}
+
+export async function saveMemberClients(input: { workspaceId: string; userId: string; clientIds: string[] }) {
+  await requireUser();
+  const data = z
+    .object({ workspaceId: z.uuid(), userId: z.uuid(), clientIds: z.array(z.uuid()).max(500) })
+    .parse(input);
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("set_member_clients", {
+    p_workspace_id: data.workspaceId,
+    p_user_id: data.userId,
+    p_client_ids: data.clientIds,
+  });
+  revalidatePath("/w", "layout");
+  return error ? { error: "Não foi possível salvar os clientes." } : { ok: true };
 }

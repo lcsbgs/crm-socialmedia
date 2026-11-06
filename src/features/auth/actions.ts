@@ -72,3 +72,35 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+// Login social (Google, Apple, ChatGPT). Em modo demonstração abre a tela simulada.
+export async function startProviderLogin(formData: FormData) {
+  const { loginAdapter, isLoginProvider } = await import("./providers");
+  const provider = String(formData.get("provider") ?? "");
+  const next = safeNext(formData.get("next"));
+  if (!isLoginProvider(provider)) redirect("/login");
+  const result = await loginAdapter().start(provider, next);
+  if ("error" in result) redirect(`/login?erro=provedor&next=${encodeURIComponent(next)}`);
+  redirect(result.url);
+}
+
+// Consentimento simulado: cria ou entra num usuário de teste com o e-mail informado.
+export async function confirmMockLogin(_: ActionState, formData: FormData): Promise<ActionState> {
+  const { isMockMode } = await import("@/lib/integrations/mode");
+  if (!isMockMode()) return { error: "O login simulado só funciona em modo demonstração." };
+  const { mockLoginSchema } = await import("./schemas");
+  const parsed = mockLoginSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return fromZodError(parsed.error);
+  const { signInVerifiedEmail } = await import("./session-bridge");
+  const result = await signInVerifiedEmail({
+    email: parsed.data.email,
+    nome: parsed.data.nome,
+    provider: `${parsed.data.provider}-simulado`,
+  });
+  if (!result.ok) return { error: result.error, data: { email: parsed.data.email } };
+  redirect(safeNext(formData.get("next")));
+}
+
+export async function devPasswordAllowed() {
+  return process.env.NODE_ENV !== "production" || process.env.ALLOW_PASSWORD_LOGIN === "true";
+}

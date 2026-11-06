@@ -11,7 +11,7 @@ export function AcceptInvitationForm({ token }: { token: string }) {
     <form action={action} className="space-y-4">
       <FormAlert state={state} />
       <input type="hidden" name="token" value={token} />
-      <SubmitButton className="w-full" pendingText="Entrando...">
+      <SubmitButton size="lg" className="w-full" pendingText="Entrando...">
         Aceitar convite
       </SubmitButton>
     </form>

@@ -97,10 +97,13 @@ select lives_ok(
 -- ------------------------------------------------------------
 -- Limite do plano free: 1 usuário
 -- ------------------------------------------------------------
-select throws_ok(
+select lives_ok(
   $$ insert into invitations (workspace_id, email, role, invited_by)
-     values ((select ws_ana from ids), 'bia@teste.com', 'member', '11111111-1111-4111-a111-111111111111') $$,
-  'P0001', null, 'free bloqueia convite do 2º membro');
+     values ((select ws_ana from ids), 'zeca@teste.com', 'member', '11111111-1111-4111-a111-111111111111') $$,
+  'free aceita convite além do limite (fica esperando lugar)');
+reset role;
+delete from invitations where email = 'zeca@teste.com';
+select pg_temp.login('11111111-1111-4111-a111-111111111111', 'ana@teste.com');
 
 reset role; select set_config('request.jwt.claims', '', true);
 select throws_ok(
@@ -118,10 +121,13 @@ select lives_ok(
   $$ insert into invitations (workspace_id, email, role, invited_by)
      values ((select ws_ana from ids), 'bia@teste.com', 'admin', '11111111-1111-4111-a111-111111111111') $$,
   'pro permite convidar o 2º membro');
-select throws_ok(
+select lives_ok(
   $$ insert into invitations (workspace_id, email, role, invited_by)
      values ((select ws_ana from ids), 'caio@teste.com', 'member', '11111111-1111-4111-a111-111111111111') $$,
-  'P0001', null, 'convite pendente conta no limite do pro');
+  'convite além do limite do pro fica esperando lugar');
+reset role;
+delete from invitations where email = 'caio@teste.com';
+select pg_temp.login('11111111-1111-4111-a111-111111111111', 'ana@teste.com');
 
 reset role;
 create temp table bia_token as select token from invitations where email = 'bia@teste.com';

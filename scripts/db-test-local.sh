@@ -11,6 +11,7 @@ if [ "$(id -u)" = "0" ]; then RUNAS="runuser -u postgres --"; mkdir -p "$DATA"; 
 if [ ! -f "$DATA/PG_VERSION" ]; then $RUNAS "$PGBIN/initdb" -D "$DATA" -U postgres -A trust >/dev/null; fi
 $RUNAS "$PGBIN/pg_ctl" -D "$DATA" -o "-p $PORT -k /tmp" -l "$DATA/log" status >/dev/null 2>&1 || \
   $RUNAS "$PGBIN/pg_ctl" -D "$DATA" -o "-p $PORT -k /tmp -c listen_addresses=''" -l "$DATA/log" -w start >/dev/null
+export PGOPTIONS="-c client_min_messages=warning"
 PSQL="psql -h /tmp -p $PORT -U postgres -v ON_ERROR_STOP=1 -q"
 $PSQL -d postgres -c "drop database if exists pauta_test" -c "create database pauta_test" >/dev/null
 $PSQL -d pauta_test -f "$ROOT/scripts/supabase-stub.sql" >/dev/null

@@ -1,11 +1,12 @@
+import { UserPlus } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
-import { CopyButton } from "@/components/ui/copy-button";
-import { revokeInvitation, removeMember } from "@/features/workspaces/actions";
-import { InviteForm } from "@/features/workspaces/components/invite-form";
+import { InviteDialogButton } from "@/features/workspaces/components/invite-dialog";
+import { TeamTable } from "@/features/workspaces/components/team-table";
 import {
+  getClientAssignments,
   getPendingInvitations,
   getWorkspaceBySlug,
   getWorkspaceMembers,
@@ -13,87 +14,101 @@ import {
 } from "@/features/workspaces/queries";
 import { requireUser } from "@/lib/auth";
 import { publicEnv } from "@/lib/env";
-import { roleLabels } from "@/lib/labels";
+import { planLabels } from "@/lib/labels";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Equipe" };
 
-const dateFormat = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" });
 
 export default async function TeamSettingsPage({ params }: PageProps<"/w/[slug]/ajustes/equipe">) {
   const { slug } = await params;
   const [user, workspace] = await Promise.all([requireUser(), getWorkspaceBySlug(slug)]);
-  const [usage, members, invitations] = await Promise.all([
+  const supabase = await createClient();
+  const [usage, members, invitations, assignments, { data: clients }, { data: ws }] = await Promise.all([
     getWorkspaceUsage(workspace.id),
     getWorkspaceMembers(workspace.id),
     workspace.canManage ? getPendingInvitations(workspace.id) : Promise.resolve([]),
+    getClientAssignments(workspace.id),
+    supabase.from("clients").select("id, nome, cor").eq("workspace_id", workspace.id).neq("status", "encerrado").order("nome"),
+    supabase.from("workspaces").select("ai_mode").eq("id", workspace.id).single(),
   ]);
 
+  const max = usage?.max_members ?? 1;
+  const free = Math.max(0, max - members.length);
+  const clientList = (clients ?? []).map((c) => ({ ...c, cor: c.cor ?? 0 }));
+  const teamMembers = members.map((m) => ({
+    userId: m.user_id,
+    nome: m.profile.nome || "Sem nome",
+    email: m.profile.email,
+    role: m.role,
+    provider: m.profile.auth_provider,
+    joinedAt: m.created_at,
+    clientIds: assignments.filter((a) => a.user_id === m.user_id).map((a) => a.client_id),
+    ai: ws?.ai_mode === "chatgpt" ? "Plano ChatGPT" : "Créditos do Pauta",
+  }));
+  const invites = invitations.map((inv, i) => ({
+    id: inv.id,
+    email: inv.email,
+    role: inv.role,
+    link: `${publicEnv.NEXT_PUBLIC_APP_URL}/convite/${inv.token}`,
+    clientIds: inv.client_ids ?? [],
+    waiting: i >= free,
+  }));
+  const waiting = invites.filter((i) => i.waiting);
+
   return (
-    <div className="max-w-4xl space-y-5">
-      <PageHeader title="Equipe" description={`Quem trabalha no ${workspace.nome} e o que cada pessoa vê.`} />
-      <Card>
-        <CardHeader title="Pessoas" count={members.length} />
-        <ul className="divide-y divide-border">
-          {members.map((m) => {
-            const isSelf = m.user_id === user.id;
-            const canRemove = m.role !== "owner" && (workspace.canManage || isSelf);
-            return (
-              <li key={m.user_id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                <div>
-                  <p className="text-base font-bold">
-                    {m.profile.nome} {isSelf ? <span className="font-normal text-muted">(você)</span> : null}
-                  </p>
-                  <p className="text-sm text-muted">{roleLabels[m.role]}</p>
-                </div>
-                {canRemove ? (
-                  <form action={removeMember}>
-                    <input type="hidden" name="workspaceId" value={workspace.id} />
-                    <input type="hidden" name="userId" value={m.user_id} />
-                    <Button type="submit" variant="outline" size="sm">
-                      {isSelf ? "Sair do espaço" : "Remover"}
-                    </Button>
-                  </form>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      </Card>
-      {workspace.canManage ? (
-        <Card>
-          <CardHeader
-            title="Convidar pessoa"
-            description="O link vale por 7 dias e só funciona para o e-mail informado."
-          />
-          <InviteForm
-            workspaceId={workspace.id}
-            atLimit={!!usage && usage.members + usage.pending_invitations >= usage.max_members}
-          />
-          {invitations.length ? (
-            <ul className="mt-6 divide-y divide-border">
-              {invitations.map((inv) => (
-                <li key={inv.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-base">{inv.email}</p>
-                    <p className="text-sm text-muted">
-                      {roleLabels[inv.role]}, expira em {dateFormat.format(new Date(inv.expires_at))}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <CopyButton value={`${publicEnv.NEXT_PUBLIC_APP_URL}/convite/${inv.token}`} />
-                    <form action={revokeInvitation}>
-                      <input type="hidden" name="invitationId" value={inv.id} />
-                      <Button type="submit" variant="ghost" size="sm">
-                        Revogar
-                      </Button>
-                    </form>
-                  </div>
-                </li>
-              ))}
-            </ul>
+    <div className="max-w-5xl space-y-5">
+      <PageHeader
+        title="Equipe"
+        description={`Quem trabalha no ${workspace.nome} e o que cada pessoa vê.`}
+        action={
+          workspace.canManage ? (
+            <InviteDialogButton workspaceId={workspace.id} clients={clientList}>
+              <UserPlus aria-hidden />
+              Convidar pessoa
+            </InviteDialogButton>
+          ) : null
+        }
+      />
+      {usage ? (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-inner bg-surface px-[22px] py-4 text-md">
+          <b>
+            {members.length} de {max} {max === 1 ? "lugar" : "lugares"} do plano {planLabels[usage.plano]} em uso
+          </b>
+          {waiting.length ? (
+            <span className="text-ink-2">
+              {waiting.length === 1
+                ? `O convite de ${waiting[0].email.split("@")[0]} fica esperando um lugar livre.`
+                : `${waiting.length} convites ficam esperando lugar livre.`}
+            </span>
           ) : null}
-        </Card>
+          {usage.plano !== "estudio" ? (
+            <Link href={`/w/${slug}/ajustes/plano`} className="ml-auto font-semibold text-accent-tonal-ink underline">
+              Ver plano {usage.plano === "free" ? "Pro" : "Estúdio"}
+            </Link>
+          ) : null}
+        </div>
       ) : null}
+      <Card>
+        <TeamTable
+          workspaceId={workspace.id}
+          currentUserId={user.id}
+          canManage={workspace.canManage}
+          members={teamMembers}
+          invites={invites}
+          clients={clientList}
+        />
+      </Card>
+      <Card aria-labelledby="h-ia-time">
+        <CardHeader id="h-ia-time" title="IA da equipe" />
+        <p className="text-md text-ink-2">
+          Quem conecta o próprio ChatGPT usa o plano dele. Quem não conecta usa os créditos do estúdio. Veja o uso em{" "}
+          <Link href={`/w/${slug}/ajustes/ia`} className="font-semibold text-accent-tonal-ink underline">
+            IA e ChatGPT
+          </Link>
+          .
+        </p>
+      </Card>
     </div>
   );
 }

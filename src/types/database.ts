@@ -23,6 +23,28 @@ export type Database = {
   };
   public: {
     Tables: {
+      client_assignees: {
+        Row: {
+          client_id: string;
+          created_at: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          created_at?: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          created_at?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       approvals: {
         Row: {
           autor_nome: string;
@@ -343,6 +365,7 @@ export type Database = {
       invitations: {
         Row: {
           accepted_at: string | null;
+          client_ids: string[];
           created_at: string;
           email: string;
           expires_at: string;
@@ -356,6 +379,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           accepted_at?: string | null;
+          client_ids?: string[];
           created_at?: string;
           email: string;
           expires_at?: string;
@@ -368,6 +392,7 @@ export type Database = {
         };
         Update: {
           accepted_at?: string | null;
+          client_ids?: string[];
           created_at?: string;
           email?: string;
           expires_at?: string;
@@ -630,8 +655,10 @@ export type Database = {
       };
       profiles: {
         Row: {
+          auth_provider: string | null;
           avatar_url: string | null;
           created_at: string;
+          email: string | null;
           id: string;
           last_workspace_id: string | null;
           nome: string;
@@ -640,8 +667,10 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          auth_provider?: string | null;
           avatar_url?: string | null;
           created_at?: string;
+          email?: string | null;
           id: string;
           last_workspace_id?: string | null;
           nome?: string;
@@ -649,8 +678,10 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          auth_provider?: string | null;
           avatar_url?: string | null;
           created_at?: string;
+          email?: string | null;
           id?: string;
           last_workspace_id?: string | null;
           nome?: string;
@@ -835,9 +866,11 @@ export type Database = {
       };
       workspaces: {
         Row: {
+          ai_mode: string;
           created_at: string;
           id: string;
           logo_path: string | null;
+          modo_trabalho: string;
           nome: string;
           owner_id: string;
           plano: Database["public"]["Enums"]["plan_tier"];
@@ -846,9 +879,11 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          ai_mode?: string;
           created_at?: string;
           id?: string;
           logo_path?: string | null;
+          modo_trabalho?: string;
           nome: string;
           owner_id: string;
           plano?: Database["public"]["Enums"]["plan_tier"];
@@ -856,9 +891,11 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          ai_mode?: string;
           created_at?: string;
           id?: string;
           logo_path?: string | null;
+          modo_trabalho?: string;
           nome?: string;
           owner_id?: string;
           plano?: Database["public"]["Enums"]["plan_tier"];
@@ -891,6 +928,38 @@ export type Database = {
       };
     };
     Functions: {
+      is_workspace_admin: {
+        Args: { p_workspace_id: string };
+        Returns: boolean;
+      };
+      can_access_client: {
+        Args: { p_client_id: string };
+        Returns: boolean;
+      };
+      get_invitation_preview: {
+        Args: { p_token: string };
+        Returns: {
+          workspace_nome: string;
+          convidado_por: string;
+          email: string;
+          role: Database["public"]["Enums"]["workspace_role"];
+          clientes: string[];
+          expirado: boolean;
+          aceito: boolean;
+        }[];
+      };
+      finish_onboarding: {
+        Args: never;
+        Returns: undefined;
+      };
+      save_studio_step: {
+        Args: { p_workspace_id: string; p_nome: string; p_modo: string };
+        Returns: string;
+      };
+      set_member_clients: {
+        Args: { p_workspace_id: string; p_user_id: string; p_client_ids: string[] };
+        Returns: undefined;
+      };
       accept_invitation: { Args: { p_token: string }; Returns: string };
       can_access_media: { Args: { p_name: string }; Returns: boolean };
       complete_onboarding: { Args: { p_nome: string; p_workspace_nome: string }; Returns: string };
