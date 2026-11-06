@@ -185,3 +185,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Saudação** escolhida no servidor entre opções por período, dia da semana e fatos reais (aprovações de ontem); a última vai num cookie para não repetir.
 - **`getDailyAgenda` = leitura + `buildDailyAgenda` puro**, testado com vitest. A leitura não inventa nada: bloco sem dado mostra estado vazio.
 - **`deliverables.hora_publicacao`** para ordenar as publicações do dia.
+
+## 2026-11-06 · Pauta, Fase 4: clientes
+
+- **Abas por `?aba=`** com os nomes do design (Visão geral, Estratégia, Calendário, Produção, Reuniões, Arquivos, Financeiro, Escopo, Relatórios, Linha do tempo). Financeiro só aparece para owner/admin. `?aba=entregas` antigo vira Produção.
+- **Kit da marca e briefing ficam na aba Arquivos**, junto dos arquivos do cliente. O design não mostra a aba; juntar tudo que é "material do cliente" num lugar foi o mais simples.
+- **Checklist de onboarding com itens automáticos** (pacote, briefing, kit, Instagram, pasta no Drive, kickoff) marcados quando o dado existe; os manuais (contrato) ficam em `clients.onboarding_checklist`. O card some da Visão geral quando tudo está feito.
+- **Briefing público em `/b/[token]`** e **kit só leitura em `/k/[token]`**, ambos pelo servidor com service role e funções só para `service_role`. O kit só abre com `share_ativo` ligado ("Compartilhar com designer"). Gerar outro link de briefing invalida o anterior.
+- **`timeline_events`** guarda eventos manuais (notas) e de sistema (briefing respondido) e entra na view `client_timeline`, que segue sendo a leitura única.
+- **Storage**: arquivos de cliente em `{workspace}/clientes/{cliente}/{categoria}/...`; `can_access_media` passou a exigir acesso ao cliente nessa pasta.
+- **Instagram e pasta do Drive como campos simples** (`instagram_handle`, `drive_folder_url`) até as integrações reais (Fases 8 e 9).
+- **Rodadas de ajuste** na Visão geral = pedidos de ajuste do cliente no mês (tabela `approvals`).

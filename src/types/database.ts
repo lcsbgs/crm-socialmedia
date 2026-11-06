@@ -23,6 +23,169 @@ export type Database = {
   };
   public: {
     Tables: {
+      timeline_events: {
+        Row: {
+          autor_id: string | null;
+          client_id: string;
+          corpo: string | null;
+          created_at: string;
+          id: string;
+          ocorreu_em: string;
+          tipo: string;
+          titulo: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          autor_id?: string | null;
+          client_id: string;
+          corpo?: string | null;
+          created_at?: string;
+          id?: string;
+          ocorreu_em?: string;
+          tipo?: string;
+          titulo: string;
+          workspace_id: string;
+        };
+        Update: {
+          autor_id?: string | null;
+          client_id?: string;
+          corpo?: string | null;
+          created_at?: string;
+          id?: string;
+          ocorreu_em?: string;
+          tipo?: string;
+          titulo?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      client_files: {
+        Row: {
+          categoria: string;
+          client_id: string;
+          created_at: string;
+          id: string;
+          mime: string | null;
+          nome: string;
+          path: string;
+          tamanho: number | null;
+          uploaded_by: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          categoria?: string;
+          client_id: string;
+          created_at?: string;
+          id?: string;
+          mime?: string | null;
+          nome: string;
+          path: string;
+          tamanho?: number | null;
+          uploaded_by?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          categoria?: string;
+          client_id?: string;
+          created_at?: string;
+          id?: string;
+          mime?: string | null;
+          nome?: string;
+          path?: string;
+          tamanho?: number | null;
+          uploaded_by?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      brand_kits: {
+        Row: {
+          client_id: string;
+          cores: Json;
+          created_at: string;
+          evitar: string[];
+          fontes: string | null;
+          observacoes: string | null;
+          share_ativo: boolean;
+          share_token: string;
+          tom: string[];
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          cores?: Json;
+          created_at?: string;
+          evitar?: string[];
+          fontes?: string | null;
+          observacoes?: string | null;
+          share_ativo?: boolean;
+          share_token?: string;
+          tom?: string[];
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          cores?: Json;
+          created_at?: string;
+          evitar?: string[];
+          fontes?: string | null;
+          observacoes?: string | null;
+          share_ativo?: boolean;
+          share_token?: string;
+          tom?: string[];
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      client_strategies: {
+        Row: {
+          client_id: string;
+          created_at: string;
+          decisoes: Json;
+          formatos: Json;
+          objetivo: string | null;
+          objetivos: Json;
+          pilares: Json;
+          publico: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          created_at?: string;
+          decisoes?: Json;
+          formatos?: Json;
+          objetivo?: string | null;
+          objetivos?: Json;
+          pilares?: Json;
+          publico?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          created_at?: string;
+          decisoes?: Json;
+          formatos?: Json;
+          objetivo?: string | null;
+          objetivos?: Json;
+          pilares?: Json;
+          publico?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       client_assignees: {
         Row: {
           client_id: string;
@@ -97,14 +260,20 @@ export type Database = {
       clients: {
         Row: {
           briefing: string | null;
+          briefing_respondido_em: string | null;
+          briefing_respostas: Json | null;
+          briefing_token: string;
           contatos: NonNullable<Json>;
           cor: number | null;
           created_at: string;
           dia_vencimento: number | null;
+          drive_folder_url: string | null;
           id: string;
           inicio_contrato: string | null;
+          instagram_handle: string | null;
           links: NonNullable<Json>;
           nome: string;
+          onboarding_checklist: Json;
           package_template_id: string | null;
           portal_token: string;
           segmento: string | null;
@@ -117,14 +286,20 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           briefing?: string | null;
+          briefing_respondido_em?: string | null;
+          briefing_respostas?: Json | null;
+          briefing_token?: string;
           contatos?: NonNullable<Json>;
           cor?: number | null;
           created_at?: string;
           dia_vencimento?: number | null;
+          drive_folder_url?: string | null;
           id?: string;
           inicio_contrato?: string | null;
+          instagram_handle?: string | null;
           links?: NonNullable<Json>;
           nome: string;
+          onboarding_checklist?: Json;
           package_template_id?: string | null;
           portal_token?: string;
           segmento?: string | null;
@@ -136,14 +311,20 @@ export type Database = {
         };
         Update: {
           briefing?: string | null;
+          briefing_respondido_em?: string | null;
+          briefing_respostas?: Json | null;
+          briefing_token?: string;
           contatos?: NonNullable<Json>;
           cor?: number | null;
           created_at?: string;
           dia_vencimento?: number | null;
+          drive_folder_url?: string | null;
           id?: string;
           inicio_contrato?: string | null;
+          instagram_handle?: string | null;
           links?: NonNullable<Json>;
           nome?: string;
+          onboarding_checklist?: Json;
           package_template_id?: string | null;
           portal_token?: string;
           segmento?: string | null;
@@ -934,6 +1115,22 @@ export type Database = {
       };
     };
     Functions: {
+      get_brand_kit_public: {
+        Args: { p_token: string };
+        Returns: { workspace_id: string; client_id: string; client_nome: string; client_cor: number | null; workspace_nome: string; cores: Json; fontes: string | null; tom: string[]; evitar: string[]; observacoes: string | null }[];
+      };
+      regenerate_briefing_token: {
+        Args: { p_client_id: string };
+        Returns: string;
+      };
+      submit_briefing: {
+        Args: { p_token: string; p_respostas: Json; p_nome: string };
+        Returns: undefined;
+      };
+      get_briefing_form: {
+        Args: { p_token: string };
+        Returns: { client_nome: string; workspace_nome: string; respondido_em: string | null; respostas: Json | null }[];
+      };
       is_workspace_admin: {
         Args: { p_workspace_id: string };
         Returns: boolean;

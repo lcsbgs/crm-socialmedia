@@ -23,3 +23,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261106110000_daily_agenda.sql`, `src/features/today/{agenda,greeting}.ts` com testes, tela nova, componentes antigos da Hoje removidos.
 - Falta: seletor de responsável no diálogo de nova tarefa.
 - Próxima: Fase 4, clientes.
+
+## Fase 4: clientes (concluída)
+- Feito: migração `20261106120000_client_hub.sql` (estratégia, kit, arquivos, timeline_events, briefing, checklist, acesso a mídia por cliente), página do cliente refeita, páginas públicas de briefing e kit.
+- Falta: aba Relatórios (Fase 12).
+- Próxima: Fase 5, pacotes e planejamento.

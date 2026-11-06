@@ -26,7 +26,7 @@ select set_eq(
     'complete_onboarding', 'get_invitation', 'accept_invitation', 'workspace_usage',
     'generate_month', 'can_access_media',
     'is_workspace_admin', 'can_access_client', 'can_access_deliverable', 'set_member_clients',
-    'save_studio_step', 'finish_onboarding'
+    'save_studio_step', 'finish_onboarding', 'regenerate_briefing_token'
   ],
   'authenticated só executa as funções security definer previstas');
 
@@ -39,7 +39,7 @@ select set_eq(
        and not has_function_privilege('authenticated', p.oid, 'execute')
        and p.prorettype <> 'trigger'::regtype $$,
   array['portal_respond', 'mark_overdue_payments', 'create_workspace_for', 'workspace_seat_usage',
-        'get_invitation_preview'],
+        'get_invitation_preview', 'get_briefing_form', 'submit_briefing', 'get_brand_kit_public'],
   'funções internas ficam só para service_role');
 
 select * from finish();
