@@ -61,9 +61,9 @@ export function Select({
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
         className={cn(
-          "inline-flex w-full items-center justify-between gap-2 rounded-md border border-border bg-surface px-2.5 text-left text-base text-ink",
+          "inline-flex w-full items-center justify-between gap-2 rounded-input border border-border-input bg-surface px-3.5 text-left text-md text-ink",
           "hover:bg-hover focus-visible:border-accent focus-visible:outline-none data-[placeholder]:text-muted disabled:opacity-60 aria-[invalid=true]:border-late",
-          size === "sm" ? "h-7 text-sm" : "h-8",
+          size === "sm" ? "h-9 rounded-full px-3 text-base" : "h-11",
           className,
         )}
       >
@@ -79,7 +79,7 @@ export function Select({
           position="popper"
           sideOffset={4}
           collisionPadding={8}
-          className="anim-pop z-50 max-h-[min(320px,var(--radix-select-content-available-height))] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-lg border border-border bg-surface shadow-pop"
+          className="anim-pop z-50 max-h-[min(320px,var(--radix-select-content-available-height))] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-inner border border-border bg-surface shadow-pop"
         >
           <SelectPrimitive.Viewport className="p-1">
             {options.map((o) => (
@@ -87,7 +87,7 @@ export function Select({
                 key={o.value || EMPTY}
                 value={o.value === "" ? EMPTY : o.value}
                 textValue={o.textValue}
-                className="relative flex h-8 cursor-default items-center rounded-md pr-8 pl-2 text-base outline-none select-none data-[disabled]:opacity-50 data-[highlighted]:bg-hover"
+                className="relative flex h-9 cursor-default items-center rounded-[10px] pr-8 pl-2.5 text-base outline-none select-none data-[disabled]:opacity-50 data-[highlighted]:bg-hover"
               >
                 <SelectPrimitive.ItemText>{o.label}</SelectPrimitive.ItemText>
                 <SelectPrimitive.ItemIndicator className="absolute right-2">

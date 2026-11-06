@@ -43,7 +43,7 @@ select lives_ok(
 select throws_ok(
   $$ insert into deliverables (workspace_id, client_id, titulo)
      values ((select ws_ana from ids), 'cccccccc-0000-4000-a000-000000000002', 'Cliente alheio') $$,
-  '23503', null, 'entrega não aponta para cliente de outro workspace');
+  '42501', null, 'entrega não aponta para cliente de outro workspace');
 
 -- status_changed_at muda junto com o status
 update deliverables set status_changed_at = now() - interval '5 days' where id = 'dddddddd-0000-4000-a000-000000000001';

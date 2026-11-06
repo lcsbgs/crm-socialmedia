@@ -21,7 +21,7 @@ export function Tooltip({
         <TooltipPrimitive.Content
           side={side}
           sideOffset={6}
-          className="anim-fade z-50 flex items-center gap-2 rounded-md bg-ink px-2 py-1 text-xs text-surface"
+          className="anim-fade z-50 flex items-center gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-xs text-white"
         >
           {content}
         </TooltipPrimitive.Content>

@@ -20,6 +20,16 @@ export type DeliverableDetail = {
   legenda: string | null;
   responsavel_id: string | null;
   created_at: string;
+  pilar: string | null;
+  prazo_interno: string | null;
+  hora_publicacao: string | null;
+  rodadas: number;
+  limiteRodadas: number;
+  checklist: { texto: string; feito: boolean }[];
+  canal: "instagram" | "facebook" | "ambos";
+  versaoAtual: number;
+  versions: { numero: number; origem: string; created_at: string; legenda: string | null; thumb: string | null }[];
+  pilares: string[];
   client: {
     id: string;
     nome: string;
@@ -27,6 +37,7 @@ export type DeliverableDetail = {
     portalUrl: string;
     contatoNome: string;
     contatoTelefone: string | null;
+    instagram: string | null;
   };
   media: Media[];
   comments: {
@@ -70,7 +81,7 @@ export async function getDeliverableDetail(input: {
       supabase
         .from("deliverables")
         .select(
-          "id, titulo, slot_label, formato, status, data_publicacao, legenda, responsavel_id, created_at, midia_urls, client:clients!inner (id, nome, cor, contatos, portal_token)",
+          "id, titulo, slot_label, formato, status, data_publicacao, legenda, responsavel_id, created_at, midia_urls, pilar, prazo_interno, hora_publicacao, rodadas, checklist, canal, versao_atual, client:clients!inner (id, nome, cor, contatos, portal_token, instagram_handle, package:package_templates (limite_rodadas))",
         )
         .eq("workspace_id", workspaceId)
         .eq("id", id)
@@ -101,6 +112,16 @@ export async function getDeliverableDetail(input: {
     ]);
   if (!d) return null;
 
+  const [{ data: versions }, { data: strategy }] = await Promise.all([
+    supabase
+      .from("deliverable_versions")
+      .select("numero, origem, created_at, legenda, midia_paths")
+      .eq("deliverable_id", id)
+      .order("numero", { ascending: false })
+      .limit(20),
+    supabase.from("client_strategies").select("pilares").eq("client_id", d.client.id).maybeSingle(),
+  ]);
+  const versionThumbs = await signMedia((versions ?? []).map((v) => v.midia_paths[0]).filter(Boolean));
   const signed = await signMedia(d.midia_urls);
   const contato = z.array(contactSchema).catch([]).parse(d.client.contatos)[0];
 
@@ -115,6 +136,22 @@ export async function getDeliverableDetail(input: {
     legenda: d.legenda,
     responsavel_id: d.responsavel_id,
     created_at: d.created_at,
+    pilar: d.pilar,
+    prazo_interno: d.prazo_interno,
+    hora_publicacao: d.hora_publicacao,
+    rodadas: d.rodadas,
+    limiteRodadas: d.client.package?.limite_rodadas ?? 2,
+    checklist: z.array(z.object({ texto: z.string(), feito: z.boolean() })).catch([]).parse(d.checklist),
+    canal: (d.canal as "instagram" | "facebook" | "ambos") ?? "instagram",
+    versaoAtual: d.versao_atual,
+    versions: (versions ?? []).map((v) => ({
+      numero: v.numero,
+      origem: v.origem,
+      created_at: v.created_at,
+      legenda: v.legenda,
+      thumb: v.midia_paths[0] ? (versionThumbs.get(v.midia_paths[0]) ?? null) : null,
+    })),
+    pilares: z.array(z.object({ nome: z.string() })).catch([]).parse(strategy?.pilares ?? []).map((p) => p.nome),
     client: {
       id: d.client.id,
       nome: d.client.nome,
@@ -122,6 +159,7 @@ export async function getDeliverableDetail(input: {
       portalUrl: `${publicEnv.NEXT_PUBLIC_APP_URL}/p/${d.client.portal_token}`,
       contatoNome: contato?.nome ?? "",
       contatoTelefone: contato?.telefone || null,
+      instagram: d.client.instagram_handle,
     },
     media: d.midia_urls.map((path) => ({ path, url: signed.get(path) ?? null, kind: mediaKind(path) })),
     comments: (comments ?? []).map((c) => ({
@@ -156,9 +194,17 @@ const patchSchema = z
       .max(5000)
       .transform((v) => v.trim() || null),
     formato: z.enum(["post", "reels", "carrossel", "story", "relatorio"]),
-    status: z.enum(["planejar", "produzir", "em_aprovacao", "aprovado", "publicado"]),
+    status: z.enum(["planejar", "produzir", "em_aprovacao", "ajuste", "aprovado", "agendado", "publicado"]),
     data_publicacao: z.iso.date().nullable(),
     responsavel_id: z.uuid().nullable(),
+    pilar: z.string().trim().max(40).nullable(),
+    prazo_interno: z.iso.date().nullable(),
+    hora_publicacao: z
+      .string()
+      .regex(/^\d{2}:\d{2}$/)
+      .nullable(),
+    canal: z.enum(["instagram", "facebook", "ambos"]),
+    checklist: z.array(z.object({ texto: z.string().trim().min(1).max(120), feito: z.boolean() })).max(20),
   })
   .partial();
 
@@ -212,4 +258,17 @@ export async function deleteComment(input: { workspaceId: string; id: string }) 
     .eq("workspace_id", workspaceId)
     .eq("id", id);
   return error ? { error: "Não foi possível apagar." } : { ok: true };
+}
+
+// Nova versão do post (arte e legenda atuais ficam guardadas com número).
+export async function saveDeliverableVersion(input: { workspaceId: string; id: string; origem?: "upload" | "canva" | "drive" | "edicao" }) {
+  await requireUser();
+  const { id } = ids.parse(input);
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("create_deliverable_version", {
+    p_deliverable_id: id,
+    p_origem: input.origem ?? "edicao",
+  });
+  revalidatePath("/w", "layout");
+  return error ? { error: "Não foi possível salvar a versão." } : { ok: true, numero: data };
 }

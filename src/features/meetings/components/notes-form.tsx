@@ -40,7 +40,7 @@ export function NotesForm({
       </form>
 
       {locked ? null : (
-        <form action={aiAction} className="space-y-3 rounded-md border border-border p-3">
+        <form action={aiAction} className="space-y-3 rounded-xl border border-border p-3">
           <input type="hidden" name="workspaceId" value={workspaceId} />
           <input type="hidden" name="id" value={meeting.id} />
           <p className="text-sm text-muted">

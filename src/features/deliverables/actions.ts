@@ -23,6 +23,18 @@ export async function createDeliverable(_: ActionState, formData: FormData): Pro
 
   const { workspaceId, clientId, ...values } = parsed.data;
   const supabase = await createClient();
+  const extra = formData.get("extra"); // "sim" | "nao" | null (ainda não perguntou)
+
+  // Limite do pacote: se o mês já está cheio, pergunta se vira escopo extra.
+  const month = (values.data_publicacao ?? new Date().toISOString().slice(0, 10)).slice(0, 7) + "-01";
+  if (!extra) {
+    const { data: cap } = await supabase
+      .rpc("package_month_status", { p_client_id: clientId, p_month: month })
+      .maybeSingle();
+    if (cap && cap.capacidade > 0 && cap.usados >= cap.capacidade) {
+      return { data: { overLimit: `${cap.usados} de ${cap.capacidade}` } };
+    }
+  }
 
   // Entra no fim da coluna "Planejar".
   const { data: last } = await supabase
@@ -35,16 +47,30 @@ export async function createDeliverable(_: ActionState, formData: FormData): Pro
     .limit(1)
     .maybeSingle();
 
-  const { error } = await supabase.from("deliverables").insert({
-    ...values,
-    workspace_id: workspaceId,
-    client_id: clientId,
-    ordem: (last?.ordem ?? 0) + 1,
-  });
-  if (error) return fromDbError(error);
+  const { data: created, error } = await supabase
+    .from("deliverables")
+    .insert({
+      ...values,
+      workspace_id: workspaceId,
+      client_id: clientId,
+      ordem: (last?.ordem ?? 0) + 1,
+    })
+    .select("id")
+    .single();
+  if (error || !created) return fromDbError(error);
+
+  if (extra === "sim") {
+    await supabase.from("scope_requests").insert({
+      workspace_id: workspaceId,
+      client_id: clientId,
+      descricao: `Post além do pacote: ${values.titulo ?? "sem título"}`,
+      deliverable_id: created.id,
+      origem: "limite_pacote",
+    });
+  }
 
   revalidate();
-  return { message: "Entrega criada." };
+  return { message: extra === "sim" ? "Post criado e registrado como escopo extra." : "Post criado." };
 }
 
 export async function updateDeliverable(_: ActionState, formData: FormData): Promise<ActionState> {
@@ -181,4 +207,18 @@ export async function setDeliverableDate(input: { workspaceId: string; id: strin
     .eq("id", id);
   revalidate();
   return error ? { error: "Não foi possível mudar a data." } : { ok: true };
+}
+
+// "Planejar o mês": cria os posts do pacote de cada cliente ativo (idempotente).
+export async function planMonth(input: { workspaceId: string; month: string }) {
+  await requireUser();
+  const workspaceId = z.uuid().parse(input.workspaceId);
+  const month = z.string().regex(/^\d{4}-\d{2}$/).parse(input.month);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .rpc("generate_month", { p_workspace_id: workspaceId, p_competencia: `${month}-01` })
+    .maybeSingle();
+  revalidate();
+  if (error) return { error: "Não foi possível planejar o mês." };
+  return { ok: true, criados: data?.entregas_criadas ?? 0 };
 }

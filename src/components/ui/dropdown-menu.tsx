@@ -20,7 +20,7 @@ export const DropdownMenuContent = forwardRef<
         align={align}
         collisionPadding={8}
         className={cn(
-          "anim-pop z-50 min-w-48 rounded-lg border border-border bg-surface p-1 shadow-pop",
+          "anim-pop z-50 min-w-48 rounded-inner border border-border bg-surface p-1 shadow-pop",
           className,
         )}
         {...props}
@@ -37,7 +37,7 @@ export const DropdownMenuItem = forwardRef<
     <Menu.Item
       ref={ref}
       className={cn(
-        "flex h-8 cursor-default items-center gap-2 rounded-md px-2 text-base outline-none select-none data-[disabled]:opacity-50 data-[highlighted]:bg-hover [&_svg]:size-4 [&_svg]:text-muted",
+        "flex h-9 cursor-default items-center gap-2 rounded-[10px] px-2.5 text-base outline-none select-none data-[disabled]:opacity-50 data-[highlighted]:bg-hover [&_svg]:size-4 [&_svg]:text-muted",
         className,
       )}
       {...props}

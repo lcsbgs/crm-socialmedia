@@ -36,7 +36,7 @@ export default async function PackagesPage({ params }: PageProps<"/w/[slug]/paco
             <li key={p.id}>
               <Link
                 href={`/w/${slug}/pacotes/${p.id}`}
-                className="block h-full rounded-lg border border-border bg-surface p-4 hover:bg-background"
+                className="block h-full rounded-card bg-surface p-4 hover:bg-background"
               >
                 <p className="font-medium">{p.nome}</p>
                 <p className="mt-1 text-sm text-muted">{describeItems(p.itens)}</p>

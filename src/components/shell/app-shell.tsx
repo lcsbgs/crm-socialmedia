@@ -1,7 +1,6 @@
 "use client";
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Menu, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,15 +9,14 @@ import { NewDeliverableDialog } from "@/features/deliverables/components/new-del
 import { NewTaskDialog } from "@/features/tasks/components/new-task-dialog";
 import type { NotificationItem } from "@/features/notifications/queries";
 import type { PlanTier } from "@/lib/labels";
-import { cn } from "@/lib/utils";
 import { CommandPalette } from "./command-palette";
 import { ShellContext, type ShellClient } from "./shell-context";
 import { Sidebar } from "./sidebar";
+import { TopBar } from "./top-bar";
 
 type Workspace = { id: string; nome: string; slug: string; plano: PlanTier };
 type Defaults = { clientId?: string; date?: string };
 
-export const SIDEBAR_COOKIE = "sidebar_recolhida";
 
 function isTyping(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -34,35 +32,29 @@ export function AppShell({
   workspace,
   workspaces,
   clients,
-  todayCount,
+  counts,
+  team,
+  canSeeFinance,
   notifications,
   user,
-  initialCollapsed,
   children,
 }: {
   workspace: Workspace;
   workspaces: Workspace[];
   clients: ShellClient[];
-  todayCount: number;
+  counts: { today: number; approvals: number };
+  team: { name: string }[];
+  canSeeFinance: boolean;
   notifications: { items: NotificationItem[]; unread: number };
   user: { nome: string; email: string };
-  initialCollapsed: boolean;
   children: ReactNode;
 }) {
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(initialCollapsed);
   const [drawer, setDrawer] = useState(false);
   const [palette, setPalette] = useState(false);
   const [newTask, setNewTask] = useState<Defaults | null>(null);
   const [newDeliverable, setNewDeliverable] = useState<Defaults | null>(null);
   const pendingG = useRef<number | null>(null);
-
-  function toggleCollapsed() {
-    setCollapsed((c) => {
-      document.cookie = `${SIDEBAR_COOKIE}=${c ? "0" : "1"}; path=/; max-age=31536000; samesite=lax`;
-      return !c;
-    });
-  }
 
   const openNewTask = useCallback((d?: Defaults) => setNewTask(d ?? {}), []);
   const openNewDeliverable = useCallback((d?: Defaults) => setNewDeliverable(d ?? {}), []);
@@ -84,7 +76,8 @@ export function AppShell({
         pendingG.current = null;
         if (key === "h") return void (e.preventDefault(), router.push(base));
         if (key === "c") return void (e.preventDefault(), router.push(`${base}/clientes`));
-        if (key === "e") return void (e.preventDefault(), router.push(`${base}/entregas`));
+        if (key === "p") return void (e.preventDefault(), router.push(`${base}/producao`));
+        if (key === "a") return void (e.preventDefault(), router.push(`${base}/calendario`));
         if (key === "f") return void (e.preventDefault(), router.push(`${base}/financeiro`));
       }
       if (key === "g") {
@@ -110,69 +103,59 @@ export function AppShell({
     [workspace.id, workspace.nome, workspace.slug, clients, openNewTask, openNewDeliverable],
   );
 
+  const onNew = useCallback(
+    (kind: "post" | "tarefa" | "cliente" | "reuniao") => {
+      setDrawer(false);
+      if (kind === "post") openNewDeliverable();
+      else if (kind === "tarefa") openNewTask();
+      else if (kind === "cliente") router.push(`${base}/clientes/novo`);
+      else router.push(`${base}/reunioes?nova=1`);
+    },
+    [base, openNewDeliverable, openNewTask, router],
+  );
+
   const sidebarProps = {
     workspace,
     workspaces,
     clients,
-    todayCount,
-    notifications,
+    counts,
+    memberCount: Math.max(1, team.length),
+    canSeeFinance,
     user,
-    onOpenPalette: () => {
-      setDrawer(false);
-      setPalette(true);
-    },
+    onNew,
   };
 
   return (
     <ShellContext value={ctx}>
       <TooltipProvider delayDuration={300}>
-        <div className="flex min-h-dvh">
-          {/* Sidebar fixa (desktop) */}
-          <aside
-            className={cn(
-              "sticky top-0 hidden h-dvh shrink-0 border-r border-border bg-background transition-[width] duration-150 lg:block",
-              collapsed ? "w-14" : "w-60",
-            )}
-          >
-            <Sidebar {...sidebarProps} collapsed={collapsed} onToggleCollapse={toggleCollapsed} />
+        <div className="flex min-h-dvh w-full">
+          <aside className="sticky top-0 hidden h-dvh w-[248px] shrink-0 border-r border-border bg-surface lg:block">
+            <Sidebar {...sidebarProps} />
           </aside>
 
-          {/* Drawer (mobile) */}
           <DialogPrimitive.Root open={drawer} onOpenChange={setDrawer}>
             <DialogPrimitive.Portal>
               <DialogPrimitive.Overlay className="anim-fade fixed inset-0 z-40 bg-[var(--overlay)] lg:hidden" />
-              <DialogPrimitive.Content className="anim-drawer fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] border-r border-border bg-background lg:hidden">
+              <DialogPrimitive.Content className="anim-drawer fixed inset-y-0 left-0 z-50 w-[280px] max-w-[85vw] bg-surface lg:hidden">
                 <DialogPrimitive.Title className="sr-only">Menu</DialogPrimitive.Title>
-                <DialogPrimitive.Description className="sr-only">
-                  Navegação do workspace
-                </DialogPrimitive.Description>
-                <Sidebar {...sidebarProps} collapsed={false} onNavigate={() => setDrawer(false)} />
+                <DialogPrimitive.Description className="sr-only">Navegação do espaço</DialogPrimitive.Description>
+                <Sidebar {...sidebarProps} onNavigate={() => setDrawer(false)} />
               </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
           </DialogPrimitive.Root>
 
-          <div className="flex min-w-0 flex-1 flex-col">
-            {/* Barra superior só no mobile */}
-            <header className="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur lg:hidden">
-              <button
-                type="button"
-                aria-label="Abrir menu"
-                onClick={() => setDrawer(true)}
-                className="rounded-md p-1.5 hover:bg-hover"
-              >
-                <Menu className="size-5" />
-              </button>
-              <span className="min-w-0 flex-1 truncate font-semibold">{workspace.nome}</span>
-              <button
-                type="button"
-                aria-label="Buscar"
-                onClick={() => setPalette(true)}
-                className="rounded-md p-1.5 hover:bg-hover"
-              >
-                <Search className="size-5" />
-              </button>
-            </header>
-            <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">{children}</main>
+          <div className="flex min-w-0 flex-1 flex-col gap-7 px-4 pt-4 pb-12 sm:px-7 sm:pt-7 xl:px-10">
+            <Suspense fallback={<div className="h-11" />}>
+              <TopBar
+                slug={workspace.slug}
+                workspaceId={workspace.id}
+                notifications={notifications}
+                team={team}
+                onOpenPalette={() => setPalette(true)}
+                onOpenMenu={() => setDrawer(true)}
+              />
+            </Suspense>
+            <main className="min-w-0 flex-1">{children}</main>
           </div>
         </div>
 

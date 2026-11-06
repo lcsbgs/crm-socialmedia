@@ -58,3 +58,15 @@ export function spTime(iso: string) {
     timeZone: "America/Sao_Paulo",
   }).format(new Date(iso));
 }
+
+// Grade do mês começando no domingo (como o calendário do design).
+export function monthGridSunday(month: string) {
+  const first = new Date(`${month}-01T00:00:00Z`);
+  const start = addDaysISO(`${month}-01`, -first.getUTCDay());
+  const last = monthEndISO(month);
+  const lastDow = new Date(`${last}T00:00:00Z`).getUTCDay();
+  const end = addDaysISO(last, 6 - lastDow);
+  const days: string[] = [];
+  for (let d = start; d <= end; d = addDaysISO(d, 1)) days.push(d);
+  return { start, end, days };
+}

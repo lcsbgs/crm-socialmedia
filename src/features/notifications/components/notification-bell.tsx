@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tooltip } from "@/components/ui/tooltip";
 import { formatRelativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { markAllNotificationsRead } from "../actions";
@@ -15,12 +14,10 @@ export function NotificationBell({
   workspaceId,
   items,
   unread,
-  collapsed,
 }: {
   workspaceId: string;
   items: NotificationItem[];
   unread: number;
-  collapsed: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -37,20 +34,11 @@ export function NotificationBell({
   const trigger = (
     <PopoverTrigger
       aria-label={unread ? `Notificações, ${unread} não lidas` : "Notificações"}
-      className={cn(
-        "relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-muted hover:bg-hover",
-        collapsed && "justify-center px-0",
-      )}
+      className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-ink hover:bg-hover"
     >
-      <Bell className="size-4 shrink-0" aria-hidden />
-      {collapsed ? null : <span className="flex-1">Notificações</span>}
+      <Bell className="size-[18px]" aria-hidden />
       {unread ? (
-        <span
-          className={cn(
-            "tabular inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-accent-ink",
-            collapsed && "absolute top-0.5 right-1",
-          )}
-        >
+        <span className="tabular absolute -top-0.5 -right-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full border-2 border-background bg-accent px-1 text-[10px] font-bold text-white">
           {unread > 9 ? "9+" : unread}
         </span>
       ) : null}
@@ -59,14 +47,8 @@ export function NotificationBell({
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      {collapsed ? (
-        <Tooltip content="Notificações" side="right">
-          {trigger}
-        </Tooltip>
-      ) : (
-        trigger
-      )}
-      <PopoverContent side="right" align="start" className="w-80 p-0">
+      {trigger}
+      <PopoverContent side="bottom" align="end" className="w-80 max-w-[calc(100vw-32px)] p-0">
         <div className="flex items-center justify-between border-b border-border px-3 py-2">
           <p className="text-sm font-semibold">Notificações</p>
           {unread ? (

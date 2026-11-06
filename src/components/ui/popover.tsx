@@ -21,7 +21,7 @@ export const PopoverContent = forwardRef<
         sideOffset={sideOffset}
         collisionPadding={8}
         className={cn(
-          "anim-pop z-50 rounded-lg border border-border bg-surface p-1 text-ink shadow-pop outline-none",
+          "anim-pop z-50 rounded-inner border border-border bg-surface p-1.5 text-ink shadow-pop outline-none",
           className,
         )}
         {...props}

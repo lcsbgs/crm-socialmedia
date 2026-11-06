@@ -33,7 +33,7 @@ export default async function MeetingPage({
         <Link href={back} className="text-sm text-muted hover:text-foreground">
           {meeting.client.nome} · Reuniões
         </Link>
-        <h1 className="text-lg font-semibold">{meeting.titulo}</h1>
+        <h1 className="font-display text-xl">{meeting.titulo}</h1>
       </div>
 
       <Card>

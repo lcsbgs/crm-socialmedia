@@ -20,7 +20,7 @@ export function LoginForm({ next }: { next: string }) {
       <div
         role="tablist"
         aria-label="Forma de entrar"
-        className="grid grid-cols-2 rounded-md border border-border p-1 text-sm"
+        className="grid grid-cols-2 rounded-xl border border-border p-1 text-sm"
       >
         {(["senha", "link"] as const).map((m) => (
           <button

@@ -37,7 +37,7 @@ export function MonthCalendar({
   const today = todayISO();
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-surface">
+    <div className="overflow-hidden rounded-card bg-surface">
       <div className="hidden grid-cols-7 border-b border-border md:grid">
         {weekdays.map((w) => (
           <div key={w} className="px-2 py-1.5 text-xs text-muted">

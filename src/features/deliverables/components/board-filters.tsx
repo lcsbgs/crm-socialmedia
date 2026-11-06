@@ -94,7 +94,7 @@ export function BoardFilters({
         <button
           type="button"
           onClick={() => p.set({ cliente: null, formato: null, responsavel: null })}
-          className="inline-flex h-7 items-center gap-1 rounded-md px-2 text-sm text-muted hover:bg-hover hover:text-ink"
+          className="inline-flex h-7 items-center gap-1 rounded-xl px-2 text-sm text-muted hover:bg-hover hover:text-ink"
         >
           <X className="size-3.5" aria-hidden />
           Limpar filtros
@@ -110,7 +110,7 @@ export function ViewSwitch({ views, current }: { views: { id: string; label: str
     <div
       role="tablist"
       aria-label="Visualização"
-      className="inline-flex rounded-md border border-border bg-surface p-0.5"
+      className="inline-flex rounded-xl border border-border bg-surface p-0.5"
     >
       {views.map((v) => (
         <Link

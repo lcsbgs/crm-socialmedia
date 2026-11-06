@@ -15,17 +15,17 @@ export async function savePackage(_: ActionState, formData: FormData): Promise<A
 
   const id = formData.get("id");
   const slug = String(formData.get("slug") ?? "");
-  const { workspaceId, nome, itens } = parsed.data;
+  const { workspaceId, nome, itens, preco, limite_rodadas } = parsed.data;
   const supabase = await createClient();
 
   const { error } =
     typeof id === "string" && id
       ? await supabase
           .from("package_templates")
-          .update({ nome, itens })
+          .update({ nome, itens, preco: preco ?? null, limite_rodadas })
           .eq("workspace_id", workspaceId)
           .eq("id", z.uuid().parse(id))
-      : await supabase.from("package_templates").insert({ workspace_id: workspaceId, nome, itens });
+      : await supabase.from("package_templates").insert({ workspace_id: workspaceId, nome, itens, preco: preco ?? null, limite_rodadas });
   if (error) return fromDbError(error);
 
   revalidatePath(`/w/${slug}/pacotes`);

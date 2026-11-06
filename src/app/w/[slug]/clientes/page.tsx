@@ -42,7 +42,7 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
       {atLimit ? (
         <Alert>
           Você atingiu o limite de clientes do seu plano. Encerre um cliente ou{" "}
-          <Link href={`/w/${slug}/configuracoes`} className="font-medium underline">
+          <Link href={`/w/${slug}/ajustes`} className="font-medium underline">
             veja as opções de upgrade
           </Link>
           .
@@ -62,7 +62,7 @@ export default async function ClientsPage({ params }: PageProps<"/w/[slug]/clien
           <p className="text-sm text-muted">Nenhum cliente ainda. Cadastre o primeiro para começar.</p>
         </Card>
       ) : (
-        <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
+        <ul className="divide-y divide-border rounded-card bg-surface">
           {clients.map((c) => (
             <li key={c.id}>
               <Link href={`${base}/${c.id}`} className="flex items-center gap-3 px-4 py-2.5 hover:bg-hover">

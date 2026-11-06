@@ -145,3 +145,73 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Financeiro:** receita do mês numa faixa só (previsto, recebido, em aberto, atrasado e barra do recebido), cobranças do mês, inadimplentes com a idade da dívida mais antiga e situação do mês por cliente. O histórico completo por cliente fica na aba Financeiro da ficha.
 - **Reuniões, ata com IA e escopo** seguem o fluxo das Fases 5 e 6, agora com os componentes novos; os próximos passos confirmados viram tarefas operacionais e aparecem na Hoje.
 - **Testes de banco filtram pelo próprio workspace**, para passarem também num banco local já usado.
+
+## 2026-11-06 · Pauta, Fase 0: auditoria
+
+- **`docs/spec.md` não existe no repositório.** Contexto: o CLAUDE.md o cita como fonte da verdade, mas ele não veio no commit "docs corrigidos". Escolha: seguir as 12 telas de `docs/design/`, o README de design, o pedido desta rodada e as decisões anteriores; onde nada cobre, a opção mais simples. Alternativa: parar e pedir a spec (descartada, a execução é autônoma).
+- **Telas movidas para `docs/design/` e CLAUDE.md para a raiz.** Contexto: o commit "docs corrigidos" deixou tudo solto em `docs/`, mas o CLAUDE.md e o pedido citam `docs/design/`. Escolha: `git mv` sem mudar conteúdo. Alternativa: ajustar os textos que citam o caminho.
+- **Nomes de tabela atuais ficam.** `invitations` faz o papel de `invites`, `deliverables` o de posts e `approvals` o de `approval_responses`. Contexto: renomear tabela com dados quebra código e arrisca perda. Escolha: só migrações aditivas. Alternativa: renomear e criar views de compatibilidade.
+- **Testes de banco num Postgres 16 local.** Contexto: `supabase start` não baixa imagens neste ambiente. Escolha: `scripts/db-test-local.sh` sobe um Postgres descartável com um esqueleto de `auth`, `storage` e papéis (`scripts/supabase-stub.sql`) e roda os mesmos testes pgTAP. Alternativa: testar no remoto (descartado: risco de sujar dados).
+
+## 2026-11-06 · Pauta, Fase 1: design system e casca
+
+- **Tokens no `@theme` do `globals.css`.** Contexto: o projeto usa Tailwind 4, que não tem `tailwind.config`. Escolha: tokens do README como variáveis CSS e `@theme inline`; os nomes antigos (`accent`, `late`, `ok`, `muted`) apontam para os novos, então telas antigas já herdam o visual. Alternativa: criar `tailwind.config.ts` em modo de compatibilidade.
+- **Sem modo escuro.** Contexto: o design só define o tema claro. Escolha: remover o modo escuro em vez de inventar cores. Alternativa: derivar uma paleta escura.
+- **Paleta de cliente com 10 cores** (5 do README + Verde, Vermelho, Mostarda, Petróleo, Grafite), cada uma com forte, tonal, texto e miniatura. `clients.cor` continua guardando o índice, então clientes existentes mudam de tom sem migração.
+- **Sidebar fixa de 248px, sem recolher.** Contexto: o design não mostra a sidebar recolhida. Escolha: remover o recolhimento (e o cookie); no celular vira gaveta. Alternativa: manter o botão de recolher.
+- **Ajustes dentro da casca principal**, com submenu à esquerda (Estúdio, Equipe, Plano, Integrações, IA e ChatGPT, Minha conta). O design de Equipe troca a sidebar inteira por "Voltar para a pauta"; manter a casca evita uma segunda navegação. Alternativa: layout próprio como no design.
+- **Rotas do design:** `/producao` (antes `/entregas`) e `/ajustes/*` (antes `/configuracoes`). As rotas antigas redirecionam.
+- **Botão Novo abre menu** (Post, Tarefa, Reunião, Cliente). O design mostra só o botão.
+- **vitest para testes de TypeScript** (`pnpm test`), com `server-only` substituído por um módulo vazio.
+
+## 2026-11-06 · Pauta, Fase 2: autenticação, equipe e onboarding
+
+- **Membro só vê clientes atribuídos; financeiro só owner/admin.** `client_assignees` + `can_access_client()` em todas as policies de tabelas ligadas a cliente (clientes, posts, tarefas com cliente, reuniões, escopo, aprovações, comentários, histórico). `payments` passou para owner/admin. Backfill: todo membro existente ficou atribuído a todos os clientes, para ninguém perder acesso. Alternativa: começar sem atribuições (descartada, quebraria quem já usa).
+- **Membro não cria nem exclui cliente**, só edita os atribuídos. Contexto: o design diz que membro "trabalha nos clientes atribuídos". Alternativa: deixar criar e atribuir automaticamente.
+- **`clients.valor_mensal` continua legível para membros no banco** (a coluna está na mesma linha do cliente); a interface esconde valores para quem não é owner/admin. Alternativa: mover preço para outra tabela (fica para quando houver necessidade real).
+- **Limite de lugares vale na entrada, não no convite.** Contexto: o design mostra "O convite do Rafa fica esperando um lugar livre". Escolha: convites além do limite são guardados; o aceite só passa se houver lugar. Alternativa (antiga): bloquear o convite.
+- **Login por provedor em modo demonstração** abre uma tela de consentimento simulada (`/auth/simulado/[provedor]`) onde a pessoa escolhe o e-mail da conta. Com service role, o usuário é criado confirmado e a sessão abre por link mágico gerado no servidor; sem ela, por senha derivada do e-mail com `MOCK_AUTH_SECRET`. Só funciona com `INTEGRATIONS_MODE=mock`.
+- **ChatGPT como fluxo próprio no servidor (PKCE)**, não como provedor OIDC do Supabase: o Supabase não aceita OIDC customizado em todos os planos. O vínculo é pelo e-mail verificado e a sessão abre com o mesmo mecanismo do login simulado.
+- **Convite pela página pública usa a service role** (`get_invitation_preview` só para service_role). Sem a chave, a prévia aparece depois do login. Segue a regra do CLAUDE.md de não liberar anon no banco.
+- **E-mail atrás de adapter** (`src/lib/email`): mock registra no log; real usa Resend.
+- **Onboarding sem upload de logo e sem "Copiar link de convite" genérico.** Convites são por e-mail (o aceite exige o mesmo e-mail); o logo fica em Ajustes > Estúdio. O passo 3 deixa as contas Meta para a página do cliente (Fase 8).
+- **Pacote padrão "Essencial"** criado no passo 3 quando o espaço não tem pacote: 3 posts por semana, 1 reunião e 1 relatório por mês.
+- **`profiles.email`** sincronizado de `auth.users` por trigger, para a tela de Equipe.
+
+## 2026-11-06 · Pauta, Fase 3: Em pauta hoje
+
+- **"Minha pauta"**: o que tem a pessoa como responsável, mais o que não tem responsável e é de um cliente atribuído a ela. "Pauta do time": tudo. Contexto: tarefas não tinham responsável; ganharam `tasks.responsavel_id`. Alternativa: só itens com responsável (deixaria muito item órfão fora).
+- **Blocos e regras**: Com quem falar = reuniões do dia (a próxima em destaque) + ajustes pedidos nas últimas 48 h (um por cliente) + próximos passos de ata que vencem hoje. O que fazer = tarefas até hoje + posts em planejamento/produção com data até hoje. Com o cliente = posts em aprovação agrupados por cliente. Publicações e dinheiro = posts aprovados/publicados de hoje + cobranças vencidas ou de hoje (só owner/admin). Propostas e contratos entram quando o comercial existir (Fase 10).
+- **Saudação** escolhida no servidor entre opções por período, dia da semana e fatos reais (aprovações de ontem); a última vai num cookie para não repetir.
+- **`getDailyAgenda` = leitura + `buildDailyAgenda` puro**, testado com vitest. A leitura não inventa nada: bloco sem dado mostra estado vazio.
+- **`deliverables.hora_publicacao`** para ordenar as publicações do dia.
+
+## 2026-11-06 · Pauta, Fase 4: clientes
+
+- **Abas por `?aba=`** com os nomes do design (Visão geral, Estratégia, Calendário, Produção, Reuniões, Arquivos, Financeiro, Escopo, Relatórios, Linha do tempo). Financeiro só aparece para owner/admin. `?aba=entregas` antigo vira Produção.
+- **Kit da marca e briefing ficam na aba Arquivos**, junto dos arquivos do cliente. O design não mostra a aba; juntar tudo que é "material do cliente" num lugar foi o mais simples.
+- **Checklist de onboarding com itens automáticos** (pacote, briefing, kit, Instagram, pasta no Drive, kickoff) marcados quando o dado existe; os manuais (contrato) ficam em `clients.onboarding_checklist`. O card some da Visão geral quando tudo está feito.
+- **Briefing público em `/b/[token]`** e **kit só leitura em `/k/[token]`**, ambos pelo servidor com service role e funções só para `service_role`. O kit só abre com `share_ativo` ligado ("Compartilhar com designer"). Gerar outro link de briefing invalida o anterior.
+- **`timeline_events`** guarda eventos manuais (notas) e de sistema (briefing respondido) e entra na view `client_timeline`, que segue sendo a leitura única.
+- **Storage**: arquivos de cliente em `{workspace}/clientes/{cliente}/{categoria}/...`; `can_access_media` passou a exigir acesso ao cliente nessa pasta.
+- **Instagram e pasta do Drive como campos simples** (`instagram_handle`, `drive_folder_url`) até as integrações reais (Fases 8 e 9).
+- **Rodadas de ajuste** na Visão geral = pedidos de ajuste do cliente no mês (tabela `approvals`).
+
+## 2026-11-06 · Pauta, Fase 5: pacotes e planejamento
+
+- **Capacidade do pacote = vagas que o `generate_month` criaria no mês** (mesma regra de datas, diário vira 1 por semana). Usados = posts do cliente na competência (ou com data no mês). Criar post com o mês cheio pergunta: "Sim, registrar como extra" cria o post e um `scope_requests` com `origem = limite_pacote`; "Não" cria só o post.
+- **Planejar o mês** no calendário chama `generate_month` (idempotente) para o mês seguinte. Agendamento automático com `pg_cron` no dia 20 às 06:00 UTC (`generate_month_all`), só se a extensão existir; senão a migração só avisa.
+- **Calendário começa no domingo**, como o design. O resto do app (semana da Produção) segue segunda a domingo.
+- **Arrastar para mudar a data** usa arrastar e soltar nativo do navegador; quem usa teclado muda a data no painel do post.
+- **Filtro de clientes do calendário** fica no próprio calendário (lado esquerdo), não na sidebar, porque a sidebar é compartilhada por todas as telas.
+- **Pacote ganhou `preco` e `limite_rodadas`** (padrão 2). O valor que vale para a cobrança continua sendo `clients.valor_mensal`.
+
+## 2026-11-06 · Pauta, Fase 6: posts e IA
+
+- **Etapas do post**: Planejado (`planejar`), Em produção (`produzir`), Em aprovação, Ajuste pedido (`ajuste`, novo), Agendado (`agendado`, novo), Publicado. `aprovado` continua existindo (o cliente aprovou e falta agendar) e aparece na coluna Agendado com o aviso "aprovado, falta agendar". Alternativa: migrar `aprovado` para `agendado` (descartada: perde a diferença entre aprovado e agendado na Meta).
+- **Editor no painel lateral (560px)** em `post-editor.tsx`, com etapas em bolinhas, arte (Canva, Drive, upload), legenda com contador de 2.200, ações de IA, detalhes (pilar da estratégia, responsável, prazo interno, data e hora, formato, onde publica), rodadas x limite do pacote, checklist, respostas do cliente, comentários internos, versões, histórico e pré-visualização de feed e reels. "Enviar para aprovação" salva uma versão antes.
+- **IA com interface única** (`src/lib/ai`): `runAi(workspace, prompt, vars)` decide entre o plano do ChatGPT da pessoa e os créditos do espaço (`planAiRoute`, testado), cai para os créditos com aviso quando o ChatGPT devolve limite ou conta não elegível, e grava `ai_usage` (com a versão do prompt). Créditos por plano: 100 (grátis), 1.000 (Pro), 3.000 (Estúdio). Custo: legenda 3, encurtar/tom/chamada 1, estratégia 5.
+- **Sem `ANTHROPIC_API_KEY` a IA responde em demonstração** (`providers/mock.ts`), inclusive a ata de reunião, que passa a organizar as próprias anotações em vez de dar erro.
+- **Prompts versionados em arquivos** (`src/lib/ai/prompts`): mudar o texto exige subir a versão (`legenda@1` etc.).
+- **Conexão do ChatGPT é por pessoa** (`ai_connections`), não por espaço. Tokens cifrados com AES-256-GCM (`src/lib/crypto.ts`, `ENCRYPTION_KEY`); as colunas de token não têm grant de leitura e só saem por `get_ai_connection_secret`, que devolve apenas a linha do próprio usuário. Em demonstração a conexão é simulada e há um botão para simular o fim do limite semanal.
+- **IA nunca salva sozinha**: a sugestão entra no campo e a pessoa revisa.

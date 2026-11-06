@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 type FieldDef<T> = { key: keyof T & string; label: string; placeholder?: string; type?: string };
 
 const inputClasses =
-  "h-10 w-full rounded-md border border-border bg-surface px-3 text-sm placeholder:text-muted";
+  "h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm placeholder:text-muted";
 
 // Editor genérico de lista (contatos, links). Serializa em JSON no campo `name`.
 export function ListEditor<T extends Record<string, string>>({
@@ -31,7 +31,7 @@ export function ListEditor<T extends Record<string, string>>({
       <legend className="mb-1.5 text-sm font-medium">{legend}</legend>
       <input type="hidden" name={name} value={JSON.stringify(items)} />
       {items.map((item, index) => (
-        <div key={index} className="flex flex-col gap-2 rounded-md border border-border p-2 sm:flex-row">
+        <div key={index} className="flex flex-col gap-2 rounded-xl border border-border p-2 sm:flex-row">
           {fields.map((f) => (
             <input
               key={f.key}

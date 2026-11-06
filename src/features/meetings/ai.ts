@@ -26,7 +26,9 @@ export async function generateMinutes(input: {
     apiKey = serverEnv("ANTHROPIC_API_KEY");
     model = serverEnv("ANTHROPIC_MODEL");
   } catch {
-    return { ok: false, error: "A IA não está configurada. Defina ANTHROPIC_API_KEY e ANTHROPIC_MODEL." };
+    // Sem chave: ata de demonstração a partir das próprias anotações.
+    const { mockMinutes } = await import("./mock-minutes");
+    return { ok: true, ata: mockMinutes(input.notas) };
   }
 
   const client = new Anthropic({ apiKey, timeout: 90_000 });

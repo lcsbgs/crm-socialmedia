@@ -5,7 +5,7 @@ export async function getPackages(workspaceId: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("package_templates")
-    .select("id, nome, itens, clients (count)")
+    .select("id, nome, itens, preco, limite_rodadas, clients (count)")
     .eq("workspace_id", workspaceId)
     .order("nome");
   return (data ?? []).map(({ clients, ...p }) => ({ ...p, clientes: clients[0]?.count ?? 0 }));
@@ -15,7 +15,7 @@ export async function getPackage(workspaceId: string, id: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("package_templates")
-    .select("id, nome, itens")
+    .select("id, nome, itens, preco, limite_rodadas")
     .eq("workspace_id", workspaceId)
     .eq("id", id)
     .maybeSingle();

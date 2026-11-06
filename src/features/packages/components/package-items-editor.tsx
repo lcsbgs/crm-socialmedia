@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { cadenceLabels, type Cadence, type PackageItem } from "../schemas";
 
-const inputClasses = "h-8 w-full rounded-md border border-border bg-surface px-2.5 text-base";
+const inputClasses = "h-8 w-full rounded-xl border border-border bg-surface px-2.5 text-base";
 
 // Lista editável de itens do pacote. Envia tudo como JSON no campo "itens".
 export function PackageItemsEditor({ initial, error }: { initial: PackageItem[]; error?: string }) {

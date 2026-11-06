@@ -15,7 +15,7 @@ export function PackageForm({
 }: {
   workspaceId: string;
   slug: string;
-  pkg?: { id: string; nome: string; itens: PackageItem[] };
+  pkg?: { id: string; nome: string; itens: PackageItem[]; preco?: number | null; limite_rodadas?: number };
 }) {
   const [state, action] = useActionState(savePackage, null);
   return (
@@ -32,6 +32,27 @@ export function PackageForm({
         required
         errors={state?.fieldErrors?.nome}
       />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field
+          label="Preço por mês"
+          name="preco"
+          inputMode="decimal"
+          placeholder="R$ 1.200"
+          defaultValue={pkg?.preco ?? ""}
+          errors={state?.fieldErrors?.preco}
+          hint="Usado nas propostas. O valor de cada cliente fica na ficha dele."
+        />
+        <Field
+          label="Rodadas de ajuste por post"
+          name="limite_rodadas"
+          type="number"
+          min={0}
+          max={10}
+          defaultValue={pkg?.limite_rodadas ?? 2}
+          errors={state?.fieldErrors?.limite_rodadas}
+          hint="Passou disso, o Pauta sugere escopo extra."
+        />
+      </div>
       <PackageItemsEditor initial={pkg?.itens ?? []} error={state?.fieldErrors?.itens?.[0]} />
       <SubmitButton>{pkg ? "Salvar pacote" : "Criar pacote"}</SubmitButton>
     </form>

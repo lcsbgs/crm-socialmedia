@@ -114,7 +114,7 @@ function Day({ day, isToday, children }: { day: string; isToday: boolean; childr
     <section
       aria-label={`${weekdayLabel(day)}, ${dayMonthLabel(day)}`}
       className={cn(
-        "flex w-[70vw] max-w-60 shrink-0 snap-start flex-col rounded-lg border border-transparent bg-[color-mix(in_srgb,var(--border)_45%,transparent)] p-1.5 sm:w-52 lg:w-auto lg:max-w-none",
+        "flex w-[70vw] max-w-60 shrink-0 snap-start flex-col rounded-inner border border-transparent bg-[color-mix(in_srgb,var(--border)_45%,transparent)] p-1.5 sm:w-52 lg:w-auto lg:max-w-none",
         isOver && "border-[color-mix(in_srgb,var(--accent)_35%,transparent)]",
       )}
     >
@@ -154,7 +154,7 @@ function DraggableCard({
           listeners?.onKeyDown?.(e);
           if (e.key === "Enter") onOpen(item.id);
         }}
-        className="cursor-grab touch-manipulation rounded-md active:cursor-grabbing"
+        className="cursor-grab touch-manipulation rounded-xl active:cursor-grabbing"
       >
         {children}
       </div>

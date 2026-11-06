@@ -1,14 +1,13 @@
 import "server-only";
+import { buildDailyAgenda, type AgendaClient } from "./agenda";
 import { z } from "zod";
 import { contactSchema } from "@/features/clients/schemas";
 import { deliverableLabel } from "@/features/deliverables/schemas";
 import { publicEnv } from "@/lib/env";
 import { formatBRL, formatDate, formatMonth, todayISO } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { firstName, whatsappLink } from "@/lib/whatsapp";
+import { firstName } from "@/lib/whatsapp";
 
-const APPROVAL_STALE_DAYS = 2;
-const PAYMENT_LOOKAHEAD_DAYS = 3;
 
 function addDays(iso: string, days: number) {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -16,35 +15,8 @@ function addDays(iso: string, days: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export type TodayClient = { id: string; nome: string; cor: number };
 
-export type TodayItem =
-  | { kind: "task"; id: string; titulo: string; date: string | null; client: TodayClient | null }
-  | { kind: "deliverable"; id: string; titulo: string; date: string; status: string; client: TodayClient }
-  | { kind: "approval"; id: string; titulo: string; since: string; client: TodayClient; resendUrl: string }
-  | {
-      kind: "payment";
-      id: string;
-      titulo: string;
-      valor: number;
-      date: string;
-      late: boolean;
-      client: TodayClient;
-      chargeUrl: string;
-    }
-  | { kind: "meeting"; id: string; titulo: string; at: string; client: TodayClient };
-
-export type TodaySections = {
-  atrasadas: TodayItem[];
-  hoje: TodayItem[];
-  esperando: TodayItem[];
-  receber: TodayItem[];
-  reunioes: TodayItem[];
-};
-
-type ClientRow = { id: string; nome: string; cor: number | null; contatos: unknown; portal_token: string };
-
-function chargeMessage(
+export function chargeMessage(
   contato: string,
   valor: number,
   vencimento: string,
@@ -58,142 +30,138 @@ function chargeMessage(
     : `${oi} Passando para lembrar da mensalidade de ${mes}, no valor de ${formatBRL(valor)}, com vencimento em ${formatDate(vencimento)}. Obrigado!`;
 }
 
-// Tudo que pede atenção hoje, em seções na ordem da tela.
-export async function getToday(workspaceId: string) {
+// Em pauta hoje: lê o que existe no banco e monta os blocos (ver agenda.ts).
+export async function getDailyAgenda(
+  workspaceId: string,
+  opts: { userId: string; scope: "minha" | "time"; canSeeFinance: boolean },
+) {
   const supabase = await createClient();
   const today = todayISO();
-  const staleBefore = new Date(Date.now() - APPROVAL_STALE_DAYS * 86_400_000).toISOString();
   const dayStart = new Date(`${today}T00:00:00-03:00`).toISOString();
   const dayEnd = new Date(`${addDays(today, 1)}T00:00:00-03:00`).toISOString();
+  const twoDaysAgo = new Date(Date.now() - 2 * 86_400_000).toISOString();
 
-  const [tasks, deliverables, approvals, payments, meetings, clients] = await Promise.all([
-    supabase
-      .from("tasks")
-      .select("id, titulo, due_date, client_id")
-      .eq("workspace_id", workspaceId)
-      .eq("status", "pendente")
-      .lte("due_date", today)
-      .order("due_date")
-      .order("created_at")
-      .limit(200),
-    supabase
-      .from("deliverables")
-      .select("id, titulo, slot_label, data_publicacao, status, client_id")
-      .eq("workspace_id", workspaceId)
-      .in("status", ["planejar", "produzir"])
-      .lte("data_publicacao", today)
-      .order("data_publicacao")
-      .limit(200),
-    supabase
-      .from("deliverables")
-      .select("id, titulo, slot_label, status_changed_at, client_id")
-      .eq("workspace_id", workspaceId)
-      .eq("status", "em_aprovacao")
-      .lt("status_changed_at", staleBefore)
-      .order("status_changed_at"),
-    supabase
-      .from("payments")
-      .select("id, valor, vencimento, competencia, client_id")
-      .eq("workspace_id", workspaceId)
-      .neq("status", "pago")
-      .lte("vencimento", addDays(today, PAYMENT_LOOKAHEAD_DAYS))
-      .order("vencimento"),
+  const [clients, members, mine, meetings, adjustments, tasks, posts, payments] = await Promise.all([
+    supabase.from("clients").select("id, nome, cor, contatos, portal_token").eq("workspace_id", workspaceId),
+    supabase.from("workspace_members").select("user_id, profile:profiles!inner (nome)").eq("workspace_id", workspaceId),
+    supabase.from("client_assignees").select("client_id").eq("workspace_id", workspaceId).eq("user_id", opts.userId),
     supabase
       .from("meetings")
       .select("id, titulo, data, client_id")
       .eq("workspace_id", workspaceId)
       .gte("data", dayStart)
-      .lt("data", dayEnd)
-      .order("data"),
-    supabase.from("clients").select("id, nome, cor, contatos, portal_token").eq("workspace_id", workspaceId),
+      .lt("data", dayEnd),
+    supabase
+      .from("approvals")
+      .select("deliverable_id, autor_nome, created_at, deliverable:deliverables!inner (titulo, slot_label, status, client_id)")
+      .eq("workspace_id", workspaceId)
+      .eq("decisao", "ajuste")
+      .gte("created_at", twoDaysAgo)
+      .in("deliverable.status", ["planejar", "produzir", "ajuste"]),
+    supabase
+      .from("tasks")
+      .select("id, titulo, due_date, origem, status, done_at, responsavel_id, client_id")
+      .eq("workspace_id", workspaceId)
+      .or(`and(status.eq.pendente,due_date.lte.${today}),done_at.gte.${dayStart}`)
+      .limit(300),
+    supabase
+      .from("deliverables")
+      .select("id, titulo, slot_label, status, data_publicacao, hora_publicacao, status_changed_at, responsavel_id, client_id")
+      .eq("workspace_id", workspaceId)
+      .or(`status.eq.em_aprovacao,and(status.in.(planejar,produzir,ajuste),data_publicacao.lte.${today}),and(status.in.(aprovado,agendado,publicado),data_publicacao.eq.${today})`)
+      .limit(400),
+    opts.canSeeFinance
+      ? supabase
+          .from("payments")
+          .select("id, valor, vencimento, status, client_id")
+          .eq("workspace_id", workspaceId)
+          .neq("status", "pago")
+          .lte("vencimento", today)
+      : Promise.resolve({ data: [] as { id: string; valor: number; vencimento: string; status: "pendente" | "pago" | "atrasado"; client_id: string }[] }),
   ]);
 
-  const byId = new Map<string, ClientRow>((clients.data ?? []).map((c) => [c.id, c]));
-  const client = (id: string): TodayClient => {
+  const byId = new Map((clients.data ?? []).map((c) => [c.id, c]));
+  const client = (id: string): AgendaClient => {
     const c = byId.get(id);
     return { id, nome: c?.nome ?? "Cliente", cor: c?.cor ?? 0 };
   };
-  const contact = (id: string) => z.array(contactSchema).catch([]).parse(byId.get(id)?.contatos)[0];
+  const contato = (id: string) => {
+    const c = z.array(contactSchema).catch([]).parse(byId.get(id)?.contatos)[0];
+    return c ? { nome: c.nome, telefone: c.telefone ?? "" } : null;
+  };
 
-  const sections: TodaySections = { atrasadas: [], hoje: [], esperando: [], receber: [], reunioes: [] };
-
-  for (const t of tasks.data ?? []) {
-    const item: TodayItem = {
-      kind: "task",
+  return buildDailyAgenda({
+    today,
+    now: new Date().toISOString(),
+    userId: opts.userId,
+    scope: opts.scope,
+    myClientIds: (mine.data ?? []).map((m) => m.client_id),
+    people: (members.data ?? []).map((m) => ({ id: m.user_id, nome: m.profile.nome })),
+    meetings: (meetings.data ?? []).map((m) => ({ id: m.id, titulo: m.titulo, data: m.data, client: client(m.client_id) })),
+    adjustments: (adjustments.data ?? []).map((a) => ({
+      deliverableId: a.deliverable_id,
+      titulo: deliverableLabel(a.deliverable),
+      autor: a.autor_nome,
+      createdAt: a.created_at,
+      client: client(a.deliverable.client_id),
+    })),
+    tasks: (tasks.data ?? []).map((t) => ({
       id: t.id,
       titulo: t.titulo,
-      date: t.due_date,
+      dueDate: t.due_date,
+      origem: t.origem,
+      status: t.status,
+      doneAt: t.done_at,
+      responsavelId: t.responsavel_id,
       client: t.client_id ? client(t.client_id) : null,
-    };
-    (t.due_date && t.due_date < today ? sections.atrasadas : sections.hoje).push(item);
-  }
-
-  for (const d of deliverables.data ?? []) {
-    if (!d.data_publicacao) continue;
-    const item: TodayItem = {
-      kind: "deliverable",
-      id: d.id,
-      titulo: deliverableLabel(d),
-      date: d.data_publicacao,
-      status: d.status,
-      client: client(d.client_id),
-    };
-    (d.data_publicacao < today ? sections.atrasadas : sections.hoje).push(item);
-  }
-
-  // Pendências por data, tarefas antes de entregas no mesmo dia.
-  const byDate = (a: TodayItem, b: TodayItem) =>
-    ("date" in a && a.date ? a.date : "").localeCompare("date" in b && b.date ? b.date : "");
-  sections.atrasadas.sort(byDate);
-
-  // Aprovações paradas: um "reenviar" por cliente com o total pendente dele.
-  const pendingByClient = new Map<string, number>();
-  for (const a of approvals.data ?? [])
-    pendingByClient.set(a.client_id, (pendingByClient.get(a.client_id) ?? 0) + 1);
-  for (const a of approvals.data ?? []) {
-    const c = byId.get(a.client_id);
-    const url = `${publicEnv.NEXT_PUBLIC_APP_URL}/p/${c?.portal_token}`;
-    const contato = contact(a.client_id);
-    const n = pendingByClient.get(a.client_id) ?? 1;
-    const oi = contato?.nome ? `Oi, ${firstName(contato.nome)}!` : "Oi!";
-    const msg = `${oi} ${n === 1 ? "Ainda tem 1 conteúdo esperando" : `Ainda tem ${n} conteúdos esperando`} sua aprovação. Consegue dar uma olhada? ${url}`;
-    sections.esperando.push({
-      kind: "approval",
-      id: a.id,
-      titulo: deliverableLabel(a),
-      since: a.status_changed_at,
-      client: client(a.client_id),
-      resendUrl: whatsappLink(contato?.telefone, msg),
-    });
-  }
-
-  for (const p of payments.data ?? []) {
-    const late = p.vencimento < today;
-    const contato = contact(p.client_id);
-    sections.receber.push({
-      kind: "payment",
+    })),
+    posts: (posts.data ?? []).map((p) => ({
       id: p.id,
-      titulo: `Mensalidade de ${formatMonth(p.competencia).toLowerCase()}`,
-      valor: p.valor,
-      date: p.vencimento,
-      late,
+      titulo: deliverableLabel(p),
+      status: p.status,
+      dataPublicacao: p.data_publicacao,
+      hora: p.hora_publicacao,
+      statusChangedAt: p.status_changed_at,
+      responsavelId: p.responsavel_id,
       client: client(p.client_id),
-      chargeUrl: whatsappLink(
-        contato?.telefone,
-        chargeMessage(contato?.nome ?? "", p.valor, p.vencimento, p.competencia, late),
-      ),
-    });
-  }
+      contato: contato(p.client_id),
+      portalUrl: byId.get(p.client_id)?.portal_token
+        ? `${publicEnv.NEXT_PUBLIC_APP_URL}/p/${byId.get(p.client_id)?.portal_token}`
+        : null,
+    })),
+    payments: (payments.data ?? []).map((p) => ({
+      id: p.id,
+      valor: p.valor,
+      vencimento: p.vencimento,
+      status: p.status,
+      client: client(p.client_id),
+      contato: contato(p.client_id),
+    })),
+  });
+}
 
-  for (const m of meetings.data ?? []) {
-    sections.reunioes.push({
-      kind: "meeting",
-      id: m.id,
-      titulo: m.titulo,
-      at: m.data,
-      client: client(m.client_id),
-    });
+// Fatos do dia para a saudação: só coisas que aconteceram de verdade.
+export async function getGreetingFacts(workspaceId: string) {
+  const supabase = await createClient();
+  const today = todayISO();
+  const yStart = new Date(`${addDays(today, -1)}T00:00:00-03:00`).toISOString();
+  const tStart = new Date(`${today}T00:00:00-03:00`).toISOString();
+  const { data } = await supabase
+    .from("approvals")
+    .select("decisao, deliverable:deliverables!inner (client_id, client:clients!inner (nome))")
+    .eq("workspace_id", workspaceId)
+    .eq("decisao", "aprovado")
+    .gte("created_at", yStart)
+    .lt("created_at", tStart);
+  const byClient = new Map<string, { nome: string; n: number }>();
+  for (const a of data ?? []) {
+    const k = a.deliverable.client_id;
+    const cur = byClient.get(k) ?? { nome: a.deliverable.client.nome, n: 0 };
+    cur.n += 1;
+    byClient.set(k, cur);
   }
-
-  return { today, sections };
+  return [...byClient.entries()].slice(0, 2).map(([id, c]) => ({
+    key: `aprovou-${id}`,
+    text: `${c.nome} aprovou ${c.n === 1 ? "1 post" : `${c.n} posts`} ontem.`,
+  }));
 }

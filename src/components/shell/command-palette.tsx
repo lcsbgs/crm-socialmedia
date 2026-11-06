@@ -119,7 +119,7 @@ export function CommandPalette({
                   <Kbd>G</Kbd>
                   <Kbd>C</Kbd>
                 </Command.Item>
-                <Command.Item className={itemClass} onSelect={() => go(`${base}/entregas`)}>
+                <Command.Item className={itemClass} onSelect={() => go(`${base}/producao`)}>
                   <KanbanSquare />
                   Entregas
                 </Command.Item>
@@ -135,7 +135,7 @@ export function CommandPalette({
                   <Package />
                   Pacotes
                 </Command.Item>
-                <Command.Item className={itemClass} onSelect={() => go(`${base}/configuracoes`)}>
+                <Command.Item className={itemClass} onSelect={() => go(`${base}/ajustes`)}>
                   <Settings />
                   Ajustes
                 </Command.Item>
@@ -165,7 +165,7 @@ export function CommandPalette({
                       value={`entrega ${d.titulo ?? ""} ${d.id}`}
                       keywords={[query]}
                       className={itemClass}
-                      onSelect={() => go(`${base}/entregas?entrega=${d.id}`)}
+                      onSelect={() => go(`${base}/producao?entrega=${d.id}`)}
                     >
                       <KanbanSquare />
                       <span className="min-w-0 flex-1 truncate">{d.titulo ?? "Sem título"}</span>

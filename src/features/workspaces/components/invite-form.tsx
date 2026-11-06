@@ -24,7 +24,7 @@ export function InviteForm({ workspaceId, atLimit }: { workspaceId: string; atLi
     <form action={action} className="space-y-3">
       <FormAlert state={state} />
       {link ? (
-        <div className="flex flex-col gap-2 rounded-md border border-border p-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 rounded-xl border border-border p-3 sm:flex-row sm:items-center">
           <code className="flex-1 truncate text-xs">{link}</code>
           <CopyButton value={link} />
         </div>

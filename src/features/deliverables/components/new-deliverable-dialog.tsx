@@ -29,7 +29,7 @@ export function NewDeliverableDialog({
   defaults?: { clientId?: string; date?: string };
 }) {
   return (
-    <Dialog open={open} onClose={onClose} title="Nova entrega">
+    <Dialog open={open} onClose={onClose} title="Novo post">
       {open ? (
         <NewDeliverableForm
           workspaceId={workspaceId}
@@ -59,9 +59,10 @@ function NewDeliverableForm({
   );
   const [date, setDate] = useState<string | null>(defaults?.date ?? null);
 
+  const overLimit = state?.data?.overLimit;
   useEffect(() => {
     if (state?.message) {
-      toast.success("Entrega criada");
+      toast.success(state.message);
       onDone();
     }
   }, [state, onDone]);
@@ -72,11 +73,10 @@ function NewDeliverableForm({
       <input type="hidden" name="workspaceId" value={workspaceId} />
       <Input
         name="titulo"
-        aria-label="Título da entrega"
-        placeholder="Título da entrega"
+        aria-label="Título do post"
+        placeholder="Título do post"
         required
         autoFocus
-        className="h-9 text-md"
       />
       <div className="grid gap-2 sm:grid-cols-3">
         <ClientPicker clients={clients} name="clientId" value={clientId} onChange={setClientId} />
@@ -89,11 +89,27 @@ function NewDeliverableForm({
           aria-label="Data de publicação"
         />
       </div>
-      <div className="flex justify-end">
-        <SubmitButton pendingText="Criando" disabled={!clientId}>
-          Criar entrega
-        </SubmitButton>
-      </div>
+      {overLimit ? (
+        <div role="alert" className="flex flex-col gap-3 rounded-inner bg-late-tonal-2 p-4">
+          <p className="text-md text-late-ink">
+            Esse post passa do pacote ({overLimit} neste mês). Registrar como escopo extra?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <SubmitButton name="extra" value="sim" size="sm" pendingText="Criando">
+              Sim, registrar como extra
+            </SubmitButton>
+            <SubmitButton name="extra" value="nao" size="sm" variant="outline" pendingText="Criando">
+              Não, faz parte do combinado
+            </SubmitButton>
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <SubmitButton pendingText="Criando" disabled={!clientId}>
+            Criar post
+          </SubmitButton>
+        </div>
+      )}
     </form>
   );
 }

@@ -1,3 +1,4 @@
+import { parseMoney } from "@/lib/format";
 import { z } from "zod";
 
 export const cadenceLabels = {
@@ -18,6 +19,10 @@ export type PackageItem = z.infer<typeof packageItemSchema>;
 export const packageSchema = z.object({
   workspaceId: z.uuid(),
   nome: z.string().trim().min(1, "Informe o nome do pacote").max(80),
+  preco: z
+    .preprocess((v) => (v === "" || v === undefined || v === null ? null : parseMoney(v)), z.number("Valor inválido").min(0).nullable())
+    .optional(),
+  limite_rodadas: z.coerce.number().int().min(0).max(10).default(2),
   itens: z
     .string()
     .transform((raw, ctx) => {
