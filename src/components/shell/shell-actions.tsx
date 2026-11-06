@@ -2,7 +2,6 @@
 
 import { Plus } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
 import { useShell } from "./shell-context";
 
 // Botões que abrem a criação rápida do shell (mesma ação dos atalhos C e E).
@@ -13,10 +12,9 @@ export function NewTaskButton({
 }: ButtonProps & { clientId?: string; date?: string }) {
   const { openNewTask } = useShell();
   return (
-    <Button variant="secondary" size="sm" onClick={() => openNewTask({ clientId, date })} {...props}>
+    <Button variant="outline" size="md" onClick={() => openNewTask({ clientId, date })} {...props}>
       <Plus aria-hidden />
       Nova tarefa
-      <Kbd>C</Kbd>
     </Button>
   );
 }
@@ -28,10 +26,9 @@ export function NewDeliverableButton({
 }: ButtonProps & { clientId?: string; date?: string }) {
   const { openNewDeliverable } = useShell();
   return (
-    <Button variant="secondary" size="sm" onClick={() => openNewDeliverable({ clientId, date })} {...props}>
+    <Button variant="primary" size="md" onClick={() => openNewDeliverable({ clientId, date })} {...props}>
       <Plus aria-hidden />
-      Nova entrega
-      <Kbd>E</Kbd>
+      Novo post
     </Button>
   );
 }

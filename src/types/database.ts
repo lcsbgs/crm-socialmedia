@@ -726,7 +726,9 @@ export type Database = {
           created_at: string;
           id: string;
           itens: NonNullable<Json>;
+          limite_rodadas: number;
           nome: string;
+          preco: number | null;
           updated_at: string;
           workspace_id: string;
         };
@@ -735,7 +737,9 @@ export type Database = {
           created_at?: string;
           id?: string;
           itens?: NonNullable<Json>;
+          limite_rodadas?: number;
           nome: string;
+          preco?: number | null;
           updated_at?: string;
           workspace_id: string;
         };
@@ -743,7 +747,9 @@ export type Database = {
           created_at?: string;
           id?: string;
           itens?: NonNullable<Json>;
+          limite_rodadas?: number;
           nome?: string;
+          preco?: number | null;
           updated_at?: string;
           workspace_id?: string;
         };
@@ -886,8 +892,10 @@ export type Database = {
         Row: {
           client_id: string;
           created_at: string;
+          deliverable_id: string | null;
           descricao: string;
           id: string;
+          origem: string;
           resolvido_em: string | null;
           status: Database["public"]["Enums"]["scope_status"];
           updated_at: string;
@@ -898,8 +906,10 @@ export type Database = {
         Insert: {
           client_id: string;
           created_at?: string;
+          deliverable_id?: string | null;
           descricao: string;
           id?: string;
+          origem?: string;
           resolvido_em?: string | null;
           status?: Database["public"]["Enums"]["scope_status"];
           updated_at?: string;
@@ -909,8 +919,10 @@ export type Database = {
         Update: {
           client_id?: string;
           created_at?: string;
+          deliverable_id?: string | null;
           descricao?: string;
           id?: string;
+          origem?: string;
           resolvido_em?: string | null;
           status?: Database["public"]["Enums"]["scope_status"];
           updated_at?: string;
@@ -1115,6 +1127,10 @@ export type Database = {
       };
     };
     Functions: {
+      package_month_status: {
+        Args: { p_client_id: string; p_month: string };
+        Returns: { capacidade: number; usados: number }[];
+      };
       get_brand_kit_public: {
         Args: { p_token: string };
         Returns: { workspace_id: string; client_id: string; client_nome: string; client_cor: number | null; workspace_nome: string; cores: Json; fontes: string | null; tom: string[]; evitar: string[]; observacoes: string | null }[];

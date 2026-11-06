@@ -28,3 +28,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261106120000_client_hub.sql` (estratégia, kit, arquivos, timeline_events, briefing, checklist, acesso a mídia por cliente), página do cliente refeita, páginas públicas de briefing e kit.
 - Falta: aba Relatórios (Fase 12).
 - Próxima: Fase 5, pacotes e planejamento.
+
+## Fase 5: pacotes e planejamento (concluída)
+- Feito: migração `20261106130000_planning.sql`, calendário editorial novo, pergunta de escopo extra, preço e rodadas no pacote.
+- Problemas abertos: o projeto remoto voltou a `INACTIVE` depois da primeira reativação; pedi de novo. Nenhuma migração desta rodada foi aplicada no remoto ainda.
+- Próxima: Fase 6, posts e IA.

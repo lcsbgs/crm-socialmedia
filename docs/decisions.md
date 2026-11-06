@@ -196,3 +196,12 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Storage**: arquivos de cliente em `{workspace}/clientes/{cliente}/{categoria}/...`; `can_access_media` passou a exigir acesso ao cliente nessa pasta.
 - **Instagram e pasta do Drive como campos simples** (`instagram_handle`, `drive_folder_url`) até as integrações reais (Fases 8 e 9).
 - **Rodadas de ajuste** na Visão geral = pedidos de ajuste do cliente no mês (tabela `approvals`).
+
+## 2026-11-06 · Pauta, Fase 5: pacotes e planejamento
+
+- **Capacidade do pacote = vagas que o `generate_month` criaria no mês** (mesma regra de datas, diário vira 1 por semana). Usados = posts do cliente na competência (ou com data no mês). Criar post com o mês cheio pergunta: "Sim, registrar como extra" cria o post e um `scope_requests` com `origem = limite_pacote`; "Não" cria só o post.
+- **Planejar o mês** no calendário chama `generate_month` (idempotente) para o mês seguinte. Agendamento automático com `pg_cron` no dia 20 às 06:00 UTC (`generate_month_all`), só se a extensão existir; senão a migração só avisa.
+- **Calendário começa no domingo**, como o design. O resto do app (semana da Produção) segue segunda a domingo.
+- **Arrastar para mudar a data** usa arrastar e soltar nativo do navegador; quem usa teclado muda a data no painel do post.
+- **Filtro de clientes do calendário** fica no próprio calendário (lado esquerdo), não na sidebar, porque a sidebar é compartilhada por todas as telas.
+- **Pacote ganhou `preco` e `limite_rodadas`** (padrão 2). O valor que vale para a cobrança continua sendo `clients.valor_mensal`.

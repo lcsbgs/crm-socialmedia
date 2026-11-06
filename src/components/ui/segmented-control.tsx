@@ -14,6 +14,7 @@ export function SegmentedControl({
   label,
   className,
   size = "md",
+  tone = "light",
 }: {
   options: SegmentOption[];
   value: string;
@@ -21,6 +22,7 @@ export function SegmentedControl({
   label: string;
   className?: string;
   size?: "sm" | "md";
+  tone?: "light" | "dark";
 }) {
   const item = cn(
     "inline-flex items-center justify-center rounded-full px-3.5 text-base whitespace-nowrap transition-colors",
@@ -33,8 +35,10 @@ export function SegmentedControl({
         const cls = cn(
           item,
           active
-            ? "border border-border bg-surface font-semibold text-ink"
-            : "border border-transparent text-muted hover:text-ink",
+            ? tone === "dark"
+              ? "border border-transparent bg-ink font-bold text-white"
+              : "border border-border bg-surface font-semibold text-ink"
+            : "border border-transparent text-ink-2 hover:text-ink",
         );
         return o.href ? (
           <Link key={o.value} href={o.href} aria-current={active ? "true" : undefined} className={cls} scroll={false}>
