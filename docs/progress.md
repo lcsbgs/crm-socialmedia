@@ -33,3 +33,9 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261106130000_planning.sql`, calendário editorial novo, pergunta de escopo extra, preço e rodadas no pacote.
 - Problemas abertos: o projeto remoto voltou a `INACTIVE` depois da primeira reativação; pedi de novo. Nenhuma migração desta rodada foi aplicada no remoto ainda.
 - Próxima: Fase 6, posts e IA.
+
+## Fase 6: posts e IA (concluída)
+- Feito: migração `20261106140000_posts_ai.sql`, quadro e editor do post, camada de IA, Ajustes > IA.
+- Falta: `/api/ai/chatgpt/callback` real (depende das credenciais da OpenAI); botões Canva e Drive do editor apontam para as telas da Fase 9.
+- Problemas abertos: remoto em `COMING_UP` de novo (segunda reativação).
+- Próxima: Fase 7, portal do cliente.

@@ -32,6 +32,7 @@ export default async function TeamSettingsPage({ params }: PageProps<"/w/[slug]/
     supabase.from("clients").select("id, nome, cor").eq("workspace_id", workspace.id).neq("status", "encerrado").order("nome"),
     supabase.from("workspaces").select("ai_mode").eq("id", workspace.id).single(),
   ]);
+  const { data: aiConns } = await supabase.rpc("workspace_ai_connections", { p_workspace_id: workspace.id });
 
   const max = usage?.max_members ?? 1;
   const free = Math.max(0, max - members.length);
@@ -44,7 +45,10 @@ export default async function TeamSettingsPage({ params }: PageProps<"/w/[slug]/
     provider: m.profile.auth_provider,
     joinedAt: m.created_at,
     clientIds: assignments.filter((a) => a.user_id === m.user_id).map((a) => a.client_id),
-    ai: ws?.ai_mode === "chatgpt" ? "Plano ChatGPT" : "Créditos do Pauta",
+    ai:
+      ws?.ai_mode === "chatgpt" && (aiConns ?? []).some((c) => c.user_id === m.user_id && c.status === "ativa")
+        ? "Plano ChatGPT"
+        : "Créditos do Pauta",
   }));
   const invites = invitations.map((inv, i) => ({
     id: inv.id,

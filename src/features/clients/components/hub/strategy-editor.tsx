@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Button, IconButton } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -8,7 +8,9 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { SegmentedBar } from "@/components/ui/progress-bar";
 import { toast } from "@/components/ui/toast";
 import { todayISO } from "@/lib/format";
+import { strategyDraftAi } from "@/features/ai/actions";
 import { saveStrategy } from "../../hub-actions";
+import { strategySchema } from "../../hub-schemas";
 import type { StrategyInput } from "../../hub-schemas";
 
 export const pillarColors = ["#6B4EFF", "#F28C28", "#1C8C86", "#D9468F", "#3D6FE0", "#C99A06", "#3E9B4F", "#5B6470"];
@@ -27,6 +29,23 @@ export function StrategyEditor({
   const total = s.pilares.reduce((n, p) => n + (Number.isFinite(p.pct) ? p.pct : 0), 0);
   const set = <K extends keyof StrategyInput>(k: K, v: StrategyInput[K]) => setS((cur) => ({ ...cur, [k]: v }));
 
+  const [drafting, setDrafting] = useState(false);
+  async function draft() {
+    setDrafting(true);
+    const r = await strategyDraftAi({ workspaceId, clientId, objetivo: s.objetivo ?? undefined });
+    setDrafting(false);
+    if (!r.ok) return void toast.error(r.error);
+    const parsed = strategySchema.partial().safeParse("draft" in r ? r.draft : {});
+    if (!parsed.success) return void toast.error("O rascunho veio incompleto. Tente de novo.");
+    setS((cur) => ({
+      ...cur,
+      objetivo: parsed.data.objetivo ?? cur.objetivo,
+      pilares: parsed.data.pilares?.length ? parsed.data.pilares : cur.pilares,
+      formatos: parsed.data.formatos?.length ? parsed.data.formatos : cur.formatos,
+    }));
+    toast.success(r.warning ?? "Rascunho pronto. Revise e salve.");
+  }
+
   function save() {
     start(async () => {
       const r = await saveStrategy({ ...s, workspaceId, clientId });
@@ -38,7 +57,15 @@ export function StrategyEditor({
   return (
     <div className="flex flex-col gap-5">
       <Card>
-        <CardHeader title="Objetivo e público" />
+        <CardHeader
+          title="Objetivo e público"
+          action={
+            <Button variant="tonal" size="sm" onClick={draft} disabled={drafting}>
+              <Sparkles aria-hidden />
+              {drafting ? "Pensando..." : "Rascunho com IA"}
+            </Button>
+          }
+        />
         <div className="grid gap-4">
           <div className="space-y-1.5">
             <Label htmlFor="objetivo">Objetivo do trimestre</Label>

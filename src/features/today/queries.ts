@@ -57,7 +57,7 @@ export async function getDailyAgenda(
       .eq("workspace_id", workspaceId)
       .eq("decisao", "ajuste")
       .gte("created_at", twoDaysAgo)
-      .in("deliverable.status", ["planejar", "produzir"]),
+      .in("deliverable.status", ["planejar", "produzir", "ajuste"]),
     supabase
       .from("tasks")
       .select("id, titulo, due_date, origem, status, done_at, responsavel_id, client_id")
@@ -68,7 +68,7 @@ export async function getDailyAgenda(
       .from("deliverables")
       .select("id, titulo, slot_label, status, data_publicacao, hora_publicacao, status_changed_at, responsavel_id, client_id")
       .eq("workspace_id", workspaceId)
-      .or(`status.eq.em_aprovacao,and(status.in.(planejar,produzir),data_publicacao.lte.${today}),and(status.in.(aprovado,publicado),data_publicacao.eq.${today})`)
+      .or(`status.eq.em_aprovacao,and(status.in.(planejar,produzir,ajuste),data_publicacao.lte.${today}),and(status.in.(aprovado,agendado,publicado),data_publicacao.eq.${today})`)
       .limit(400),
     opts.canSeeFinance
       ? supabase

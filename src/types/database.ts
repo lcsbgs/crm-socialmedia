@@ -23,6 +23,138 @@ export type Database = {
   };
   public: {
     Tables: {
+      ai_connections: {
+        Row: {
+          access_token_enc: string | null;
+          conta: string | null;
+          created_at: string;
+          expires_at: string | null;
+          id: string;
+          limite_aviso_em: string | null;
+          provider: string;
+          refresh_token_enc: string | null;
+          scopes: string[];
+          simulated: boolean;
+          status: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_token_enc?: string | null;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          limite_aviso_em?: string | null;
+          provider?: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          access_token_enc?: string | null;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          limite_aviso_em?: string | null;
+          provider?: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      ai_usage: {
+        Row: {
+          created_at: string;
+          creditos: number;
+          fallback: boolean;
+          id: string;
+          prompt_versao: string | null;
+          provider: string;
+          tarefa: string;
+          tokens_entrada: number;
+          tokens_saida: number;
+          user_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          creditos?: number;
+          fallback?: boolean;
+          id?: string;
+          prompt_versao?: string | null;
+          provider: string;
+          tarefa: string;
+          tokens_entrada?: number;
+          tokens_saida?: number;
+          user_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          creditos?: number;
+          fallback?: boolean;
+          id?: string;
+          prompt_versao?: string | null;
+          provider?: string;
+          tarefa?: string;
+          tokens_entrada?: number;
+          tokens_saida?: number;
+          user_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      deliverable_versions: {
+        Row: {
+          created_at: string;
+          criado_por: string | null;
+          deliverable_id: string;
+          id: string;
+          legenda: string | null;
+          midia_paths: string[];
+          numero: number;
+          observacao: string | null;
+          origem: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          criado_por?: string | null;
+          deliverable_id: string;
+          id?: string;
+          legenda?: string | null;
+          midia_paths?: string[];
+          numero: number;
+          observacao?: string | null;
+          origem?: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          criado_por?: string | null;
+          deliverable_id?: string;
+          id?: string;
+          legenda?: string | null;
+          midia_paths?: string[];
+          numero?: number;
+          observacao?: string | null;
+          origem?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       timeline_events: {
         Row: {
           autor_id: string | null;
@@ -462,6 +594,8 @@ export type Database = {
       };
       deliverables: {
         Row: {
+          canal: string;
+          checklist: Json;
           client_id: string;
           competencia: string | null;
           created_at: string;
@@ -472,17 +606,23 @@ export type Database = {
           legenda: string | null;
           midia_urls: string[];
           ordem: number;
+          pilar: string | null;
+          prazo_interno: string | null;
           responsavel_id: string | null;
+          rodadas: number;
           slot_key: string | null;
           slot_label: string | null;
           status: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at: string;
           titulo: string | null;
           updated_at: string;
+          versao_atual: number;
           workspace_id: string;
         };
         ComputedFields: never;
         Insert: {
+          canal?: string;
+          checklist?: Json;
           client_id: string;
           competencia?: string | null;
           created_at?: string;
@@ -493,16 +633,22 @@ export type Database = {
           legenda?: string | null;
           midia_urls?: string[];
           ordem?: number;
+          pilar?: string | null;
+          prazo_interno?: string | null;
           responsavel_id?: string | null;
+          rodadas?: number;
           slot_key?: string | null;
           slot_label?: string | null;
           status?: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at?: string;
           titulo?: string | null;
           updated_at?: string;
+          versao_atual?: number;
           workspace_id: string;
         };
         Update: {
+          canal?: string;
+          checklist?: Json;
           client_id?: string;
           competencia?: string | null;
           created_at?: string;
@@ -513,13 +659,17 @@ export type Database = {
           legenda?: string | null;
           midia_urls?: string[];
           ordem?: number;
+          pilar?: string | null;
+          prazo_interno?: string | null;
           responsavel_id?: string | null;
+          rodadas?: number;
           slot_key?: string | null;
           slot_label?: string | null;
           status?: Database["public"]["Enums"]["deliverable_status"];
           status_changed_at?: string;
           titulo?: string | null;
           updated_at?: string;
+          versao_atual?: number;
           workspace_id?: string;
         };
         Relationships: [
@@ -820,6 +970,7 @@ export type Database = {
       };
       plan_limits: {
         Row: {
+          ai_credits_month: number;
           created_at: string;
           max_clients: number | null;
           max_members: number;
@@ -828,6 +979,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          ai_credits_month?: number;
           created_at?: string;
           max_clients?: number | null;
           max_members: number;
@@ -835,6 +987,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          ai_credits_month?: number;
           created_at?: string;
           max_clients?: number | null;
           max_members?: number;
@@ -1127,6 +1280,22 @@ export type Database = {
       };
     };
     Functions: {
+      ai_credits_status: {
+        Args: { p_workspace_id: string };
+        Returns: { usados: number; limite: number }[];
+      };
+      workspace_ai_connections: {
+        Args: { p_workspace_id: string };
+        Returns: { user_id: string; provider: string; status: string; simulated: boolean }[];
+      };
+      get_ai_connection_secret: {
+        Args: { p_provider: string };
+        Returns: { access_token_enc: string | null; refresh_token_enc: string | null; expires_at: string | null; simulated: boolean; status: string }[];
+      };
+      create_deliverable_version: {
+        Args: { p_deliverable_id: string; p_origem?: string; p_observacao?: string };
+        Returns: number;
+      };
       package_month_status: {
         Args: { p_client_id: string; p_month: string };
         Returns: { capacidade: number; usados: number }[];
@@ -1286,7 +1455,7 @@ export type Database = {
       approval_decision: "aprovado" | "ajuste";
       client_status: "ativo" | "pausado" | "encerrado";
       deliverable_format: "post" | "reels" | "carrossel" | "story" | "relatorio";
-      deliverable_status: "planejar" | "produzir" | "em_aprovacao" | "aprovado" | "publicado";
+      deliverable_status: "planejar" | "produzir" | "em_aprovacao" | "aprovado" | "publicado" | "ajuste" | "agendado";
       package_cadence: "diaria" | "semanal" | "mensal";
       payment_status: "pendente" | "pago" | "atrasado";
       plan_tier: "free" | "pro" | "estudio";
@@ -1411,7 +1580,7 @@ export const Constants = {
       approval_decision: ["aprovado", "ajuste"],
       client_status: ["ativo", "pausado", "encerrado"],
       deliverable_format: ["post", "reels", "carrossel", "story", "relatorio"],
-      deliverable_status: ["planejar", "produzir", "em_aprovacao", "aprovado", "publicado"],
+      deliverable_status: ["planejar", "produzir", "em_aprovacao", "aprovado", "publicado", "ajuste", "agendado"],
       package_cadence: ["diaria", "semanal", "mensal"],
       payment_status: ["pendente", "pago", "atrasado"],
       plan_tier: ["free", "pro", "estudio"],

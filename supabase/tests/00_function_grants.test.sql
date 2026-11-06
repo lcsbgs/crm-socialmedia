@@ -26,7 +26,8 @@ select set_eq(
     'complete_onboarding', 'get_invitation', 'accept_invitation', 'workspace_usage',
     'generate_month', 'can_access_media',
     'is_workspace_admin', 'can_access_client', 'can_access_deliverable', 'set_member_clients',
-    'save_studio_step', 'finish_onboarding', 'regenerate_briefing_token', 'package_month_status'
+    'save_studio_step', 'finish_onboarding', 'regenerate_briefing_token', 'package_month_status',
+    'create_deliverable_version', 'get_ai_connection_secret', 'workspace_ai_connections', 'ai_credits_status'
   ],
   'authenticated só executa as funções security definer previstas');
 

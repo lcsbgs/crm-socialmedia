@@ -205,3 +205,13 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Arrastar para mudar a data** usa arrastar e soltar nativo do navegador; quem usa teclado muda a data no painel do post.
 - **Filtro de clientes do calendário** fica no próprio calendário (lado esquerdo), não na sidebar, porque a sidebar é compartilhada por todas as telas.
 - **Pacote ganhou `preco` e `limite_rodadas`** (padrão 2). O valor que vale para a cobrança continua sendo `clients.valor_mensal`.
+
+## 2026-11-06 · Pauta, Fase 6: posts e IA
+
+- **Etapas do post**: Planejado (`planejar`), Em produção (`produzir`), Em aprovação, Ajuste pedido (`ajuste`, novo), Agendado (`agendado`, novo), Publicado. `aprovado` continua existindo (o cliente aprovou e falta agendar) e aparece na coluna Agendado com o aviso "aprovado, falta agendar". Alternativa: migrar `aprovado` para `agendado` (descartada: perde a diferença entre aprovado e agendado na Meta).
+- **Editor no painel lateral (560px)** em `post-editor.tsx`, com etapas em bolinhas, arte (Canva, Drive, upload), legenda com contador de 2.200, ações de IA, detalhes (pilar da estratégia, responsável, prazo interno, data e hora, formato, onde publica), rodadas x limite do pacote, checklist, respostas do cliente, comentários internos, versões, histórico e pré-visualização de feed e reels. "Enviar para aprovação" salva uma versão antes.
+- **IA com interface única** (`src/lib/ai`): `runAi(workspace, prompt, vars)` decide entre o plano do ChatGPT da pessoa e os créditos do espaço (`planAiRoute`, testado), cai para os créditos com aviso quando o ChatGPT devolve limite ou conta não elegível, e grava `ai_usage` (com a versão do prompt). Créditos por plano: 100 (grátis), 1.000 (Pro), 3.000 (Estúdio). Custo: legenda 3, encurtar/tom/chamada 1, estratégia 5.
+- **Sem `ANTHROPIC_API_KEY` a IA responde em demonstração** (`providers/mock.ts`), inclusive a ata de reunião, que passa a organizar as próprias anotações em vez de dar erro.
+- **Prompts versionados em arquivos** (`src/lib/ai/prompts`): mudar o texto exige subir a versão (`legenda@1` etc.).
+- **Conexão do ChatGPT é por pessoa** (`ai_connections`), não por espaço. Tokens cifrados com AES-256-GCM (`src/lib/crypto.ts`, `ENCRYPTION_KEY`); as colunas de token não têm grant de leitura e só saem por `get_ai_connection_secret`, que devolve apenas a linha do próprio usuário. Em demonstração a conexão é simulada e há um botão para simular o fim do limite semanal.
+- **IA nunca salva sozinha**: a sugestão entra no campo e a pessoa revisa.

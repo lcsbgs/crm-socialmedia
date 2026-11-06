@@ -75,7 +75,7 @@ export function Sheet({
     <DialogPrimitive.Root open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="anim-fade fixed inset-0 z-40 bg-[var(--overlay)] lg:bg-transparent" />
-        <DialogPrimitive.Content className="anim-sheet fixed inset-y-0 right-0 z-50 flex w-full max-w-xl flex-col bg-surface shadow-pop sm:rounded-l-card outline-none">
+        <DialogPrimitive.Content className="anim-sheet fixed inset-y-0 right-0 z-50 flex w-full max-w-[560px] flex-col bg-surface shadow-pop sm:rounded-l-card outline-none">
           <div className="flex min-h-16 shrink-0 items-center justify-between gap-2 border-b border-border px-[22px]">
             <DialogPrimitive.Title className="min-w-0 truncate font-display text-lg">
               {title}

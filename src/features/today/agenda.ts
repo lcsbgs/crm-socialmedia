@@ -26,7 +26,7 @@ export type RawTask = {
 export type RawPost = {
   id: string;
   titulo: string;
-  status: "planejar" | "produzir" | "em_aprovacao" | "aprovado" | "publicado";
+  status: "planejar" | "produzir" | "em_aprovacao" | "ajuste" | "aprovado" | "agendado" | "publicado";
   dataPublicacao: string | null;
   hora: string | null;
   statusChangedAt: string;
@@ -71,7 +71,7 @@ export type FazerItem =
       kind: "post";
       id: string;
       titulo: string;
-      status: "planejar" | "produzir";
+      status: "planejar" | "produzir" | "ajuste";
       atrasoDias: number;
       dataPublicacao: string;
     });
@@ -205,7 +205,7 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
     });
   }
   for (const p of input.posts) {
-    if ((p.status !== "planejar" && p.status !== "produzir") || !p.dataPublicacao) continue;
+    if ((p.status !== "planejar" && p.status !== "produzir" && p.status !== "ajuste") || !p.dataPublicacao) continue;
     if (p.dataPublicacao > today || !mine(p.responsavelId, p.client.id)) continue;
     fazer.push({
       key: `post:${p.id}`,
@@ -247,7 +247,7 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
 
   // Publicações do dia.
   const publicacoes: PublicacaoItem[] = input.posts
-    .filter((p) => p.dataPublicacao === today && (p.status === "aprovado" || p.status === "publicado"))
+    .filter((p) => p.dataPublicacao === today && (p.status === "aprovado" || p.status === "agendado" || p.status === "publicado"))
     .filter((p) => myClient(p.client.id))
     .map((p) => ({
       key: `publicacao:${p.id}`,

@@ -9,17 +9,37 @@ export const formatLabels = {
 } as const;
 export type DeliverableFormat = keyof typeof formatLabels;
 
+// Etapas do post. "aprovado" (cliente aprovou, falta agendar) aparece na coluna Agendado.
+export const statusLabels = {
+  planejar: "Planejado",
+  produzir: "Em produção",
+  em_aprovacao: "Em aprovação",
+  ajuste: "Ajuste pedido",
+  aprovado: "Aprovado",
+  agendado: "Agendado",
+  publicado: "Publicado",
+} as const;
+export type DeliverableStatus = keyof typeof statusLabels;
+
 export const statusColumns = [
-  { id: "planejar", label: "Planejar" },
-  { id: "produzir", label: "Produzir" },
-  { id: "em_aprovacao", label: "Em aprovação" },
-  { id: "aprovado", label: "Aprovado" },
-  { id: "publicado", label: "Publicado" },
+  { id: "planejar", label: "Planejado", color: "#8A93A3" },
+  { id: "produzir", label: "Em produção", color: "#6B4EFF" },
+  { id: "em_aprovacao", label: "Em aprovação", color: "#E0A800" },
+  { id: "ajuste", label: "Ajuste pedido", color: "#C2410C" },
+  { id: "agendado", label: "Agendado", color: "#1F7A4D" },
+  { id: "publicado", label: "Publicado", color: "#3E4656" },
 ] as const;
-export type DeliverableStatus = (typeof statusColumns)[number]["id"];
+export type ColumnId = (typeof statusColumns)[number]["id"];
+
+export function columnOf(status: DeliverableStatus): ColumnId {
+  return status === "aprovado" ? "agendado" : status;
+}
+
+// Ordem das etapas no editor (bolinhas de progresso).
+export const stageOrder: ColumnId[] = ["planejar", "produzir", "em_aprovacao", "agendado", "publicado"];
 
 const formatEnum = z.enum(["post", "reels", "carrossel", "story", "relatorio"]);
-const statusEnum = z.enum(["planejar", "produzir", "em_aprovacao", "aprovado", "publicado"]);
+const statusEnum = z.enum(["planejar", "produzir", "em_aprovacao", "ajuste", "aprovado", "agendado", "publicado"]);
 const optionalDate = z
   .string()
   .transform((v) => v || null)

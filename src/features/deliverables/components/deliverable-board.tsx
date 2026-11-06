@@ -27,23 +27,23 @@ import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { moveDeliverable } from "../actions";
 import type { BoardDeliverable } from "../queries";
-import { statusColumns, type DeliverableStatus } from "../schemas";
+import { columnOf, statusColumns, type ColumnId } from "../schemas";
 import { DeliverableCard } from "./deliverable-card";
 import { useDeliverableSheet } from "./deliverable-sheet";
 
-type Columns = Record<DeliverableStatus, BoardDeliverable[]>;
+type Columns = Record<ColumnId, BoardDeliverable[]>;
 
 function group(items: BoardDeliverable[]): Columns {
   const cols = Object.fromEntries(
     statusColumns.map((c) => [c.id, [] as BoardDeliverable[]]),
   ) as unknown as Columns;
-  for (const i of [...items].sort((a, b) => a.ordem - b.ordem)) cols[i.status].push(i);
+  for (const i of [...items].sort((a, b) => a.ordem - b.ordem)) cols[columnOf(i.status)].push(i);
   return cols;
 }
 
-function findColumn(cols: Columns, id: string): DeliverableStatus | null {
-  if (id in cols) return id as DeliverableStatus;
-  return (Object.keys(cols) as DeliverableStatus[]).find((k) => cols[k].some((d) => d.id === id)) ?? null;
+function findColumn(cols: Columns, id: string): ColumnId | null {
+  if (id in cols) return id as ColumnId;
+  return (Object.keys(cols) as ColumnId[]).find((k) => cols[k].some((d) => d.id === id)) ?? null;
 }
 
 function orderBetween(list: BoardDeliverable[], index: number) {
@@ -108,6 +108,7 @@ export function DeliverableBoard({
     if (!over) return;
     const column = findColumn(columns, String(active.id));
     if (!column) return;
+    const original = items.find((d) => d.id === active.id);
     const list = [...columns[column]];
     const oldIndex = list.findIndex((d) => d.id === active.id);
     const overIndex = list.findIndex((d) => d.id === over.id);
@@ -115,9 +116,11 @@ export function DeliverableBoard({
     const [item] = list.splice(oldIndex, 1);
     list.splice(newIndex, 0, item);
     const ordem = orderBetween(list, newIndex);
-    list[newIndex] = { ...item, status: column, ordem };
+    // "Aprovado" continua aprovado se só mudou de posição dentro de Agendado.
+    const status = column === "agendado" && original?.status === "aprovado" ? "aprovado" : column;
+    list[newIndex] = { ...item, status, ordem };
     setColumns({ ...columns, [column]: list });
-    void moveDeliverable({ workspaceId: workspace.id, id: item.id, status: column, ordem }).then((r) => {
+    void moveDeliverable({ workspaceId: workspace.id, id: item.id, status, ordem }).then((r) => {
       if (r.error) {
         toast.error(r.error);
         setColumns(group(items));
@@ -144,12 +147,13 @@ export function DeliverableBoard({
         },
       }}
     >
-      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:px-0">
+      <div className="-mx-4 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-4 pb-4 sm:-mx-7 sm:px-7 xl:-mx-10 xl:px-10">
         {statusColumns.map((col) => (
           <Column
             key={col.id}
             id={col.id}
             label={col.label}
+            color={col.color}
             items={columns[col.id]}
             showClient={showClient}
             workspaceId={workspace.id}
@@ -176,14 +180,16 @@ export function DeliverableBoard({
 function Column({
   id,
   label,
+  color,
   items,
   showClient,
   workspaceId,
   onOpen,
   onAdd,
 }: {
-  id: DeliverableStatus;
+  id: ColumnId;
   label: string;
+  color: string;
   items: BoardDeliverable[];
   showClient: boolean;
   workspaceId: string;
@@ -195,20 +201,23 @@ function Column({
     <section
       aria-label={label}
       className={cn(
-        "flex w-[80vw] max-w-72 shrink-0 snap-start flex-col rounded-inner border border-transparent bg-[color-mix(in_srgb,var(--border)_45%,transparent)] p-1.5 sm:w-64 lg:w-auto lg:max-w-none",
-        isOver && "border-[color-mix(in_srgb,var(--accent)_35%,transparent)]",
+        "flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col gap-2.5 rounded-card border-2 border-transparent bg-[#EAECF0] p-3 sm:w-[272px]",
+        isOver && "border-accent",
       )}
     >
-      <h3 className="flex items-center justify-between px-1.5 pt-0.5 pb-1.5 text-sm font-medium">
-        {label}
+      <h3 className="flex items-center justify-between gap-2 px-1 text-base font-bold">
+        <span className="flex items-center gap-2">
+          <span aria-hidden className="size-2.5 rounded-full" style={{ backgroundColor: color }} />
+          {label}
+        </span>
         <span className="flex items-center gap-1">
-          <span className="tabular text-xs text-muted">{items.length}</span>
+          <span className="tabular rounded-full bg-surface px-2 text-xs font-bold text-ink-2">{items.length}</span>
           {onAdd ? (
             <button
               type="button"
               onClick={onAdd}
-              aria-label="Nova entrega"
-              className="rounded p-0.5 text-muted hover:bg-hover hover:text-ink"
+              aria-label="Novo post"
+              className="rounded-full p-1 text-muted hover:bg-surface hover:text-ink"
             >
               <Plus className="size-3.5" />
             </button>
@@ -216,7 +225,7 @@ function Column({
         </span>
       </h3>
       <SortableContext items={items.map((d) => d.id)} strategy={verticalListSortingStrategy}>
-        <ul ref={setNodeRef} className="flex min-h-20 flex-1 flex-col gap-1.5">
+        <ul ref={setNodeRef} className="flex min-h-24 flex-1 flex-col gap-2">
           {items.map((item) => (
             <SortableCard
               key={item.id}
@@ -262,7 +271,7 @@ function SortableCard({
           listeners?.onKeyDown?.(e);
           if (e.key === "Enter") onOpen(item.id);
         }}
-        className="cursor-grab touch-manipulation rounded-xl active:cursor-grabbing"
+        className="cursor-grab touch-manipulation rounded-inner active:cursor-grabbing"
       >
         <DeliverableCard item={item} workspaceId={workspaceId} showClient={showClient} />
       </div>
