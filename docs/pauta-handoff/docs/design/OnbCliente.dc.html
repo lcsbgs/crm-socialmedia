@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Onboarding, primeiro cliente</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 900px; box-sizing: border-box; padding: 28px 24px 48px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+
+  <div style="width: 100%; max-width: 1040px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+    <span style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px">Pauta</span></span>
+    <ol aria-label="Etapas" style="list-style: none; margin: 0 auto; padding: 0; display: flex; gap: 8px; flex-wrap: wrap">
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #DDF3E8; color: #135E3A; font-size: 13px; font-weight: 600"><span style="width: 24px; height: 24px; border-radius: 999px; background: #1F7A4D; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" aria-hidden="true"><path d="M4 12l5 5 11-11"></path></svg></span>Espaço e equipe</li>
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #DDF3E8; color: #135E3A; font-size: 13px; font-weight: 600"><span style="width: 24px; height: 24px; border-radius: 999px; background: #1F7A4D; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" aria-hidden="true"><path d="M4 12l5 5 11-11"></path></svg></span>IA</li>
+      <li aria-current="step" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #1D2433; color: #FFFFFF; font-size: 13px; font-weight: 700"><span style="width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF; color: #1D2433; display: flex; align-items: center; justify-content: center">3</span>Primeiro cliente</li>
+    </ol>
+    <a href="Main.dc.html" style="font-size: 14px; color: #3E4656">Pular por agora</a>
+  </div>
+
+  <div style="width: 100%; max-width: 980px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: -0.02em; line-height: 1.15">Agora, o seu primeiro cliente</h1>
+      <span style="font-size: 16px; color: #3E4656">Com isso, o Pauta já monta o mês dele.</span>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <section aria-labelledby="h-dados" style="flex: 1 1 380px; background: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <h2 id="h-dados" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px">Quem é</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="marca" style="font-size: 14px; font-weight: 600">Nome da marca</label><input id="marca" value="Padaria Pão Quente" style="height: 48px; border-radius: 14px; border: 1.5px solid #D5D9E2; padding: 0 14px; font: inherit; font-size: 15px"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="zap" style="font-size: 14px; font-weight: 600">WhatsApp de quem aprova</label><input id="zap" value="(54) 99999-0000, Mariana" style="height: 48px; border-radius: 14px; border: 1.5px solid #D5D9E2; padding: 0 14px; font: inherit; font-size: 15px"></div>
+        <fieldset style="border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+          <legend style="font-size: 14px; font-weight: 600; margin-bottom: 8px">Pacote</legend>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 2px solid #6B4EFF; background: #EEEAFF"><input type="radio" name="pac" checked style="width: 18px; height: 18px; accent-color: #6B4EFF"><span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">Essencial</span><span style="font-size: 13px; color: #3B23B8">12 posts, 1 reunião e 1 relatório por mês</span></span><span style="font-weight: 700; font-size: 14px">[SEU PREÇO]</span></label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1.5px solid #E3E6EC"><input type="radio" name="pac" style="width: 18px; height: 18px; accent-color: #6B4EFF"><span style="flex: 1; font-weight: 600; font-size: 15px">Criar outro pacote</span></label>
+        </fieldset>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 14px; font-weight: 600">Quem cuida desse cliente</span>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button aria-pressed="true" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 4px; border-radius: 999px; border: 2px solid #6B4EFF; background: #EEEAFF; font-weight: 600; font-size: 14px; color: #1D2433"><span style="width: 30px; height: 30px; border-radius: 999px; background: #FFC93C; color: #5A3D00; display: flex; align-items: center; justify-content: center; font-weight: 700">B</span>Bia</button>
+            <button aria-pressed="true" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 4px; border-radius: 999px; border: 2px solid #6B4EFF; background: #EEEAFF; font-weight: 600; font-size: 14px; color: #1D2433"><span style="width: 30px; height: 30px; border-radius: 999px; background: #C9EDE9; color: #0F5C58; display: flex; align-items: center; justify-content: center; font-weight: 700">J</span>Júlia, convidada</button>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-redes" style="flex: 1 1 400px; background: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <h2 id="h-redes" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px">Onde publica</h2>
+        <span style="font-size: 14px; color: #3E4656">Você entrou com o Facebook e o Pauta encontrou estas contas. Escolha as da Padaria.</span>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; border: 2px solid #6B4EFF; background: #EEEAFF">
+            <input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF">
+            <span style="width: 40px; height: 40px; border-radius: 999px; background: #7B3F12; color: #F6E7CF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">PQ</span>
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">@paoquente.caxias</span><span style="font-size: 13px; color: #3B23B8">Instagram, conta comercial</span></span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; border: 2px solid #6B4EFF; background: #EEEAFF">
+            <input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF">
+            <span style="width: 40px; height: 40px; border-radius: 999px; background: #7B3F12; color: #F6E7CF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">PQ</span>
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">Padaria Pão Quente</span><span style="font-size: 13px; color: #3B23B8">Página do Facebook</span></span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; border: 1.5px solid #E3E6EC">
+            <input type="checkbox" style="width: 20px; height: 20px; accent-color: #6B4EFF">
+            <span style="width: 40px; height: 40px; border-radius: 999px; background: #1C8C86; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">CS</span>
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 15px">@clinicasorrir</span><span style="font-size: 13px; color: #5E6675">Instagram, conta comercial</span></span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; border: 1.5px solid #E3E6EC">
+            <input type="checkbox" style="width: 20px; height: 20px; accent-color: #6B4EFF">
+            <span style="width: 40px; height: 40px; border-radius: 999px; background: #D9468F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">SL</span>
+            <span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 15px">@studiolume</span><span style="font-size: 13px; color: #5E6675">Instagram, conta comercial</span></span>
+          </label>
+        </div>
+        <span style="font-size: 13px; color: #5E6675">Não achou a conta? <a href="#instagram">Conectar com Instagram</a> ou peça ao cliente para te adicionar como parceira no Meta Business.</span>
+      </section>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap">
+      <a href="OnbIA.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 22px; border-radius: 999px; border: 1.5px solid #D5D9E2; background: #FFFFFF; color: #1D2433; font-weight: 600; font-size: 15px; text-decoration: none">Voltar</a>
+      <a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 28px; border-radius: 999px; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none">Montar o mês e abrir minha pauta</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

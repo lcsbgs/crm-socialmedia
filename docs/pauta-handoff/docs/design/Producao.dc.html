@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Produção</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 1000px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Navegação principal" style="flex: 0 1 220px; min-width: 200px; background: #FFFFFF; border-right: 1px solid #E3E6EC; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E3E6EC; border-radius: 14px">
+    <span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span>
+    <span style="font-weight: 700; font-size: 14px">Bia Social</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 2px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Em pauta hoje</a>
+    <a href="Calendario.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Calendário</a>
+    <a href="Producao.dc.html" aria-current="page" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; background: #EEEAFF; color: #3B23B8; font-weight: 700; font-size: 14px; text-decoration: none">Produção</a>
+    <a href="Aprovacao.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Aprovações</a>
+    <a href="#financeiro" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Financeiro</a>
+  </div>
+</nav>
+
+<main style="flex: 999 1 480px; min-width: 0; box-sizing: border-box; padding: 28px 28px 40px; display: flex; flex-direction: column; gap: 18px">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 36px; letter-spacing: -0.02em">Produção</h1>
+    <span style="font-size: 14px; color: #5E6675">Novembro, todos os clientes</span>
+    <div style="margin-left: auto; display: flex; gap: 8px">
+      <button style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 14px; font-weight: 600; color: #1D2433">Cliente: todos</button>
+      <button style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 14px; font-weight: 600; color: #1D2433">Responsável: todos</button>
+    </div>
+  </div>
+
+  <div style="overflow-x: auto; padding-bottom: 8px">
+    <div style="display: flex; gap: 14px; align-items: flex-start; min-width: 1010px">
+      <sc-for list="{{ cols }}" as="col" hint-placeholder-count="5">
+        <section style="flex: 1 1 0; min-width: 190px; background: #E9EBF0; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 4px 6px">
+            <span style="width: 10px; height: 10px; border-radius: 999px; background: {{ col.color }}"></span>
+            <h2 style="margin: 0; font-size: 14px; font-weight: 700; flex: 1">{{ col.name }}</h2>
+            <span style="font-size: 13px; color: #5E6675">{{ col.count }}</span>
+          </div>
+          <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="3">
+            <button style="text-align: left; border: {{ c.border }}; background: #FFFFFF; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; color: #1D2433">
+              <sc-if value="{{ c.thumb }}" hint-placeholder-val="{{ true }}"><span style="display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 9px; background: {{ c.thumbBg }}"></span></sc-if>
+              <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; font-weight: 700; background: {{ c.tagBg }}; color: {{ c.tagFg }}">{{ c.client }}</span>
+              <span style="font-size: 14px; font-weight: 600; line-height: 1.3">{{ c.title }}</span>
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5E6675">
+                <span style="flex: 1">{{ c.meta }}</span>
+                <span style="width: 22px; height: 22px; border-radius: 999px; background: {{ c.whoBg }}; color: #1D2433; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700">{{ c.who }}</span>
+              </span>
+            </button>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+  </div>
+</main>
+
+<aside aria-label="Editor do post" style="flex: 1 1 420px; max-width: 460px; min-width: 320px; background: #FFFFFF; border-left: 1px solid #E3E6EC; box-sizing: border-box; padding: 22px 22px 28px; display: flex; flex-direction: column; gap: 18px">
+  <div style="display: flex; align-items: flex-start; gap: 10px">
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+      <span style="display: inline-flex; align-self: flex-start; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; font-weight: 700; background: #FFF1E6; color: #8A3A06">Padaria Pão Quente</span>
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2">Pão de fermentação natural</h2>
+      <span style="font-size: 13px; color: #5E6675">Carrossel, Instagram, publica seg 9/11 às 9:00</span>
+    </div>
+    <button aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: #F4F5F7; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D2433" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </div>
+
+  <ol aria-label="Etapa" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 4px">
+    <li style="flex: 1; height: 6px; border-radius: 999px; background: #6B4EFF"></li>
+    <li style="flex: 1; height: 6px; border-radius: 999px; background: #6B4EFF"></li>
+    <li style="flex: 1; height: 6px; border-radius: 999px; background: #E3E6EC"></li>
+    <li style="flex: 1; height: 6px; border-radius: 999px; background: #E3E6EC"></li>
+    <li style="flex: 1; height: 6px; border-radius: 999px; background: #E3E6EC"></li>
+  </ol>
+  <span style="font-size: 13px; color: #3E4656; margin-top: -10px">Em produção, próximo: revisão interna</span>
+
+  <section aria-labelledby="h-arte" style="display: flex; flex-direction: column; gap: 10px">
+    <h3 id="h-arte" style="margin: 0; font-size: 15px; font-weight: 700">Arte</h3>
+    <div style="border: 2px dashed #C9CEDA; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+      <span style="font-size: 14px; color: #3E4656">Ainda sem arte. Crie no Canva ou traga de onde ela já está.</span>
+      <button style="display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 15px">
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF; color: #6B4EFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 14px">C</span>
+        Criar no Canva, 4:5, 6 páginas
+      </button>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px">
+        <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Importar do Canva</button>
+        <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Do Google Drive</button>
+        <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Enviar arquivo</button>
+      </div>
+    </div>
+    <span style="font-size: 12.5px; color: #5E6675">Quando você clicar em "Voltar para o Pauta" no Canva, a arte entra aqui como versão 1.</span>
+  </section>
+
+  <section aria-labelledby="h-leg" style="display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <h3 id="h-leg" style="margin: 0; font-size: 15px; font-weight: 700; flex: 1"><label for="legenda">Legenda</label></h3>
+      <button style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px; border: none; background: #EEEAFF; color: #3B23B8; font-weight: 700; font-size: 13px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B23B8" stroke-width="2" aria-hidden="true"><path d="M12 3l1.8 4.7L18 9l-4.2 1.3L12 15l-1.8-4.7L6 9l4.2-1.3z"></path></svg>Escrever com IA</button>
+    </div>
+    <textarea id="legenda" rows="6" style="font: inherit; font-size: 14px; line-height: 1.5; border: 1px solid #E3E6EC; border-radius: 14px; padding: 12px; resize: vertical; color: #1D2433">48 horas. Esse é o tempo que a nossa massa descansa antes de virar o pão que chega na sua mesa. Sem pressa, sem atalho.
+
+Arrasta pro lado e vê o processo inteiro.</textarea>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+      <button style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 12.5px; color: #1D2433">Encurtar</button>
+      <button style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 12.5px; color: #1D2433">Mais acolhedor</button>
+      <button style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 12.5px; color: #1D2433">Adicionar chamada para encomenda</button>
+      <span style="margin-left: auto; font-size: 12.5px; color: #5E6675; align-self: center">162 / 2.200</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-det" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <h3 id="h-det" style="position: absolute; width: 1px; height: 1px; overflow: hidden">Detalhes</h3>
+    <div style="background: #F4F5F7; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5E6675">Pilar</span><span style="font-size: 14px; font-weight: 600">Bastidores</span></div>
+    <div style="background: #F4F5F7; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5E6675">Responsável</span><span style="font-size: 14px; font-weight: 600">Bia</span></div>
+    <div style="background: #FFF1E6; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #8A3A06">Prazo interno</span><span style="font-size: 14px; font-weight: 600; color: #8A3A06">Ontem, atrasado</span></div>
+    <div style="background: #F4F5F7; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5E6675">Rodadas de ajuste</span><span style="font-size: 14px; font-weight: 600">0 de 2</span></div>
+  </section>
+
+  <div style="margin-top: auto; display: flex; gap: 8px">
+    <button style="flex: 1; height: 48px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 14px; color: #1D2433">Pré-visualizar no feed</button>
+    <button style="flex: 1; height: 48px; border-radius: 999px; border: none; background: #1D2433; color: #FFFFFF; font-weight: 700; font-size: 14px">Enviar para revisão</button>
+  </div>
+</aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      pq: { client: 'Padaria Pão Quente', tagBg: '#FFF1E6', tagFg: '#8A3A06', thumbBg: '#F7D9B9' },
+      cs: { client: 'Clínica Sorrir', tagBg: '#E2F4F2', tagFg: '#0F5C58', thumbBg: '#C9EDE9' },
+      sl: { client: 'Studio Lume', tagBg: '#FCE3F0', tagFg: '#9C1F5E', thumbBg: '#F9D4E7' },
+      fa: { client: 'Forma Academia', tagBg: '#E4ECFC', tagFg: '#1F4BAF', thumbBg: '#D6E2FB' },
+      vc: { client: 'Vino & Companhia', tagBg: '#EFE8FB', tagFg: '#5A2FB0', thumbBg: '#E3D8F8' }
+    };
+    const card = (k, title, meta, who, opts) => {
+      const o = opts || {};
+      return Object.assign({}, T[k], {
+        title, meta, who,
+        whoBg: who === 'B' ? '#FFC93C' : '#C9EDE9',
+        thumb: !!o.thumb,
+        border: o.selected ? '2px solid #6B4EFF' : (o.late ? '1.5px solid #E08A55' : '1.5px solid transparent')
+      });
+    };
+    const cols = [
+      { name: 'Planejado', color: '#8A93A3', cards: [
+        card('sl', 'Kit presente', 'publica 14/11', 'J'),
+        card('vc', 'Happy hour de sexta', 'publica 13/11', 'J'),
+        card('pq', 'Rosca de Natal', 'publica 16/11', 'B') ] },
+      { name: 'Em produção', color: '#6B4EFF', cards: [
+        card('pq', 'Pão de fermentação natural', 'atrasado 1 dia', 'B', { selected: true, late: true }),
+        card('fa', 'Personal em dupla', 'prazo 9/11', 'J'),
+        card('cs', 'Clareamento caseiro funciona?', 'prazo 9/11', 'B') ] },
+      { name: 'Em aprovação', color: '#E0A800', cards: [
+        card('pq', 'Panetone artesanal', 'há 2 dias com o cliente', 'B', { thumb: true }),
+        card('pq', 'Encomendas de Natal', 'há 2 dias com o cliente', 'B', { thumb: true }) ] },
+      { name: 'Ajuste pedido', color: '#C2410C', cards: [
+        card('cs', 'Antes e depois', '2ª rodada, trocar foto', 'B', { thumb: true, late: true }) ] },
+      { name: 'Agendado', color: '#1F7A4D', cards: [
+        card('sl', 'Agenda de dezembro', 'hoje 18:00', 'J', { thumb: true }),
+        card('fa', 'Desafio 30 dias', 'hoje 19:00', 'J', { thumb: true }) ] }
+    ];
+    cols.forEach(c => { c.count = String(c.cards.length); });
+    return { cols };
+  }
+}
+</script>
+</body>
+</html>

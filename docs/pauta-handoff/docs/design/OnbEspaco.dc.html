@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Onboarding, seu espaço e equipe</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 900px; box-sizing: border-box; padding: 28px 24px 48px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+
+  <div style="width: 100%; max-width: 1040px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+    <span style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px">Pauta</span></span>
+    <ol aria-label="Etapas" style="list-style: none; margin: 0 auto; padding: 0; display: flex; gap: 8px; flex-wrap: wrap">
+      <li aria-current="step" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #1D2433; color: #FFFFFF; font-size: 13px; font-weight: 700"><span style="width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF; color: #1D2433; display: flex; align-items: center; justify-content: center">1</span>Espaço e equipe</li>
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #FFFFFF; color: #3E4656; font-size: 13px"><span style="width: 24px; height: 24px; border-radius: 999px; background: #E9EBF0; display: flex; align-items: center; justify-content: center">2</span>IA</li>
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #FFFFFF; color: #3E4656; font-size: 13px"><span style="width: 24px; height: 24px; border-radius: 999px; background: #E9EBF0; display: flex; align-items: center; justify-content: center">3</span>Primeiro cliente</li>
+    </ol>
+    <a href="Main.dc.html" style="font-size: 14px; color: #3E4656">Pular por agora</a>
+  </div>
+
+  <div style="width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 16px; color: #5E6675">Que bom te ver, Bia.</span>
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: -0.02em; line-height: 1.15">Como se chama o seu estúdio?</h1>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end">
+      <button aria-label="Enviar logo" style="width: 88px; height: 88px; border-radius: 24px; border: 2px dashed #C9CEDA; background: #F8F9FB; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #3E4656; font-size: 12px; font-weight: 600">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3E4656" stroke-width="2" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"></path></svg>Logo</button>
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 8px">
+        <label for="nome" style="font-size: 14px; font-weight: 600">Nome do estúdio ou agência</label>
+        <input id="nome" value="Estúdio Bia Social" style="height: 52px; border-radius: 14px; border: 1.5px solid #6B4EFF; padding: 0 16px; font: inherit; font-size: 17px; font-weight: 600; color: #1D2433">
+        <span style="font-size: 13px; color: #5E6675">Aparece para os seus clientes no link de aprovação, nas propostas e nos relatórios.</span>
+      </div>
+    </div>
+
+    <fieldset style="border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+      <legend style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 12px">Você trabalha sozinha ou com alguém?</legend>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+        <label style="background: #FFFFFF; border: 2px solid transparent; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; cursor: pointer">
+          <input type="radio" name="modo" style="width: 18px; height: 18px; accent-color: #6B4EFF">
+          <span style="font-weight: 700; font-size: 16px">Só eu</span>
+          <span style="font-size: 13px; color: #5E6675">Dá para chamar alguém depois.</span>
+        </label>
+        <label style="background: #EEEAFF; border: 2px solid #6B4EFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; cursor: pointer">
+          <input type="radio" name="modo" checked style="width: 18px; height: 18px; accent-color: #6B4EFF">
+          <span style="font-weight: 700; font-size: 16px">Com equipe</span>
+          <span style="font-size: 13px; color: #3B23B8">Designer, redatora, sócia, estagiária.</span>
+        </label>
+        <label style="background: #FFFFFF; border: 2px solid transparent; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; cursor: pointer">
+          <input type="radio" name="modo" style="width: 18px; height: 18px; accent-color: #6B4EFF">
+          <span style="font-weight: 700; font-size: 16px">Agência com 6 ou mais</span>
+          <span style="font-size: 13px; color: #5E6675">A gente te mostra o plano Estúdio.</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <section aria-labelledby="h-convite" style="background: #FFFFFF; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+        <h2 id="h-convite" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; flex: 1">Chame quem trabalha com você</h2>
+        <button style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D2433" stroke-width="2" aria-hidden="true"><path d="M10 14a4 4 0 006 0l3-3a4 4 0 00-6-6l-1 1M14 10a4 4 0 00-6 0l-3 3a4 4 0 006 6l1-1"></path></svg>Copiar link de convite</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+        <span style="width: 40px; height: 40px; border-radius: 999px; background: #C9EDE9; display: flex; align-items: center; justify-content: center; font-weight: 700">J</span>
+        <label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 4px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">E-mail</span><input value="julia.design@gmail.com" style="height: 44px; border-radius: 12px; border: 1.5px solid #D5D9E2; padding: 0 12px; font: inherit; font-size: 15px"></label>
+        <label style="display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Papel</span>
+          <select style="height: 44px; border-radius: 12px; border: 1.5px solid #D5D9E2; padding: 0 12px; font: inherit; font-size: 14px; background: #FFFFFF; color: #1D2433"><option>Membro</option><option>Admin</option></select></label>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+        <span style="width: 40px; height: 40px; border-radius: 999px; background: #F4F5F7; border: 1.5px dashed #C9CEDA; box-sizing: border-box"></span>
+        <label style="flex: 1 1 240px; display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">E-mail</span><input placeholder="e-mail de mais alguém" style="height: 44px; width: 100%; border-radius: 12px; border: 1.5px solid #D5D9E2; padding: 0 12px; font: inherit; font-size: 15px"></label>
+        <label style="display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Papel</span>
+          <select style="height: 44px; border-radius: 12px; border: 1.5px solid #D5D9E2; padding: 0 12px; font: inherit; font-size: 14px; background: #FFFFFF; color: #1D2433"><option>Membro</option><option>Admin</option></select></label>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: 13px; color: #3E4656">
+        <span><b>Admin</b> convida pessoas, vê financeiro e conecta contas.</span>
+        <span><b>Membro</b> trabalha nos clientes atribuídos, sem ver o financeiro.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #FFF6D6; font-size: 13.5px; color: #5A3D00">
+        <span style="flex: 1">O plano grátis é para 1 pessoa. Os convites ficam guardados e são enviados quando você escolher o Pro ou o Estúdio.</span>
+      </div>
+    </section>
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px">
+      <a href="OnbIA.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 28px; border-radius: 999px; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none">Enviar convite e continuar</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

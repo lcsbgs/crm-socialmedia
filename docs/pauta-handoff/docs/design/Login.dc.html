@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Entrar ou criar conta</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #FFFFFF; min-height: 900px; display: flex; flex-wrap: wrap">
+
+  <section aria-label="Sobre o Pauta" style="flex: 1 1 520px; background: #6B4EFF; color: #FFFFFF; box-sizing: border-box; padding: 48px 56px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <span style="width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; color: #6B4EFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">P</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px">Pauta</span>
+    </div>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 22px">
+      <span style="font-size: 17px; color: #E4DEFF">Olá, Bia!</span>
+      <p style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 46px; line-height: 1.2; letter-spacing: -0.02em; max-width: 560px">
+        Em pauta hoje:
+        <span style="display: inline-flex; background: #FFFFFF; color: #3B23B8; border-radius: 999px; padding: 0 16px; margin: 4px 2px">2 reuniões</span>,
+        <span style="display: inline-flex; background: #FFC93C; color: #5A3D00; border-radius: 999px; padding: 0 16px; margin: 4px 2px">6 posts no ar</span>
+        e nenhuma cobrança atrasada.
+      </p>
+      <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #E4DEFF; max-width: 460px">Clientes, posts, aprovações e cobranças da sua agência num lugar só. Você abre de manhã e sabe o que fazer.</p>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px">
+      <span style="background: rgba(255,255,255,0.16); border-radius: 999px; padding: 6px 12px">Publica no Instagram e Facebook</span>
+      <span style="background: rgba(255,255,255,0.16); border-radius: 999px; padding: 6px 12px">Canva integrado</span>
+      <span style="background: rgba(255,255,255,0.16); border-radius: 999px; padding: 6px 12px">Aprovação pelo WhatsApp</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-entrar" style="flex: 1 1 480px; box-sizing: border-box; padding: 48px 56px; display: flex; align-items: center; justify-content: center">
+    <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 22px">
+      <div role="tablist" aria-label="Entrar ou criar conta" style="display: flex; background: #F4F5F7; border-radius: 999px; padding: 4px">
+        <button role="tab" aria-selected="true" style="flex: 1; height: 40px; border-radius: 999px; border: none; background: #FFFFFF; font-weight: 700; font-size: 14px; color: #1D2433">Criar conta</button>
+        <button role="tab" aria-selected="false" style="flex: 1; height: 40px; border-radius: 999px; border: none; background: transparent; font-size: 14px; color: #3E4656">Entrar</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 id="h-entrar" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 32px; letter-spacing: -0.02em">Comece grátis</h1>
+        <span style="font-size: 15px; color: #5E6675">Sem cartão. Leva menos de 5 minutos.</span>
+      </div>
+
+      <button style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px; border-radius: 999px; border: none; background: #0D0D0D; color: #FFFFFF; font-weight: 700; font-size: 15px">
+        <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 999px; border: 2px solid #FFFFFF; box-sizing: border-box"></span>
+        <span style="flex: 1; text-align: left">Continuar com ChatGPT</span>
+        <span style="font-size: 12px; font-weight: 600; background: #FFFFFF; color: #0D0D0D; border-radius: 999px; padding: 3px 9px">IA sem custo extra</span>
+      </button>
+      <button style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px; border-radius: 999px; border: 1.5px solid #D5D9E2; background: #FFFFFF; color: #1D2433; font-weight: 700; font-size: 15px">
+        <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 999px; background: #F4F5F7; border: 1px solid #D5D9E2; box-sizing: border-box"></span>
+        <span style="flex: 1; text-align: left">Continuar com Google</span>
+      </button>
+      <button style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px; border-radius: 999px; border: 1.5px solid #D5D9E2; background: #FFFFFF; color: #1D2433; font-weight: 700; font-size: 15px">
+        <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 999px; background: #1D2433; box-sizing: border-box"></span>
+        <span style="flex: 1; text-align: left">Continuar com Apple</span>
+      </button>
+
+      <div style="display: flex; align-items: center; gap: 12px; color: #5E6675; font-size: 13px">
+        <span style="flex: 1; height: 1px; background: #E3E6EC"></span>ou com e-mail<span style="flex: 1; height: 1px; background: #E3E6EC"></span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="email" style="font-size: 14px; font-weight: 600">E-mail</label>
+        <input id="email" type="email" placeholder="voce@seuestudio.com.br" style="height: 48px; border-radius: 14px; border: 1.5px solid #D5D9E2; padding: 0 14px; font: inherit; font-size: 15px">
+        <button style="height: 48px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 15px">Receber link de acesso</button>
+      </div>
+      <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: #5E6675">Ao continuar, você aceita os <a href="#termos">Termos de uso</a> e a <a href="#privacidade">Política de privacidade</a>. Recebeu um convite? Entre com o mesmo e-mail do convite e você cai direto no espaço da equipe.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

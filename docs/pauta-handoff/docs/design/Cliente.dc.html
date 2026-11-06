@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Padaria Pão Quente</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 1080px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Navegação principal" style="flex: 1 1 248px; max-width: 280px; min-width: 232px; background: #FFFFFF; border-right: 1px solid #E3E6EC; padding: 20px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E3E6EC; border-radius: 14px">
+    <span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span>
+    <span style="font-weight: 700; font-size: 14px">Estúdio Bia Social</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 2px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Em pauta hoje</a>
+    <a href="Calendario.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Calendário</a>
+    <a href="Producao.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Produção</a>
+    <a href="Aprovacao.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Aprovações</a>
+    <a href="#financeiro" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Financeiro</a>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 2px">
+    <span style="font-size: 12px; font-weight: 600; color: #5E6675; padding: 0 12px 6px">Clientes</span>
+    <a href="Cliente.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-radius: 12px; background: #FFF1E6; color: #1D2433; font-weight: 700; font-size: 14px; text-decoration: none"><span style="width: 22px; height: 22px; border-radius: 7px; background: #F28C28; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">PQ</span>Padaria Pão Quente</a>
+    <a href="Cliente.dc.html" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none"><span style="width: 22px; height: 22px; border-radius: 7px; background: #1C8C86; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">CS</span>Clínica Sorrir</a>
+    <a href="Cliente.dc.html" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none"><span style="width: 22px; height: 22px; border-radius: 7px; background: #D9468F; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">SL</span>Studio Lume</a>
+    <a href="Cliente.dc.html" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none"><span style="width: 22px; height: 22px; border-radius: 7px; background: #3D6FE0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">FA</span>Forma Academia</a>
+  </div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <header style="background: #FFF1E6; padding: 32px 40px 0; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px">
+      <span style="width: 72px; height: 72px; border-radius: 22px; background: #F28C28; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px">PQ</span>
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 36px; letter-spacing: -0.02em">Padaria Pão Quente</h1>
+          <span style="background: #DDF3E8; color: #135E3A; border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 700">Ativo</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 5px 12px">Pacote Essencial, R$ 1.200/mês</span>
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 5px 12px">Vence todo dia 10</span>
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D2433" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle></svg>@paoquente.caxias</span>
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 5px 12px">Facebook conectado</span>
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 5px 12px">Pasta no Drive</span>
+          <span style="background: #FFFFFF; border-radius: 999px; padding: 3px 12px 3px 3px; display: inline-flex; align-items: center; gap: 6px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 999px; background: #FFC93C; color: #5A3D00; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">B</span><span style="width: 22px; height: 22px; border-radius: 999px; background: #C9EDE9; color: #0F5C58; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: -6px; border: 1.5px solid #FFFFFF">J</span></span>Bia e Júlia cuidam</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #F3C9A6; background: #FFFFFF; font-weight: 600; font-size: 14px; color: #1D2433">Nova reunião</button>
+        <button style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #F3C9A6; background: #FFFFFF; font-weight: 600; font-size: 14px; color: #1D2433">Novo post</button>
+        <button style="height: 44px; padding: 0 18px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 14px">Enviar link de aprovação</button>
+      </div>
+    </div>
+    <div role="tablist" aria-label="Seções do cliente" style="display: flex; gap: 4px; overflow-x: auto">
+      <button role="tab" aria-selected="true" style="height: 44px; padding: 0 16px; border: none; border-radius: 14px 14px 0 0; background: #F4F5F7; font-weight: 700; font-size: 14px; color: #1D2433">Visão geral</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Estratégia</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Calendário</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Produção</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Reuniões</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Arquivos</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Financeiro</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Escopo</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Relatórios</button>
+      <button role="tab" aria-selected="false" style="height: 44px; padding: 0 16px; border: none; background: transparent; font-size: 14px; color: #3E4656">Linha do tempo</button>
+    </div>
+  </header>
+
+  <div style="padding: 28px 40px 48px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+    <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+      <section aria-labelledby="h-mes" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+        <h2 id="h-mes" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700">Novembro até agora</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+          <div style="background: #F4F5F7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #5E6675">Posts entregues</span>
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 700">7 de 12</span>
+            <div style="height: 8px; border-radius: 999px; background: #E3E6EC"><div style="width: 58%; height: 8px; border-radius: 999px; background: #F28C28"></div></div>
+          </div>
+          <div style="background: #F4F5F7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #5E6675">Rodadas de ajuste</span>
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 700">3</span>
+            <span style="font-size: 13px; color: #5E6675">limite: 2 por post</span>
+          </div>
+          <div style="background: #FFF1E6; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #8A3A06">Escopo extra</span>
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 700">R$ 150</span>
+            <span style="font-size: 13px; color: #8A3A06">1 reels a cobrar</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-estr" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <h2 id="h-estr" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; flex: 1">Estratégia</h2>
+          <a href="#estrategia" style="font-size: 14px; font-weight: 600">Abrir estratégia completa</a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: #5E6675">Objetivo do trimestre</span>
+          <span style="font-size: 17px; font-weight: 600">Vender mais encomendas de Natal pelo direct</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 13px; color: #5E6675">Pilares de conteúdo</span>
+          <div style="display: flex; height: 14px; border-radius: 999px; overflow: hidden; gap: 3px">
+            <span style="width: 40%; background: #F28C28"></span>
+            <span style="width: 30%; background: #FFC93C"></span>
+            <span style="width: 20%; background: #7A4FD6"></span>
+            <span style="width: 10%; background: #1C8C86"></span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F28C28"></span>Produto 40%</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FFC93C"></span>Bastidores 30%</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7A4FD6"></span>Educativo 20%</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1C8C86"></span>Prova social 10%</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 16px; background: #EEEAFF">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B23B8" stroke-width="2" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3l1.8 4.7L18 9l-4.2 1.3L12 15l-1.8-4.7L6 9l4.2-1.3z"></path></svg>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 14px; color: #2A1B85">Na reunião de 28/10, o cliente pediu foco em delivery. Atualizar a estratégia?</span>
+            <div style="display: flex; gap: 8px">
+              <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 13px">Atualizar</button>
+              <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #C9BEFF; background: transparent; font-weight: 600; font-size: 13px; color: #3B23B8">Descartar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-kit" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <h2 id="h-kit" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; flex: 1">Kit da marca</h2>
+          <button style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Compartilhar com designer</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 24px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #5E6675">Cores</span>
+            <div style="display: flex; gap: 8px">
+              <span style="width: 44px; height: 44px; border-radius: 12px; background: #7B3F12"></span>
+              <span style="width: 44px; height: 44px; border-radius: 12px; background: #E8A24A"></span>
+              <span style="width: 44px; height: 44px; border-radius: 12px; background: #F6E7CF"></span>
+              <span style="width: 44px; height: 44px; border-radius: 12px; background: #2F2A26"></span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #5E6675">Tom de voz</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px">
+              <span style="background: #F4F5F7; border-radius: 999px; padding: 6px 12px; font-size: 13px">acolhedor</span>
+              <span style="background: #F4F5F7; border-radius: 999px; padding: 6px 12px; font-size: 13px">de bairro</span>
+              <span style="background: #F4F5F7; border-radius: 999px; padding: 6px 12px; font-size: 13px">bem-humorado</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #5E6675">Nunca dizer</span>
+            <span style="font-size: 14px">"industrializado", "promoção relâmpago"</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <section aria-labelledby="h-reuniao" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+        <h2 id="h-reuniao" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700">Brief da reunião de hoje, 10:00</h2>
+        <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.45">
+          <li>3 posts aguardando aprovação há 2 dias</li>
+          <li>Decidido em 28/10: foco em encomendas de Natal</li>
+          <li>Em aberto: fotos do Natal (vence hoje)</li>
+          <li>Pagamento de novembro recebido</li>
+          <li>Outubro: alcance subiu, carrosséis foram melhor que reels</li>
+        </ul>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 14px; background: #F4F5F7; font-size: 13px; color: #3E4656">
+          <span style="width: 28px; height: 28px; border-radius: 8px; background: #1D2433; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px">G</span>
+          <span style="flex: 1">A ata chega do Granola depois da reunião</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-tempo" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <h2 id="h-tempo" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700">Linha do tempo</h2>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 14px">
+          <li style="display: flex; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #1F7A4D; margin-top: 6px; flex: none"></span><span style="flex: 1">Mariana aprovou "Sonho de creme"<br><span style="color: #5E6675; font-size: 13px">ontem, 18:42, versão 2</span></span></li>
+          <li style="display: flex; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C2410C; margin-top: 6px; flex: none"></span><span style="flex: 1">Ajuste pedido em "Sonho de creme": trocar foto<br><span style="color: #5E6675; font-size: 13px">4/11, 10:15</span></span></li>
+          <li style="display: flex; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #6B4EFF; margin-top: 6px; flex: none"></span><span style="flex: 1">Pagamento de novembro recebido, Pix<br><span style="color: #5E6675; font-size: 13px">3/11</span></span></li>
+          <li style="display: flex; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #5E6675; margin-top: 6px; flex: none"></span><span style="flex: 1">Reunião mensal, ata com 4 próximos passos<br><span style="color: #5E6675; font-size: 13px">28/10</span></span></li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="h-contatos" style="background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+        <h2 id="h-contatos" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700">Contatos</h2>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="width: 36px; height: 36px; border-radius: 999px; background: #FFE9D6; color: #8A3A06; display: flex; align-items: center; justify-content: center; font-weight: 700">M</span>
+          <div style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 600; font-size: 14px">Mariana, sócia</span><span style="font-size: 13px; color: #5E6675">aprova conteúdo</span></div>
+          <button aria-label="WhatsApp da Mariana" style="height: 36px; padding: 0 12px; border-radius: 999px; border: none; background: #DDF3E8; color: #135E3A; font-weight: 700; font-size: 13px">WhatsApp</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Onboarding, IA</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 900px; box-sizing: border-box; padding: 28px 24px 48px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+
+  <div style="width: 100%; max-width: 1040px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+    <span style="display: flex; align-items: center; gap: 10px"><span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px">Pauta</span></span>
+    <ol aria-label="Etapas" style="list-style: none; margin: 0 auto; padding: 0; display: flex; gap: 8px; flex-wrap: wrap">
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #DDF3E8; color: #135E3A; font-size: 13px; font-weight: 600"><span style="width: 24px; height: 24px; border-radius: 999px; background: #1F7A4D; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" aria-hidden="true"><path d="M4 12l5 5 11-11"></path></svg></span>Espaço e equipe</li>
+      <li aria-current="step" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #1D2433; color: #FFFFFF; font-size: 13px; font-weight: 700"><span style="width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF; color: #1D2433; display: flex; align-items: center; justify-content: center">2</span>IA</li>
+      <li style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border-radius: 999px; background: #FFFFFF; color: #3E4656; font-size: 13px"><span style="width: 24px; height: 24px; border-radius: 999px; background: #E9EBF0; display: flex; align-items: center; justify-content: center">3</span>Primeiro cliente</li>
+    </ol>
+    <a href="OnbCliente.dc.html" style="font-size: 14px; color: #3E4656">Pular por agora</a>
+  </div>
+
+  <div style="width: 100%; max-width: 760px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 38px; letter-spacing: -0.02em; line-height: 1.15">Já paga o ChatGPT? Use ele aqui dentro.</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #3E4656; max-width: 620px">A IA do Pauta escreve legendas no tom de cada marca, transforma reuniões em ata e monta a leitura do relatório do mês. Com o seu plano do ChatGPT, isso não custa nada a mais.</p>
+    </div>
+
+    <section aria-labelledby="h-gpt" style="background: #FFFFFF; border: 2px solid #1D2433; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+        <span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #0D0D0D; display: flex; align-items: center; justify-content: center"><span style="width: 24px; height: 24px; border-radius: 999px; border: 2.5px solid #FFFFFF; box-sizing: border-box"></span></span>
+        <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px">
+          <h2 id="h-gpt" style="margin: 0; font-size: 18px; font-weight: 700">Usar meu plano do ChatGPT</h2>
+          <span style="font-size: 14px; color: #3E4656">Para assinantes Plus e Pro. Cada pessoa da equipe conecta a própria conta.</span>
+        </div>
+        <span style="font-size: 12.5px; font-weight: 700; background: #DDF3E8; color: #135E3A; border-radius: 999px; padding: 5px 11px">Recomendado</span>
+      </div>
+      <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; line-height: 1.45">
+        <li>Você entra com o ChatGPT e autoriza o Pauta a usar o seu plano.</li>
+        <li>No ChatGPT, você define quanto o Pauta pode usar por semana.</li>
+        <li>Se o limite da semana acabar, o Pauta usa os créditos de IA do seu plano Pauta, e avisa antes.</li>
+      </ol>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+        <button style="display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px; border: none; background: #0D0D0D; color: #FFFFFF; font-weight: 700; font-size: 15px">
+          <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 999px; border: 2px solid #FFFFFF; box-sizing: border-box"></span>Conectar com ChatGPT</button>
+        <a href="https://chatgpt.com/settings/usage" style="font-size: 14px; font-weight: 600">Gerenciar uso no ChatGPT</a>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-creditos" style="background: #FFFFFF; border-radius: 24px; padding: 22px 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+      <span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #EEEAFF; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B23B8" stroke-width="2"><path d="M12 3l1.8 4.7L18 9l-4.2 1.3L12 15l-1.8-4.7L6 9l4.2-1.3z"></path></svg></span>
+      <div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 2px">
+        <h2 id="h-creditos" style="margin: 0; font-size: 17px; font-weight: 700">Usar só os créditos do Pauta</h2>
+        <span style="font-size: 14px; color: #3E4656">Todo plano já vem com créditos de IA por mês. Dá para conectar o ChatGPT depois em Ajustes.</span>
+      </div>
+      <button style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid #D5D9E2; background: #FFFFFF; font-weight: 700; font-size: 14px; color: #1D2433">Seguir com créditos</button>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: #3E4656">
+      <span style="background: #FFFFFF; border-radius: 999px; padding: 6px 12px">Legenda no tom da marca</span>
+      <span style="background: #FFFFFF; border-radius: 999px; padding: 6px 12px">Ata de reunião em tarefas</span>
+      <span style="background: #FFFFFF; border-radius: 999px; padding: 6px 12px">Rascunho de estratégia</span>
+      <span style="background: #FFFFFF; border-radius: 999px; padding: 6px 12px">Leitura do relatório</span>
+      <span style="background: #FFFFFF; border-radius: 999px; padding: 6px 12px">Mensagem de cobrança gentil</span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 10px">
+      <a href="OnbEspaco.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 22px; border-radius: 999px; border: 1.5px solid #D5D9E2; background: #FFFFFF; color: #1D2433; font-weight: 600; font-size: 15px; text-decoration: none">Voltar</a>
+      <a href="OnbCliente.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 28px; border-radius: 999px; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none">Continuar</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

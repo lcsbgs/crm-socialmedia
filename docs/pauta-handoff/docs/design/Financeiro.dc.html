@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Pauta: Financeiro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#3B23B8}a:hover{color:#6B4EFF}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #6B4EFF;outline-offset:2px}
+</style>
+</helmet>
+<div style="font-family: Figtree, system-ui, sans-serif; color: #1D2433; background: #F4F5F7; min-height: 1000px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+<nav aria-label="Navegação principal" style="flex: 0 1 220px; min-width: 200px; background: #FFFFFF; border-right: 1px solid #E3E6EC; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E3E6EC; border-radius: 14px">
+    <span style="width: 32px; height: 32px; border-radius: 10px; background: #6B4EFF; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px">P</span>
+    <span style="font-weight: 700; font-size: 14px">Bia Social</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 2px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Em pauta hoje</a>
+    <a href="Calendario.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Calendário</a>
+    <a href="Producao.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Produção</a>
+    <a href="Aprovacao.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; color: #1D2433; font-size: 14px; text-decoration: none">Aprovações</a>
+    <a href="Financeiro.dc.html" aria-current="page" style="display: flex; align-items: center; height: 40px; padding: 0 12px; border-radius: 12px; background: #EEEAFF; color: #3B23B8; font-weight: 700; font-size: 14px; text-decoration: none">Financeiro</a>
+  </div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px">
+
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 36px; letter-spacing: -0.02em">Financeiro</h1>
+    <button style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-size: 14px; font-weight: 600; color: #1D2433">Novembro 2026</button>
+    <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap">
+      <button style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 14px; color: #1D2433">Lançar despesa</button>
+      <button style="height: 44px; padding: 0 18px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 14px">Nova cobrança</button>
+    </div>
+  </div>
+
+  <div role="tablist" aria-label="Seções do financeiro" style="display: flex; gap: 4px; flex-wrap: wrap">
+    <button role="tab" aria-selected="true" style="height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: #1D2433; color: #FFFFFF; font-weight: 700; font-size: 14px">Recebimentos</button>
+    <button role="tab" aria-selected="false" style="height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: transparent; font-size: 14px; color: #1D2433">Notas fiscais</button>
+    <button role="tab" aria-selected="false" style="height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: transparent; font-size: 14px; color: #1D2433">Despesas</button>
+    <button role="tab" aria-selected="false" style="height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: transparent; font-size: 14px; color: #1D2433">Rentabilidade</button>
+    <button role="tab" aria-selected="false" style="height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: transparent; font-size: 14px; color: #1D2433">Contador</button>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #5E6675">Previsto no mês</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700">R$ 7.400</span><span style="font-size: 13px; color: #5E6675">5 clientes</span></div>
+    <div style="background: #DDF3E8; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #135E3A">Recebido</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700; color: #0E4A2D">R$ 2.800</span><span style="font-size: 13px; color: #135E3A">2 pagamentos</span></div>
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #5E6675">A receber</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700">R$ 3.400</span><span style="font-size: 13px; color: #5E6675">1 vence hoje</span></div>
+    <div style="background: #FFE9D6; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #8A3A06">Em atraso</span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700; color: #7A2E05">R$ 1.200</span><span style="font-size: 13px; color: #8A3A06">Studio Lume, 5 dias</span></div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+    <section aria-labelledby="h-cob" style="flex: 999 1 640px; min-width: 0; background: #FFFFFF; border-radius: 24px; padding: 8px 0 8px">
+      <h2 id="h-cob" style="margin: 0; padding: 14px 20px 6px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700">Cobranças de novembro</h2>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; min-width: 780px; border-collapse: collapse; font-size: 14px">
+          <thead>
+            <tr style="text-align: left; color: #5E6675; font-size: 12.5px">
+              <th scope="col" style="padding: 10px 20px; font-weight: 600">Cliente</th>
+              <th scope="col" style="padding: 10px 10px; font-weight: 600; text-align: right">Valor</th>
+              <th scope="col" style="padding: 10px 10px; font-weight: 600">Vence</th>
+              <th scope="col" style="padding: 10px 10px; font-weight: 600">Cobrança</th>
+              <th scope="col" style="padding: 10px 10px; font-weight: 600">Nota fiscal</th>
+              <th scope="col" style="padding: 10px 20px; font-weight: 600"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Ação</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top: 1px solid #E3E6EC; background: #FFF8F3">
+              <td style="padding: 12px 20px"><span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #D9468F"></span><b>Studio Lume</b></span></td>
+              <td style="padding: 12px 10px; text-align: right; font-variant-numeric: tabular-nums">R$ 1.200</td>
+              <td style="padding: 12px 10px; color: #B03A0A; font-weight: 600">1/11</td>
+              <td style="padding: 12px 10px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600; color: #B03A0A">Atrasada 5 dias</span><span style="font-size: 12.5px; color: #5E6675">Pix, lembrete enviado 3/11</span></span></td>
+              <td style="padding: 12px 10px; color: #5E6675">Emite ao pagar</td>
+              <td style="padding: 12px 20px; text-align: right"><button style="height: 34px; padding: 0 12px; border-radius: 999px; border: none; background: #DDF3E8; color: #135E3A; font-weight: 700; font-size: 13px">Cobrar no WhatsApp</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #E3E6EC">
+              <td style="padding: 12px 20px"><span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1C8C86"></span><b>Clínica Sorrir</b></span></td>
+              <td style="padding: 12px 10px; text-align: right; font-variant-numeric: tabular-nums">R$ 1.800</td>
+              <td style="padding: 12px 10px; font-weight: 600">Hoje</td>
+              <td style="padding: 12px 10px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Boleto enviado</span><span style="font-size: 12.5px; color: #5E6675">pelo WhatsApp em 1/11</span></span></td>
+              <td style="padding: 12px 10px; color: #5E6675">Emite ao pagar</td>
+              <td style="padding: 12px 20px; text-align: right"><button style="height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Reenviar boleto</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #E3E6EC">
+              <td style="padding: 12px 20px"><span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #7A4FD6"></span><b>Vino &amp; Companhia</b></span></td>
+              <td style="padding: 12px 10px; text-align: right; font-variant-numeric: tabular-nums">R$ 1.600</td>
+              <td style="padding: 12px 10px">20/11</td>
+              <td style="padding: 12px 10px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Boleto ainda não gerado</span><span style="font-size: 12.5px; color: #5E6675">primeiro mês, contrato em assinatura</span></span></td>
+              <td style="padding: 12px 10px; color: #5E6675">Emite ao pagar</td>
+              <td style="padding: 12px 20px; text-align: right"><button style="height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Gerar boleto</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #E3E6EC">
+              <td style="padding: 12px 20px"><span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #3D6FE0"></span><b>Forma Academia</b></span></td>
+              <td style="padding: 12px 10px; text-align: right; font-variant-numeric: tabular-nums">R$ 1.600</td>
+              <td style="padding: 12px 10px">5/11</td>
+              <td style="padding: 12px 10px"><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #135E3A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F7A4D" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5 11-11"></path></svg>Pago 5/11, boleto</span></td>
+              <td style="padding: 12px 10px"><span style="font-weight: 600; color: #B03A0A">Erro na emissão</span></td>
+              <td style="padding: 12px 20px; text-align: right"><button style="height: 34px; padding: 0 12px; border-radius: 999px; border: none; background: #1D2433; color: #FFFFFF; font-weight: 700; font-size: 13px">Corrigir e emitir</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #E3E6EC">
+              <td style="padding: 12px 20px"><span style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F28C28"></span><b>Padaria Pão Quente</b></span></td>
+              <td style="padding: 12px 10px; text-align: right; font-variant-numeric: tabular-nums">R$ 1.200</td>
+              <td style="padding: 12px 10px">10/11</td>
+              <td style="padding: 12px 10px"><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #135E3A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F7A4D" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5 11-11"></path></svg>Pago 3/11, Pix</span></td>
+              <td style="padding: 12px 10px"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">NFS-e emitida</span><span style="font-size: 12.5px; color: #5E6675">enviada por e-mail</span></span></td>
+              <td style="padding: 12px 20px; text-align: right"><button style="height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #E3E6EC; background: #FFFFFF; font-weight: 600; font-size: 13px; color: #1D2433">Ver nota</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; margin: 8px 20px 12px; padding: 12px 14px; border-radius: 14px; background: #FFF6D6; font-size: 14px; color: #5A3D00; flex-wrap: wrap">
+        <span style="flex: 1 1 300px"><b>Escopo extra a cobrar:</b> 1 reels para a Padaria Pão Quente, R$ 150.</span>
+        <button style="height: 34px; padding: 0 12px; border-radius: 999px; border: none; background: #FFFFFF; font-weight: 700; font-size: 13px; color: #5A3D00">Somar na próxima cobrança</button>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <section aria-labelledby="h-auto" style="background: #FFFFFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <h2 id="h-auto" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700; flex: 1">Cobrança automática</h2>
+          <span style="font-size: 12.5px; font-weight: 700; background: #DDF3E8; color: #135E3A; border-radius: 999px; padding: 4px 10px">Asaas conectado</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="flex: 1">Gerar boleto e Pix 5 dias antes do vencimento</span><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF"></label>
+        <label style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="flex: 1">Mandar a cobrança pronta no WhatsApp</span><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF"></label>
+        <label style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="flex: 1">Dar baixa sozinho quando o pagamento cair</span><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF"></label>
+        <label style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="flex: 1">Emitir a NFS-e assim que o cliente pagar</span><input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #6B4EFF"></label>
+        <span style="font-size: 12.5px; color: #5E6675">A nota sai pelo seu cadastro na prefeitura de Caxias do Sul, configurado no Asaas.</span>
+      </section>
+
+      <section aria-labelledby="h-contador" style="background: #EEEAFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <h2 id="h-contador" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700">Para o contador</h2>
+        <span style="font-size: 14px; color: #2A1B85">Outubro foi enviado em 2/11 para contato@contabilserra.com.br.</span>
+        <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: #2A1B85">
+          <li>XML e PDF das notas emitidas</li>
+          <li>Extrato de recebimentos por cliente</li>
+          <li>Despesas com comprovantes, em planilha</li>
+        </ul>
+        <button style="height: 44px; border-radius: 999px; border: none; background: #6B4EFF; color: #FFFFFF; font-weight: 700; font-size: 14px">Fechar novembro e enviar</button>
+      </section>
+
+      <section aria-labelledby="h-desp" style="background: #FFFFFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: baseline; gap: 10px">
+          <h2 id="h-desp" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 700; flex: 1">Despesas</h2>
+          <span style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums">R$ 860</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Freelancer de vídeo</span><span style="font-variant-numeric: tabular-nums">R$ 400</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Imposto (DAS)</span><span style="font-variant-numeric: tabular-nums">R$ 320</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Ferramentas</span><span style="font-variant-numeric: tabular-nums">R$ 140</span></div>
+        <div style="height: 1px; background: #E3E6EC; margin: 4px 0"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700"><span>Resultado previsto do mês</span><span style="font-variant-numeric: tabular-nums; color: #135E3A">R$ 6.540</span></div>
+      </section>
+    </aside>
+  </div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
