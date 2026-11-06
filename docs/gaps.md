@@ -1,122 +1,99 @@
-# Auditoria do MVP
+# Auditoria: do MVP atual ao Pauta
 
-Data: 2026-10-27. Base: commit `8e43574` (Fase 6).
+Data: 2026-11-06. Base: commit `6a526ba` (Passo 7 + docs corrigidos).
 
-Legenda: **Existe** = funciona e foi testado. **Parcial** = funciona, mas falta parte do escopo ou do novo pedido. **Falta** = não implementado.
+Fontes usadas: `CLAUDE.md`, `docs/design/README.md` e as 12 telas em `docs/design/`. O arquivo `docs/spec.md` citado no CLAUDE.md **não existe no repositório**. O comportamento foi inferido das telas, do pedido desta rodada e das decisões anteriores (ver `docs/decisions.md`, 2026-11-06).
 
-## Situação do banco
+Legenda: **Existe** funciona hoje. **Parcial** funciona, mas falta parte. **Falta** não existe.
 
-| Ambiente | Migrations |
+## 1. Situação de ambiente
+
+| Item | Estado |
 |---|---|
-| Local | 9 migrations (Fases 1 a 6), 101 testes pgTAP passando |
-| Remoto (`dsfgrcdtczbkdkciwjaa`) | Só Fases 1 e 2. Fases 3 a 6 (`deliverables`, `approvals`, `meetings`, `scope_finance`) **não aplicadas** |
+| Next.js 16.4, React 19.3, Tailwind 4 (tokens em `@theme` no `globals.css`, não há `tailwind.config`) | Existe |
+| Typecheck, lint e build | Passam no commit base |
+| Testes pgTAP (9 arquivos, 123 asserções) | Passam num Postgres 16 local com esqueleto do Supabase (`scripts/db-test-local.sh`) |
+| Testes de TypeScript (unidade) | Falta: não há runner. Entra vitest na Fase 1 |
+| `supabase start` | Bloqueado neste ambiente (registro de imagens fora da rede). Substituído pelo script acima |
+| Projeto Supabase remoto `dsfgrcdtczbkdkciwjaa` | Estava subindo (`COMING_UP`) no início da auditoria; histórico diz que só Fases 1 e 2 foram aplicadas |
 
-Consequência: hoje o app em produção quebraria nas telas de entregas, portal, reuniões, escopo e financeiro. Nenhuma migration nova será aplicada no remoto sem sua confirmação.
+## 2. Por módulo
 
-## Resumo por área
+| Módulo (rota do design) | Estado | O que existe | O que falta | Arquivos |
+|---|---|---|---|---|
+| Design system | Parcial | Tokens próprios (vinho `#8e2f6b`, Hanken Grotesk), Radix (Dialog, Popover, Select, Tooltip, Dropdown), sonner, cmdk | Tokens do README (violeta `#6B4EFF`, fundo `#F4F5F7`, raio 24 nos cards, pílulas), Bricolage Grotesque + Figtree, Button em pílula 36/44/52 com variantes primária/borda/escura/tonal, IconButton, Tag de cliente, AvatarStack, Tabs, SegmentedControl, Checkbox, Radio card, ProgressBar, Drawer | `src/app/globals.css`, `src/app/layout.tsx`, `src/components/ui/*` |
+| Casca (Main.dc.html) | Parcial | Sidebar recolhível, drawer no mobile, ⌘K, sino de notificações | Seletor de workspace em cartão, botão **Novo** em pílula, navegação com contadores (Em pauta hoje, Aprovações), itens Reuniões, Comercial, Relatórios, lista de clientes com quadrado colorido, rodapé Pacotes e Ajustes; barra superior com busca larga, Minha pauta/Pauta do time, avatares da equipe | `src/components/shell/*` |
+| Login (/login) | Parcial | E-mail e senha, link mágico, cadastro em `/cadastro` | Layout em duas colunas do design, abas Criar conta/Entrar, botões ChatGPT, Google e Apple (modo mock), texto de convite | `src/app/(auth)/*`, `src/features/auth/*` |
+| Onboarding (3 telas) | Parcial | Uma tela `/onboarding` (nome e negócio) e `/w/[slug]/comecar` (primeiro cliente) | Três passos com indicador e "Pular por agora": espaço e equipe (logo, modo de trabalho, convites), IA (ChatGPT ou créditos), primeiro cliente (pacote, responsáveis, contas Meta) | `src/app/onboarding`, `src/app/w/[slug]/comecar` |
+| Convite (/convite/[token]) | Parcial | Aceite com o mesmo e-mail | Visual do design com papel e clientes atribuídos, entrar com qualquer provedor, `client_ids` no convite | `src/app/convite/[token]`, `src/features/workspaces` |
+| Ajustes > Equipe | Parcial | Convidar, listar, remover em `/configuracoes` | Navegação de Ajustes (Estúdio, Equipe, Plano, Integrações, IA e ChatGPT, Minha conta), tabela com papel editável, clientes por pessoa, coluna IA, lugares do plano, convite esperando lugar | `src/app/w/[slug]/configuracoes` |
+| Em pauta hoje (/w/[slug]) | Parcial | Seções, tarefas, aprovações paradas, cobranças, reuniões, criação rápida | Saudação sorteada, frase-resumo com pílulas, 4 blocos do design, Minha pauta/Pauta do time, Feito hoje, função `getDailyAgenda` testada | `src/features/today/*` |
+| Clientes (/clientes/[id]) | Parcial | Registro com cor, resumo do mês, contatos, briefing, abas | Cabeçalho do design (pacote, vencimento, contas, responsáveis, 3 ações), abas Estratégia, Arquivos, Relatórios; kit da marca; checklist de onboarding; briefing público por token; `timeline_events` | `src/app/w/[slug]/clientes`, `src/features/clients` |
+| Pacotes e planejamento | Parcial | CRUD de pacotes, `generate_month` idempotente criando slots | pg_cron ligado, aviso de limite do pacote virando escopo extra, "Planejar dezembro" | `src/features/packages`, migration `deliverable_slots` |
+| Calendário (/calendario) | Parcial | Semana com arrastar, mês com reuniões | Visual do design (grade do mês com cartões por cliente e estado), visão Lista, contagem "58 posts em 5 clientes" | `src/app/w/[slug]/calendario`, `src/features/deliverables/components/month-calendar.tsx` |
+| Produção (/producao) | Parcial | Kanban em `/entregas` com 5 colunas, painel lateral, comentários, histórico | Rota `/producao`, colunas do design (Planejado, Em produção, Em aprovação, Ajuste pedido, Agendado), editor com Arte (Canva, Drive, upload), ações de IA na legenda, pilar, rodadas, checklist, versões, pré-visualização | `src/features/deliverables/*` |
+| IA | Parcial | Ata de reunião com Anthropic (`src/features/meetings/ai.ts`) | Camada `src/lib/ai` com provedores Anthropic e ChatGPT (mock), `ai_usage`, limites por plano, prompts versionados, tarefas de legenda | `src/features/meetings/ai.ts` |
+| Portal (/p/[token]) | Parcial | Aprovar e pedir ajuste, marca do workspace, nome lembrado | Visual mobile do design (um post por vez, 1 de 3, Aprovar os 3), ponto na imagem, IP e versão na resposta, planejamento do mês aprovável, lembrete 48h, aprovação tácita, limite de rodadas | `src/app/p/[token]`, `src/features/portal` |
+| Publicação Meta | Falta | Nada | Tudo: conexões, descoberta de contas, adapter, fila `publish_jobs`, `published_posts`, doc de app review | - |
+| Integrações (Google, Granola, Canva) | Falta | Nada | Tudo, em modo mock | - |
+| Comercial | Falta | Nada | Funil, propostas, contratos, assinatura | - |
+| Financeiro (/financeiro) | Parcial | Recebimentos do mês, marcar pago, WhatsApp, inadimplentes | Abas Notas fiscais, Despesas, Rentabilidade, Contador; cobrança avulsa; adapter de cobrança (manual e Asaas mock); NFS-e; cobrança automática | `src/features/finance` |
+| Relatórios | Falta | Nada | Métricas, relatório mensal, PDF | - |
+| Notificações | Parcial | Tabela, trigger quando o cliente responde, sino | Mais tipos (publicação falhou, proposta aberta, pagamento) | `src/features/notifications` |
+| Busca ⌘K | Parcial | Paleta com clientes e entregas | Reuniões, propostas | `src/components/shell/command-palette.tsx`, `src/features/search` |
 
-| Área | Estado | Observação curta |
+## 3. Schema atual x modelo do Pauta
+
+Princípio: **nenhuma tabela com dados é renomeada nem apagada.** Onde o nome do modelo novo difere, a tabela atual é mantida e o nome novo vira só vocabulário (registrado em decisions.md).
+
+| Modelo do Pauta | Hoje | Plano de migração (só aditivo) |
 |---|---|---|
-| Auth | Parcial | Falta "esqueci minha senha" e edição de perfil |
-| Workspaces e equipe | Parcial | Falta trocar papel de membro na UI e transferir posse |
-| Planos e limites | Existe | Banco e UI |
-| Clientes | Parcial | Sem cor, sem busca/filtro, cabeçalho sem próximo vencimento e sem ações |
-| Pacotes e generate_month | Parcial | Gera **tarefas-checkbox**, não slots de entrega (Passo 4 muda isso) |
-| Tela Hoje | Parcial | Agrupada por cliente, não por seção; poucas ações inline |
-| Entregas e kanban | Parcial | Só por cliente; sem visão geral, filtros, calendário, responsável, comentários |
-| Calendário | Falta | Nenhuma visão de calendário |
-| Portal do cliente | Parcial | Funciona; sem marca do workspace, sem histórico, sem notificação in-app |
-| Reuniões e ata com IA | Parcial | Fluxo completo, mas a chamada real à Anthropic nunca foi testada (sem chave) |
-| Escopo extra | Existe | Cobrar não gera cobrança (decisão registrada) |
-| Financeiro | Parcial | Sem criar ou editar cobrança avulsa; histórico por cliente existe |
-| Linha do tempo | Existe | View única com todas as fontes |
-| Design system e shell | Falta | Nada do pedido novo existe ainda |
-| Atalhos e ⌘K | Falta | |
-| Notificações in-app | Falta | Sem tabela nem UI |
+| `workspaces` | Existe (`nome`, `slug`, `plano`, `logo_path`) | Adicionar `modo_trabalho`, `ai_mode`, `onboarding_step` |
+| `workspace_members` (owner, admin, member) | Existe | Sem mudança |
+| `invites` | `invitations` (e-mail, papel, token, expira) | Manter `invitations`; adicionar `client_ids uuid[]`; validade de 7 dias no default |
+| `client_assignees` | Falta | Criar; backfill: todo membro existente fica atribuído a todos os clientes atuais (ninguém perde acesso) |
+| `clients` | Existe (com `cor`, `portal_token`) | Adicionar `onboarding_checklist jsonb`, `briefing_token`, `drive_folder_id`, `instagram_handle` |
+| Estratégia | Falta | `client_strategies` (objetivo, pilares jsonb, formatos, decisões) |
+| Kit da marca | Parcial (`tom_de_voz`) | `brand_kits` (cores, tom, palavras proibidas, `share_token`) + bucket `brand` |
+| `timeline_events` | View `client_timeline` | Criar tabela para eventos novos e incluir na view (a view continua sendo a leitura) |
+| Posts | `deliverables` (status `planejar`..`publicado`) | Manter `deliverables`; adicionar etapas `ajuste` e `agendado` ao enum (aditivo), `pilar`, `prazo_interno`, `rodadas`, `checklist`, `canal`, `horario` |
+| Versões do post | Falta | `deliverable_versions` |
+| `approval_responses` | `approvals` (decisão, comentário, autor) | Manter `approvals`; adicionar `ip`, `versao`, `ponto jsonb` |
+| `scope_requests` | Existe | Adicionar `deliverable_id`, `origem` |
+| Pacotes | `package_templates.itens jsonb` | Adicionar `preco`, `limite_rodadas` |
+| `ai_usage`, `ai_connections` | Falta | Criar |
+| `social_connections`, `social_accounts`, `publish_jobs`, `published_posts` | Falta | Criar (Fase 8) |
+| `integration_connections` (Google, Granola, Canva) | Falta | Criar (Fase 9), tokens cifrados |
+| Comercial: `leads`, `proposals`, `proposal_views`, `contracts` | Falta | Criar (Fase 10) |
+| Financeiro: `payments` | Existe | Adicionar `origem`, `metodo`, `provider_id`, `boleto_url`, `pix_code`, `nfse_*`; criar `expenses`, `invoices`, `accounting_closings` |
+| Relatórios: `metrics_daily`, `reports` | Falta | Criar (Fase 12) |
 
-## Detalhe
+## 4. Problemas visuais comparados a docs/design
 
-### Auth
-- **Existe:** cadastro com nome, login por senha, magic link (PKCE via `/auth/callback`), logout, proxy que protege rotas, onboarding em duas etapas (nome do negócio; primeiro cliente e pacote).
-- **Falta:** recuperação de senha; tela de perfil (nome, avatar). `profiles.avatar_url` existe e não é usado.
+- Cor primária vinho e fonte Hanken Grotesk; o design pede violeta `#6B4EFF`, Bricolage Grotesque nos títulos e Figtree no texto.
+- Botões retangulares de 32px; o design usa pílula (999px) com 36, 44 e 52.
+- Cards com raio pequeno e sombra; o design pede raio 24, sem sombra, separação por fundo `#F4F5F7`.
+- Sidebar sem botão Novo, sem contadores, sem bloco de clientes com quadrado colorido.
+- Título da Hoje é texto pequeno; o design tem saudação violeta e H1 de 44px com pílulas coloridas.
+- Rotas divergem: `/entregas` (design: `/producao`), `/configuracoes` (design: `/ajustes/equipe`).
+- Dark mode existe mas o design é só claro (decisão: manter claro, ver decisions.md).
 
-### Workspaces e equipe
-- **Existe:** workspace pessoal automático, criar, renomear, trocar (seletor no topo), último workspace lembrado, convite por link com expiração e e-mail fixo, aceitar, listar e remover membros, sair, excluir (só owner), limites contando convites pendentes.
-- **Parcial:** a policy permite trocar papel (admin/membro), mas não há UI.
-- **Falta:** transferir posse do workspace; envio de e-mail do convite (fora do MVP por decisão).
+## 5. Riscos
 
-### Clientes
-- **Existe:** lista com status, pacote, valor e próximo vencimento; cadastro e edição completos (contatos, links, briefing, tom de voz); exclusão; ficha com abas Visão geral, Entregas, Reuniões, Financeiro, Escopo e Linha do tempo.
-- **Parcial:** cabeçalho da ficha não mostra próximo vencimento nem tem Nova entrega ou Nova reunião; abas via `?aba=`.
-- **Falta:** `clients.cor` (cor do cliente); busca e filtro na lista; aba Calendário; resumo do mês na visão geral.
+| Risco | Gravidade | Onde | Plano |
+|---|---|---|---|
+| Membro vê **todos** os clientes e **todo o financeiro** (`payments`, `clients.valor_mensal`) | Alta | Policies `"payments: membros"`, `"clients: membros"` | Fase 2: `client_assignees`, policy de clientes por atribuição, financeiro só owner/admin |
+| Migrations das Fases 3 a 7 possivelmente não aplicadas no remoto | Alta | Projeto `dsfgrcdtczbkdkciwjaa` | Conferir `supabase_migrations.schema_migrations` e aplicar as pendentes, só aditivas, antes da Fase 1 de banco |
+| Service role usada no portal | Média (correto, mas sensível) | `src/lib/supabase/admin.ts` com `server-only` | Manter; revisar na Fase 13 |
+| Segredos no cliente | Nenhum encontrado | Só `NEXT_PUBLIC_SUPABASE_URL` e a chave anônima vão ao navegador | Revisar a cada fase |
+| Duplicação de componentes | Baixa | `submit-button`, `field`, `textarea-field` sobrepostos a Input/Textarea | Unificar na Fase 1 |
+| Tokens de terceiros | Ainda não existem | - | Cifrar com AES-GCM no servidor (`ENCRYPTION_KEY`) a partir da Fase 6 |
+| Sem testes de TypeScript | Média | - | vitest na Fase 1 |
 
-### Pacotes e generate_month
-- **Existe:** CRUD de pacotes com itens (tipo, quantidade, cadência); `generate_month` idempotente, testado, com pg_cron comentado; botão Gerar mês.
-- **Diverge do novo pedido:** gera tarefas recorrentes (`tasks` com origem `template`) em vez de slots de entrega. Cadência diária (ex.: Stories) gera cerca de 22 itens por cliente por mês.
+## 6. Atualizações por fase
 
-### Tela Hoje
-- **Existe:** tarefas de hoje e atrasadas, aprovações paradas há mais de 2 dias, cobranças vencendo em 3 dias ou atrasadas, reuniões do dia, criação rápida de tarefa, concluir tarefa.
-- **Parcial:** agrupada por cliente (pedido novo: seções por tipo); datas absolutas; inputs nativos.
-- **Falta:** adiar para amanhã, abrir em painel, Marcar como paga e Cobrar no WhatsApp direto na linha, Reenviar link de aprovação, atalho C, empty state útil.
+(Cada fase acrescenta uma linha aqui.)
 
-### Entregas e kanban
-- **Existe:** kanban por cliente com 5 colunas, arrastar e soltar (mouse, toque, teclado), ordem fracionária, criar entrega, editor em diálogo (título, formato, etapa, data, legenda), upload para bucket privado com URL assinada, remover mídia, excluir com confirmação, respostas do cliente no editor.
-- **Falta:** kanban de todos os clientes; filtros por cliente, formato e responsável; `deliverables.responsavel_id`; mudar data no cartão; visão de semana e calendário; painel lateral (hoje é diálogo); comentários (sem tabela); histórico próprio da entrega; botão Enviar para aprovação.
-
-### Portal do cliente
-- **Existe:** `/p/[token]` sem login e sem RLS para anon, service role no servidor, `portal_respond()` só para service_role, aprovar e pedir ajuste com comentário obrigatório, nome lembrado, novo link invalida o anterior, copiar link e WhatsApp na ficha.
-- **Falta:** marca do workspace (logo ou cor); histórico do que já foi aprovado; notificação in-app para a equipe quando o cliente responde.
-
-### Reuniões e ata com IA
-- **Existe:** criar reunião, anotações, gerar ata com structured outputs e Zod, revisar (editar e desmarcar passos), confirmar criando tarefas com origem `ata`, proteção contra duplo clique, reuniões do dia na Hoje.
-- **Não verificado:** chamada real à API (sem `ANTHROPIC_API_KEY` local).
-- **Falta:** reuniões no calendário; editar ata depois de confirmada.
-
-### Escopo extra
-- **Existe:** registrar pedido com valor sugerido, cobrado, absorvido ou reaberto, totais, linha do tempo.
-
-### Financeiro
-- **Existe:** página por mês com previsto, recebido, em aberto e atrasado; marcar como pago e desfazer; WhatsApp com tom de lembrete ou de cobrança; inadimplentes de todos os meses; histórico por cliente na ficha.
-- **Falta:** criar ou editar cobrança avulsa (ex.: valor do escopo cobrado, desconto).
-
-### Design, shell e UX (pedido novo, Passos 2 e 3)
-- **Existe hoje:** Tailwind com tokens básicos, Geist, header com abas no topo, `<details>` como menu, `<dialog>` nativo, Alert, Badge, Card, Field.
-- **Falta tudo do pedido:** tokens novos e dark mode, Hanken Grotesk e tabular-nums, Radix (Popover, Dialog, Sheet, Tooltip, Select), DatePicker próprio, Toast, Skeleton, EmptyState, Kbd, Avatar; sidebar colapsável e drawer no mobile; painel de detalhe à direita; ⌘K (cmdk); atalhos; datas relativas; `loading.tsx` e `error.tsx`.
-- **Microcopy fora do padrão pedido:** plurais com "(s)" em vários textos ("tarefa(s)", "cliente(s)"), rótulo em caixa alta no portal ("LEGENDA").
-
-### Qualidade
-- **Existe:** 101 testes pgTAP (isolamento em todas as tabelas, limites, idempotência, Storage, portal, guarda de grants), typecheck, lint, build.
-- **Falta:** testes de interface ou e2e.
-
-## Mudanças de schema necessárias para os Passos 2 a 7
-
-Todas como migrations novas, testadas só no local:
-
-1. `clients.cor` (paleta fixa de 10 tons, preenchida automaticamente).
-2. Slots de entrega: `deliverables` ganha `competencia`, `slot_key` (idempotência) e título opcional enquanto for rascunho; `generate_month` passa a criar entregas em vez de tarefas.
-3. `deliverables.responsavel_id` (membro do workspace).
-4. `deliverable_comments` (comentários da equipe).
-5. `notifications` (in-app, por usuário e workspace) com trigger quando o cliente responde no portal.
-6. Marca do workspace para o portal (ex.: `workspaces.cor` e `workspaces.logo_path`).
-7. Opcional: `payments` aceitar cobrança avulsa (`origem`), para criar cobranças manuais.
-
-## Decisões que preciso de você antes do Passo 2
-
-1. **Migrations pendentes no remoto (Fases 3 a 6):** sigo empilhando migrations novas por cima delas (o caminho mais seguro), certo?
-2. **Tarefas recorrentes já geradas** (origem `template`): no novo `generate_month` elas deixam de ser criadas. Removo as existentes numa migration, ou deixo como histórico?
-3. **Cadência diária (Stories):** viram cerca de 22 slots por cliente por mês. Gero mesmo assim, ou cadência diária fica como uma entrega semanal agrupada ("Stories da semana")?
-
-## Atualização após os Passos 2 a 7
-
-| Área | Agora |
-|---|---|
-| Design system e shell | Existe: tokens com dark mode, Hanken Grotesk, componentes Radix, sidebar recolhível, drawer no mobile, ⌘K e atalhos |
-| Tela Hoje | Existe: seções, ações inline, criação rápida, painel da tarefa |
-| Pacotes e generate_month | Existe: cria slots de entrega, não mais tarefas |
-| Entregas e kanban | Existe: quadro de todos os clientes com filtros, painel lateral com comentários e histórico, responsável |
-| Calendário | Existe: semana com arrastar e mês com reuniões |
-| Clientes | Existe: cor, página de registro, resumo do mês, aba Calendário |
-| Portal do cliente | Existe: marca do workspace, histórico de respostas, notificação in-app |
-| Financeiro | Existe: receita do mês, inadimplentes, situação por cliente |
-
-Ainda fora: recuperação de senha, edição de perfil, troca de papel e transferência de posse na UI, cobrança avulsa, testes de interface/e2e, chamada real à Anthropic sem chave configurada.
+| Fase | Data | Resumo |
+|---|---|---|
+| 0 | 2026-11-06 | Auditoria criada; telas movidas para `docs/design/`; CLAUDE.md na raiz |

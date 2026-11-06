@@ -145,3 +145,10 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Financeiro:** receita do mês numa faixa só (previsto, recebido, em aberto, atrasado e barra do recebido), cobranças do mês, inadimplentes com a idade da dívida mais antiga e situação do mês por cliente. O histórico completo por cliente fica na aba Financeiro da ficha.
 - **Reuniões, ata com IA e escopo** seguem o fluxo das Fases 5 e 6, agora com os componentes novos; os próximos passos confirmados viram tarefas operacionais e aparecem na Hoje.
 - **Testes de banco filtram pelo próprio workspace**, para passarem também num banco local já usado.
+
+## 2026-11-06 · Pauta, Fase 0: auditoria
+
+- **`docs/spec.md` não existe no repositório.** Contexto: o CLAUDE.md o cita como fonte da verdade, mas ele não veio no commit "docs corrigidos". Escolha: seguir as 12 telas de `docs/design/`, o README de design, o pedido desta rodada e as decisões anteriores; onde nada cobre, a opção mais simples. Alternativa: parar e pedir a spec (descartada, a execução é autônoma).
+- **Telas movidas para `docs/design/` e CLAUDE.md para a raiz.** Contexto: o commit "docs corrigidos" deixou tudo solto em `docs/`, mas o CLAUDE.md e o pedido citam `docs/design/`. Escolha: `git mv` sem mudar conteúdo. Alternativa: ajustar os textos que citam o caminho.
+- **Nomes de tabela atuais ficam.** `invitations` faz o papel de `invites`, `deliverables` o de posts e `approvals` o de `approval_responses`. Contexto: renomear tabela com dados quebra código e arrisca perda. Escolha: só migrações aditivas. Alternativa: renomear e criar views de compatibilidade.
+- **Testes de banco num Postgres 16 local.** Contexto: `supabase start` não baixa imagens neste ambiente. Escolha: `scripts/db-test-local.sh` sobe um Postgres descartável com um esqueleto de `auth`, `storage` e papéis (`scripts/supabase-stub.sql`) e roda os mesmos testes pgTAP. Alternativa: testar no remoto (descartado: risco de sujar dados).
