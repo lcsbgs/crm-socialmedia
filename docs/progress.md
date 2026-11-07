@@ -39,3 +39,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Falta: `/api/ai/chatgpt/callback` real (depende das credenciais da OpenAI); botões Canva e Drive do editor apontam para as telas da Fase 9.
 - Problemas abertos: remoto em `COMING_UP` de novo (segunda reativação).
 - Próxima: Fase 7, portal do cliente.
+
+## Fase 7: portal do cliente (concluída)
+- Feito: migração `20261107100000_portal.sql`, portal refeito, envio do planejamento e aprovação tácita na página do cliente, rota de job.
+- Banco remoto: o projeto voltou (`ACTIVE_HEALTHY`) e estava vazio (0 usuários). Apliquei pelo MCP: deliverables, approvals, meetings, scope_finance, client_color. **Parou em `deliverable_slots`**: o servidor do Supabase pediu confirmação humana (a migração tem `drop function` e `delete`, sem efeito num banco vazio) e não houve resposta. Faltam aplicar, nesta ordem: deliverable_slots (sem a view, recriada depois), deliverable_activity, notifications_brand e todas as `202611*`. Ver `docs/beta-checklist.md`.
+- Próxima: Fase 8, publicação Meta.

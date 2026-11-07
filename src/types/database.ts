@@ -23,6 +23,49 @@ export type Database = {
   };
   public: {
     Tables: {
+      month_plans: {
+        Row: {
+          autor_nome: string | null;
+          client_id: string;
+          comentario: string | null;
+          competencia: string;
+          created_at: string;
+          enviado_em: string;
+          id: string;
+          ip: string | null;
+          respondido_em: string | null;
+          status: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          autor_nome?: string | null;
+          client_id: string;
+          comentario?: string | null;
+          competencia: string;
+          created_at?: string;
+          enviado_em?: string;
+          id?: string;
+          ip?: string | null;
+          respondido_em?: string | null;
+          status?: string;
+          workspace_id: string;
+        };
+        Update: {
+          autor_nome?: string | null;
+          client_id?: string;
+          comentario?: string | null;
+          competencia?: string;
+          created_at?: string;
+          enviado_em?: string;
+          id?: string;
+          ip?: string | null;
+          respondido_em?: string | null;
+          status?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       ai_connections: {
         Row: {
           access_token_enc: string | null;
@@ -348,7 +391,11 @@ export type Database = {
           decisao: Database["public"]["Enums"]["approval_decision"];
           deliverable_id: string;
           id: string;
+          ip: string | null;
+          ponto: Json | null;
           updated_at: string;
+          user_agent: string | null;
+          versao: number | null;
           workspace_id: string;
         };
         ComputedFields: never;
@@ -359,7 +406,11 @@ export type Database = {
           decisao: Database["public"]["Enums"]["approval_decision"];
           deliverable_id: string;
           id?: string;
+          ip?: string | null;
+          ponto?: Json | null;
           updated_at?: string;
+          user_agent?: string | null;
+          versao?: number | null;
           workspace_id: string;
         };
         Update: {
@@ -369,7 +420,11 @@ export type Database = {
           decisao?: Database["public"]["Enums"]["approval_decision"];
           deliverable_id?: string;
           id?: string;
+          ip?: string | null;
+          ponto?: Json | null;
           updated_at?: string;
+          user_agent?: string | null;
+          versao?: number | null;
           workspace_id?: string;
         };
         Relationships: [
@@ -391,6 +446,7 @@ export type Database = {
       };
       clients: {
         Row: {
+          aprovacao_tacita_horas: number | null;
           briefing: string | null;
           briefing_respondido_em: string | null;
           briefing_respostas: Json | null;
@@ -417,6 +473,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          aprovacao_tacita_horas?: number | null;
           briefing?: string | null;
           briefing_respondido_em?: string | null;
           briefing_respostas?: Json | null;
@@ -442,6 +499,7 @@ export type Database = {
           workspace_id: string;
         };
         Update: {
+          aprovacao_tacita_horas?: number | null;
           briefing?: string | null;
           briefing_respondido_em?: string | null;
           briefing_respostas?: Json | null;
@@ -604,6 +662,7 @@ export type Database = {
           hora_publicacao: string | null;
           id: string;
           legenda: string | null;
+          lembrete_em: string | null;
           midia_urls: string[];
           ordem: number;
           pilar: string | null;
@@ -631,6 +690,7 @@ export type Database = {
           hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
+          lembrete_em?: string | null;
           midia_urls?: string[];
           ordem?: number;
           pilar?: string | null;
@@ -657,6 +717,7 @@ export type Database = {
           hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
+          lembrete_em?: string | null;
           midia_urls?: string[];
           ordem?: number;
           pilar?: string | null;
@@ -1280,6 +1341,26 @@ export type Database = {
       };
     };
     Functions: {
+      run_approval_reminders: {
+        Args: never;
+        Returns: { lembretes: number; tacitas: number }[];
+      };
+      send_month_plan: {
+        Args: { p_client_id: string; p_competencia: string };
+        Returns: undefined;
+      };
+      portal_plan_respond: {
+        Args: { p_token: string; p_competencia: string; p_decisao: string; p_comentario: string; p_autor_nome: string; p_ip?: string };
+        Returns: undefined;
+      };
+      portal_approve_all: {
+        Args: { p_token: string; p_autor_nome: string; p_ip?: string; p_user_agent?: string };
+        Returns: number;
+      };
+      portal_respond: {
+        Args: { p_token: string; p_deliverable_id: string; p_decisao: Database["public"]["Enums"]["approval_decision"]; p_comentario: string; p_autor_nome: string; p_ip?: string; p_user_agent?: string; p_ponto?: Json };
+        Returns: undefined;
+      };
       ai_credits_status: {
         Args: { p_workspace_id: string };
         Returns: { usados: number; limite: number }[];
@@ -1423,16 +1504,6 @@ export type Database = {
           p_quantidade: number;
         };
         Returns: string[];
-      };
-      portal_respond: {
-        Args: {
-          p_autor_nome: string;
-          p_comentario: string;
-          p_decisao: Database["public"]["Enums"]["approval_decision"];
-          p_deliverable_id: string;
-          p_token: string;
-        };
-        Returns: undefined;
       };
       regenerate_portal_token: { Args: { p_client_id: string }; Returns: string };
       shares_workspace_with: { Args: { p_user_id: string }; Returns: boolean };

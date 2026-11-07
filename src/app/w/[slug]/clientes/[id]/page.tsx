@@ -29,6 +29,7 @@ import { SegmentedBar } from "@/components/ui/progress-bar";
 import { Tabs } from "@/components/ui/tabs";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { BrandKitEditor } from "@/features/clients/components/hub/brand-kit-editor";
+import { SendPlanButton, TacitApprovalSelect } from "@/features/clients/components/hub/approval-settings";
 import { BriefingLink } from "@/features/clients/components/hub/briefing-link";
 import { ClientChannelsForm } from "@/features/clients/components/hub/client-channels-form";
 import { ClientFileList } from "@/features/clients/components/hub/file-list";
@@ -193,7 +194,18 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
       ) : aba === "producao" ? (
         <DeliverablesTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "calendario" ? (
-        <CalendarTab workspaceId={workspace.id} clientId={id} month={month} />
+        <div className="flex flex-col gap-4">
+          <SendPlanButton
+            clientId={id}
+            month={month}
+            monthName={monthLabel(month).split(" ")[0].toLowerCase()}
+            status={await monthPlanStatus(id, month)}
+            portalUrl={`${publicEnv.NEXT_PUBLIC_APP_URL}/p/${client.portal_token}`}
+            phone={contatos[0]?.telefone || null}
+            contato={contatos[0]?.nome ? firstName(contatos[0].nome) : ""}
+          />
+          <CalendarTab workspaceId={workspace.id} clientId={id} month={month} />
+        </div>
       ) : aba === "reunioes" ? (
         <MeetingsTab workspaceId={workspace.id} clientId={id} slug={slug} />
       ) : aba === "arquivos" ? (
@@ -435,6 +447,13 @@ async function OverviewTab({
   );
 }
 
+async function monthPlanStatus(clientId: string, month: string) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const { data } = await supabase.from("month_plans").select("status").eq("client_id", clientId).eq("competencia", `${month}-01`).maybeSingle();
+  return data?.status ?? null;
+}
+
 async function countAdjustments(workspaceId: string, clientId: string, month: string) {
   const { createClient } = await import("@/lib/supabase/server");
   const supabase = await createClient();
@@ -542,6 +561,10 @@ async function FilesTab({ workspaceId, client }: { workspaceId: string; client: 
                 ))}
             </dl>
           ) : null}
+        </Card>
+        <Card>
+          <CardHeader title="Aprovação tácita" />
+          <TacitApprovalSelect workspaceId={workspaceId} clientId={client.id} horas={client.aprovacao_tacita_horas} />
         </Card>
         <Card>
           <CardHeader title="Onde publica e pasta" />

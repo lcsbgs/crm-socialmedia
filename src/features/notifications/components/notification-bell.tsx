@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Check, ThumbsUp, Wrench } from "lucide-react";
+import { Bell, CalendarCheck, Check, Clock, Scale, ThumbsUp, Wrench } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -67,7 +67,7 @@ export function NotificationBell({
         ) : (
           <ul className="max-h-96 overflow-y-auto py-1">
             {items.map((n) => {
-              const Icon = n.tipo === "aprovacao" ? ThumbsUp : Wrench;
+              const Icon = ({ aprovacao: ThumbsUp, ajuste: Wrench, lembrete: Clock, escopo: Scale, planejamento: CalendarCheck } as Record<string, typeof Bell>)[n.tipo] ?? Bell;
               return (
                 <li key={n.id}>
                   <button
@@ -85,7 +85,7 @@ export function NotificationBell({
                     <Icon
                       className={cn(
                         "mt-0.5 size-4 shrink-0",
-                        n.tipo === "aprovacao" ? "text-ok" : "text-waiting",
+                        n.tipo === "aprovacao" ? "text-ok" : n.tipo === "ajuste" || n.tipo === "lembrete" ? "text-late" : "text-accent",
                       )}
                       aria-hidden
                     />

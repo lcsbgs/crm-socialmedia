@@ -215,3 +215,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Prompts versionados em arquivos** (`src/lib/ai/prompts`): mudar o texto exige subir a versão (`legenda@1` etc.).
 - **Conexão do ChatGPT é por pessoa** (`ai_connections`), não por espaço. Tokens cifrados com AES-256-GCM (`src/lib/crypto.ts`, `ENCRYPTION_KEY`); as colunas de token não têm grant de leitura e só saem por `get_ai_connection_secret`, que devolve apenas a linha do próprio usuário. Em demonstração a conexão é simulada e há um botão para simular o fim do limite semanal.
 - **IA nunca salva sozinha**: a sugestão entra no campo e a pessoa revisa.
+
+## 2026-11-07 · Pauta, Fase 7: portal do cliente
+
+- **Portal mobile um post por vez** ("1 de 3"), com Aprovar, Pedir ajuste (comentário obrigatório e ponto opcional tocando na imagem) e "Aprovar os N de uma vez". O nome fica guardado no aparelho (`localStorage`) e é pedido só na primeira resposta.
+- **Cada resposta guarda nome, data, IP, navegador, versão do post e o ponto** (`approvals.ip`, `user_agent`, `versao`, `ponto`). IP vem de `x-forwarded-for` no servidor.
+- **Ajuste pedido move o post para "Ajuste pedido"** (não mais para produção) e soma uma rodada. Passou do limite do pacote: o banco cria uma sugestão em `scope_requests` (`origem = rodadas`, uma por post) e avisa owner/admin.
+- **Planejamento do mês aprovável** (`month_plans`): a equipe envia pela aba Calendário do cliente; o cliente aprova ou pede ajuste no portal; vira evento na linha do tempo e notificação.
+- **Lembrete de 48 h é para a equipe** (notificação in-app com sugestão de reenviar no WhatsApp), porque wa.me exige uma pessoa clicando. No máximo um lembrete a cada 48 h por post.
+- **Aprovação tácita é opcional por cliente** (48 h, 72 h ou 5 dias), desligada por padrão; registra "Aprovação tácita (sem resposta no prazo)" como autor.
+- **Jobs**: `run_approval_reminders()` agendado de hora em hora no pg_cron, e também exposto em `POST /api/jobs/lembretes` protegido por `CRON_SECRET`.
+- **Migrações no remoto pelo MCP** ficam com número de versão diferente do arquivo (ex.: `deliverables` virou `20261107033129`). Antes de usar `supabase db push`, alinhar com `supabase migration repair` (passo a passo em `docs/beta-checklist.md`).
