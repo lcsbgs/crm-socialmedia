@@ -244,3 +244,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Granola como cliente MCP** (JSON-RPC via HTTP, chamadas `search_meetings` e `get_meetings`), sem dependência nova. As notas entram nas anotações da reunião e passam pelo fluxo de ata que já existia (sugestões que a pessoa confirma antes de virar tarefa). Colar as notas continua funcionando.
 - **Brief da reunião** montado com dados reais (posts esperando, última decisão, tarefas em aberto, pagamento do mês para owner/admin, publicados no mês passado) e aviso 15 minutos antes (`run_meeting_briefs`, pg_cron a cada 5 minutos e `/api/jobs/briefs`).
 - **Canva nos dois sentidos**: "Criar no Canva" cria o design pela Connect API e abre o editor com `correlation_state`; o retorno (`/api/integrations/canva/return`) exporta PNG e salva como nova versão. App em `apps/canva-app` (Apps SDK) com "Enviar para o Pauta", identificado por um código gerado em Ajustes e o código do post. Em demonstração, uma tela simulada desenha a arte com as cores do kit da marca.
+
+## 2026-11-07 · Pauta, Fase 10: comercial
+
+- **Comercial só para owner/admin** (RLS em `leads`, `proposals`, `proposal_views`, `contracts`; menu e página escondidos para membros).
+- **Funil em 6 etapas** (Novos, Em conversa, Proposta enviada, Negociação, Ganhos, Perdidos), arrastar para mudar. Montar proposta move o lead para "Proposta enviada"; aceitar move para "Negociação"; assinar move para "Ganhos".
+- **Proposta nasce do primeiro pacote** (itens e preço) e pode trocar de pacote; diagnóstico escrito com IA (`diagnostico@1`). Página pública `/pr/[token]` registra cada abertura (`proposal_views`) e avisa a equipe só na primeira do dia.
+- **PDF pela impressão do navegador** (`?imprimir=1` abre a caixa de impressão com CSS próprio). Alternativa: gerar PDF no servidor com uma biblioteca (descartada nesta rodada para não adicionar dependência pesada).
+- **Contrato com variáveis** a partir de um modelo editável por espaço (`workspaces.contrato_modelo`, com padrão no código). Assinatura simples em `/ct/[token]` (nome, data, IP e "li e concordo") ou pelo adapter de Clicksign/ZapSign, com webhook `/api/webhooks/assinatura` protegido por `SIGNATURE_WEBHOOK_TOKEN`. Em demonstração sempre usa a assinatura simples.
+- **Contrato assinado vira cliente no banco** (`sign_contract`): cria o cliente com pacote, valor, vencimento e contato do lead, atribui ao owner, marca "Contrato assinado" no checklist, registra na linha do tempo e roda `generate_month` (cobrança e posts do primeiro mês).
+- **Renovação**: aviso 30 dias antes do fim (`run_contract_renewals`, pg_cron diário) e lista "Renovações chegando" no Comercial.
+- **Na Em pauta hoje**: "abriu a proposta N vezes desde ontem" em Com quem falar e "Contrato para assinar" em Com o cliente (só owner/admin).

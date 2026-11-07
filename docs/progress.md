@@ -54,3 +54,7 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261107130000_meetings_integrations.sql`, adapters, rotas OAuth, telas simuladas, brief, app do Canva.
 - Falta (depende de credenciais): Google Picker, renovação do token do Google, descoberta OAuth do Granola.
 - Próxima: Fase 10, comercial.
+
+## Fase 10: comercial (concluída)
+- Feito: migração `20261107140000_sales.sql`, funil, editor de proposta, páginas públicas `/pr` e `/ct`, adapter de assinatura e webhook, sinais na Em pauta hoje.
+- Próxima: Fase 11, financeiro.

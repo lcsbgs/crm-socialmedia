@@ -23,6 +23,288 @@ export type Database = {
   };
   public: {
     Tables: {
+      contracts: {
+        Row: {
+          assinado_em: string | null;
+          assinante_ip: string | null;
+          assinante_nome: string | null;
+          client_id: string | null;
+          corpo: string;
+          created_at: string;
+          enviado_em: string | null;
+          fim: string | null;
+          id: string;
+          inicio: string | null;
+          lead_id: string | null;
+          proposal_id: string | null;
+          provider: string;
+          provider_doc_id: string | null;
+          provider_sign_url: string | null;
+          renovacao_avisada_em: string | null;
+          status: string;
+          titulo: string;
+          token: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          assinado_em?: string | null;
+          assinante_ip?: string | null;
+          assinante_nome?: string | null;
+          client_id?: string | null;
+          corpo: string;
+          created_at?: string;
+          enviado_em?: string | null;
+          fim?: string | null;
+          id?: string;
+          inicio?: string | null;
+          lead_id?: string | null;
+          proposal_id?: string | null;
+          provider?: string;
+          provider_doc_id?: string | null;
+          provider_sign_url?: string | null;
+          renovacao_avisada_em?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          assinado_em?: string | null;
+          assinante_ip?: string | null;
+          assinante_nome?: string | null;
+          client_id?: string | null;
+          corpo?: string;
+          created_at?: string;
+          enviado_em?: string | null;
+          fim?: string | null;
+          id?: string;
+          inicio?: string | null;
+          lead_id?: string | null;
+          proposal_id?: string | null;
+          provider?: string;
+          provider_doc_id?: string | null;
+          provider_sign_url?: string | null;
+          renovacao_avisada_em?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "contracts_lead_id_fkey";
+            columns: ["lead_id"];
+            isOneToOne: false;
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "contracts_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "contracts_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposal_views: {
+        Row: {
+          id: string;
+          ip: string | null;
+          proposal_id: string;
+          user_agent: string | null;
+          viewed_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          ip?: string | null;
+          proposal_id: string;
+          user_agent?: string | null;
+          viewed_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          id?: string;
+          ip?: string | null;
+          proposal_id?: string;
+          user_agent?: string | null;
+          viewed_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposal_views_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposals: {
+        Row: {
+          aceita_em: string | null;
+          aceite_ip: string | null;
+          aceite_nome: string | null;
+          created_at: string;
+          dia_vencimento: number;
+          diagnostico: string | null;
+          duracao_meses: number;
+          enviada_em: string | null;
+          id: string;
+          itens: Json;
+          lead_id: string;
+          observacoes: string | null;
+          package_template_id: string | null;
+          status: string;
+          titulo: string;
+          token: string;
+          updated_at: string;
+          validade: string | null;
+          valor_mensal: number;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          aceita_em?: string | null;
+          aceite_ip?: string | null;
+          aceite_nome?: string | null;
+          created_at?: string;
+          dia_vencimento?: number;
+          diagnostico?: string | null;
+          duracao_meses?: number;
+          enviada_em?: string | null;
+          id?: string;
+          itens?: Json;
+          lead_id: string;
+          observacoes?: string | null;
+          package_template_id?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          validade?: string | null;
+          valor_mensal?: number;
+          workspace_id: string;
+        };
+        Update: {
+          aceita_em?: string | null;
+          aceite_ip?: string | null;
+          aceite_nome?: string | null;
+          created_at?: string;
+          dia_vencimento?: number;
+          diagnostico?: string | null;
+          duracao_meses?: number;
+          enviada_em?: string | null;
+          id?: string;
+          itens?: Json;
+          lead_id?: string;
+          observacoes?: string | null;
+          package_template_id?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          validade?: string | null;
+          valor_mensal?: number;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposals_lead_id_fkey";
+            columns: ["lead_id"];
+            isOneToOne: false;
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "proposals_package_template_id_fkey";
+            columns: ["package_template_id"];
+            isOneToOne: false;
+            referencedRelation: "package_templates";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      leads: {
+        Row: {
+          client_id: string | null;
+          contato_nome: string | null;
+          created_at: string;
+          email: string | null;
+          etapa: string;
+          id: string;
+          nome: string;
+          notas: string | null;
+          ordem: number;
+          origem: string | null;
+          perdido_motivo: string | null;
+          segmento: string | null;
+          telefone: string | null;
+          updated_at: string;
+          valor_estimado: number | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id?: string | null;
+          contato_nome?: string | null;
+          created_at?: string;
+          email?: string | null;
+          etapa?: string;
+          id?: string;
+          nome: string;
+          notas?: string | null;
+          ordem?: number;
+          origem?: string | null;
+          perdido_motivo?: string | null;
+          segmento?: string | null;
+          telefone?: string | null;
+          updated_at?: string;
+          valor_estimado?: number | null;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string | null;
+          contato_nome?: string | null;
+          created_at?: string;
+          email?: string | null;
+          etapa?: string;
+          id?: string;
+          nome?: string;
+          notas?: string | null;
+          ordem?: number;
+          origem?: string | null;
+          perdido_motivo?: string | null;
+          segmento?: string | null;
+          telefone?: string | null;
+          updated_at?: string;
+          valor_estimado?: number | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "leads_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       integration_connections: {
         Row: {
           access_token_enc: string | null;
@@ -1585,6 +1867,7 @@ export type Database = {
       workspaces: {
         Row: {
           ai_mode: string;
+          contrato_modelo: string | null;
           created_at: string;
           id: string;
           logo_path: string | null;
@@ -1598,6 +1881,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           ai_mode?: string;
+          contrato_modelo?: string | null;
           created_at?: string;
           id?: string;
           logo_path?: string | null;
@@ -1610,6 +1894,7 @@ export type Database = {
         };
         Update: {
           ai_mode?: string;
+          contrato_modelo?: string | null;
           created_at?: string;
           id?: string;
           logo_path?: string | null;
@@ -1646,6 +1931,22 @@ export type Database = {
       };
     };
     Functions: {
+      run_contract_renewals: {
+        Args: never;
+        Returns: number;
+      };
+      sign_contract: {
+        Args: { p_token: string; p_nome: string; p_ip: string };
+        Returns: string;
+      };
+      accept_proposal: {
+        Args: { p_token: string; p_nome: string; p_ip: string };
+        Returns: string;
+      };
+      register_proposal_view: {
+        Args: { p_token: string; p_ip: string; p_user_agent: string };
+        Returns: undefined;
+      };
       run_meeting_briefs: {
         Args: never;
         Returns: number;

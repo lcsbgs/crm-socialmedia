@@ -24,7 +24,8 @@ const samples: Record<AiTask, (user: string) => string> = {
     const original = u.split("\n").slice(-1)[0] ?? "";
     return `${original.trim()} Faça sua encomenda pelo direct ou pelo WhatsApp do perfil.`;
   },
-  estrategia: () =>
+  estrategia: (u) =>
+    u.includes("diagnóstico") ? `A ${between(u, /Empresa: ([^.(\n]+)/) || "empresa"} já tem um público fiel, mas as redes ainda não mostram o dia a dia nem convidam para comprar. A oportunidade está em transformar quem já gosta da marca em pedidos pelo direct, com bastidores e prova social. O pacote proposto dá ritmo ao feed, com aprovação simples pelo WhatsApp e um relatório mensal para acompanhar o que funciona.` :
     JSON.stringify({
       objetivo: "Aumentar os pedidos pelo direct no próximo trimestre",
       pilares: [

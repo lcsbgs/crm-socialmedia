@@ -48,6 +48,28 @@ export async function getDailyAgenda(
     .eq("status", "erro")
     .gte("agendado_para", new Date(Date.now() - 7 * 86_400_000).toISOString())
     .limit(20);
+  const yesterday = new Date(`${addDays(today, -1)}T00:00:00-03:00`).toISOString();
+  const [{ data: views }, { data: pendingContracts }] = opts.canSeeFinance
+    ? await Promise.all([
+        supabase
+          .from("proposal_views")
+          .select("proposal_id, proposal:proposals!inner (status, lead:leads!inner (nome, telefone))")
+          .eq("workspace_id", workspaceId)
+          .gte("viewed_at", yesterday),
+        supabase
+          .from("contracts")
+          .select("id, enviado_em, lead:leads (nome)")
+          .eq("workspace_id", workspaceId)
+          .eq("status", "enviado"),
+      ])
+    : [{ data: [] }, { data: [] }];
+  const viewsBy = new Map<string, { lead: string; telefone: string | null; vezes: number }>();
+  for (const v of views ?? []) {
+    if (v.proposal.status !== "enviada") continue;
+    const cur = viewsBy.get(v.proposal_id) ?? { lead: v.proposal.lead.nome, telefone: v.proposal.lead.telefone, vezes: 0 };
+    cur.vezes++;
+    viewsBy.set(v.proposal_id, cur);
+  }
   const [clients, members, mine, meetings, adjustments, tasks, posts, payments] = await Promise.all([
     supabase.from("clients").select("id, nome, cor, contatos, portal_token").eq("workspace_id", workspaceId),
     supabase.from("workspace_members").select("user_id, profile:profiles!inner (nome)").eq("workspace_id", workspaceId),
@@ -136,6 +158,10 @@ export async function getDailyAgenda(
         ? `${publicEnv.NEXT_PUBLIC_APP_URL}/p/${byId.get(p.client_id)?.portal_token}`
         : null,
     })),
+    sales: [
+      ...[...viewsBy.entries()].map(([id, v]) => ({ kind: "proposta" as const, proposalId: id, lead: v.lead, vezes: v.vezes, telefone: v.telefone })),
+      ...(pendingContracts ?? []).map((c) => ({ kind: "contrato" as const, contractId: c.id, lead: c.lead?.nome ?? "Cliente novo", desde: c.enviado_em ?? today })),
+    ],
     publishErrors: (failed ?? []).map((f) => ({
       deliverableId: f.deliverable_id,
       titulo: deliverableLabel(f.deliverable),

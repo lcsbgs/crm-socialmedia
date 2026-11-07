@@ -57,3 +57,14 @@ export const strategyPrompt: PromptDefinition<BrandContext & { objetivo?: string
     maxTokens: 700,
   }),
 };
+
+export const diagnosisPrompt: PromptDefinition<{ empresa: string; segmento?: string | null; notas?: string | null; pacote: string }> = {
+  id: "estrategia",
+  version: "diagnostico@1",
+  credits: 3,
+  build: (v) => ({
+    system: `Você é estrategista de redes sociais escrevendo o diagnóstico de uma proposta comercial. ${baseRules}`,
+    user: `Empresa: ${v.empresa}${v.segmento ? ` (${v.segmento})` : ""}.\n${v.notas ? `O que sabemos: ${v.notas}\n` : ""}Pacote proposto: ${v.pacote}.\nEscreva em até 5 frases: onde a empresa está hoje nas redes, a oportunidade principal e como o pacote ajuda. Sem prometer números.`,
+    maxTokens: 400,
+  }),
+};

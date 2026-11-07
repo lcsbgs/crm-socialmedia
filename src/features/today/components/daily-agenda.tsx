@@ -143,6 +143,18 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
                   </li>
                 );
               }
+              if (i.kind === "proposta") {
+                return (
+                  <li key={i.key} className="flex items-center gap-3 px-1 py-2">
+                    <span className="min-w-0 flex-1 text-md">
+                      <b>{i.lead}</b> abriu a proposta {i.vezes === 1 ? "1 vez" : `${i.vezes} vezes`} desde ontem
+                    </span>
+                    <a href={whatsappLink(i.telefone, "Oi! Viu a proposta? Posso tirar alguma dúvida?")} target="_blank" rel="noreferrer" className={buttonClasses("outline", "sm")}>
+                      Chamar no WhatsApp
+                    </a>
+                  </li>
+                );
+              }
               if (i.kind === "ajuste") {
                 return (
                   <li key={i.key} className="flex items-center gap-3 px-1 py-2">
@@ -235,8 +247,19 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
           </ul>
         </Section>
 
-        <Section id="h-cliente" title="Com o cliente" meta="esperando resposta deles" isEmpty={!agenda.cliente.length} empty="Nenhum cliente com post esperando aprovação.">
+        <Section id="h-cliente" title="Com o cliente" meta="esperando resposta deles" isEmpty={!agenda.cliente.length && !agenda.contratos.length} empty="Nenhum cliente com post esperando aprovação.">
           <ul className="flex flex-col gap-1">
+            {agenda.contratos.map((c) => (
+              <li key={c.key} className="flex flex-wrap items-center gap-3 px-1 py-2">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-md font-semibold">Contrato para assinar</span>
+                  <Sub>
+                    {c.lead}, enviado {formatRelativeTime(c.desde)}
+                  </Sub>
+                </span>
+                <Badge tone="warning">Aguardando</Badge>
+              </li>
+            ))}
             {agenda.cliente.map((i) => {
               const nome = i.contato?.nome ? firstName(i.contato.nome) : "";
               const msg = `${nome ? `Oi, ${nome}!` : "Oi!"} ${i.quantos === 1 ? "Tem 1 post" : `Tem ${i.quantos} posts`} esperando seu ok.${i.portalUrl ? ` É só abrir: ${i.portalUrl}` : ""}`;
