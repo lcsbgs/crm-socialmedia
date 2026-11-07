@@ -23,6 +23,85 @@ export type Database = {
   };
   public: {
     Tables: {
+      accounting_closings: {
+        Row: {
+          competencia: string;
+          enviado_em: string;
+          enviado_para: string | null;
+          id: string;
+          resumo: Json;
+          simulated: boolean;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          competencia: string;
+          enviado_em?: string;
+          enviado_para?: string | null;
+          id?: string;
+          resumo?: Json;
+          simulated?: boolean;
+          workspace_id: string;
+        };
+        Update: {
+          competencia?: string;
+          enviado_em?: string;
+          enviado_para?: string | null;
+          id?: string;
+          resumo?: Json;
+          simulated?: boolean;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      expenses: {
+        Row: {
+          categoria: string;
+          client_id: string | null;
+          comprovante_path: string | null;
+          created_at: string;
+          data: string;
+          descricao: string;
+          id: string;
+          updated_at: string;
+          valor: number;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          categoria?: string;
+          client_id?: string | null;
+          comprovante_path?: string | null;
+          created_at?: string;
+          data?: string;
+          descricao: string;
+          id?: string;
+          updated_at?: string;
+          valor: number;
+          workspace_id: string;
+        };
+        Update: {
+          categoria?: string;
+          client_id?: string | null;
+          comprovante_path?: string | null;
+          created_at?: string;
+          data?: string;
+          descricao?: string;
+          id?: string;
+          updated_at?: string;
+          valor?: number;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       contracts: {
         Row: {
           assinado_em: string | null;
@@ -1563,11 +1642,27 @@ export type Database = {
       };
       payments: {
         Row: {
+          boleto_url: string | null;
           client_id: string;
+          cobranca_gerada_em: string | null;
           competencia: string;
           created_at: string;
+          descricao: string | null;
           id: string;
+          lembrete_enviado_em: string | null;
+          metodo: string | null;
+          nfse_erro: string | null;
+          nfse_numero: string | null;
+          nfse_pdf_url: string | null;
+          nfse_provider_id: string | null;
+          nfse_status: string;
+          nfse_xml_url: string | null;
+          origem: string;
           pago_em: string | null;
+          pix_code: string | null;
+          provider: string;
+          provider_id: string | null;
+          simulated: boolean;
           status: Database["public"]["Enums"]["payment_status"];
           updated_at: string;
           valor: number;
@@ -1576,11 +1671,27 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          boleto_url?: string | null;
           client_id: string;
+          cobranca_gerada_em?: string | null;
           competencia: string;
           created_at?: string;
+          descricao?: string | null;
           id?: string;
+          lembrete_enviado_em?: string | null;
+          metodo?: string | null;
+          nfse_erro?: string | null;
+          nfse_numero?: string | null;
+          nfse_pdf_url?: string | null;
+          nfse_provider_id?: string | null;
+          nfse_status?: string;
+          nfse_xml_url?: string | null;
+          origem?: string;
           pago_em?: string | null;
+          pix_code?: string | null;
+          provider?: string;
+          provider_id?: string | null;
+          simulated?: boolean;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
           valor: number;
@@ -1588,11 +1699,27 @@ export type Database = {
           workspace_id: string;
         };
         Update: {
+          boleto_url?: string | null;
           client_id?: string;
+          cobranca_gerada_em?: string | null;
           competencia?: string;
           created_at?: string;
+          descricao?: string | null;
           id?: string;
+          lembrete_enviado_em?: string | null;
+          metodo?: string | null;
+          nfse_erro?: string | null;
+          nfse_numero?: string | null;
+          nfse_pdf_url?: string | null;
+          nfse_provider_id?: string | null;
+          nfse_status?: string;
+          nfse_xml_url?: string | null;
+          origem?: string;
           pago_em?: string | null;
+          pix_code?: string | null;
+          provider?: string;
+          provider_id?: string | null;
+          simulated?: boolean;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
           valor?: number;
@@ -1869,6 +1996,7 @@ export type Database = {
           ai_mode: string;
           contrato_modelo: string | null;
           created_at: string;
+          finance_config: Json;
           id: string;
           logo_path: string | null;
           modo_trabalho: string;
@@ -1883,6 +2011,7 @@ export type Database = {
           ai_mode?: string;
           contrato_modelo?: string | null;
           created_at?: string;
+          finance_config?: Json;
           id?: string;
           logo_path?: string | null;
           modo_trabalho?: string;
@@ -1896,6 +2025,7 @@ export type Database = {
           ai_mode?: string;
           contrato_modelo?: string | null;
           created_at?: string;
+          finance_config?: Json;
           id?: string;
           logo_path?: string | null;
           modo_trabalho?: string;
@@ -1931,6 +2061,14 @@ export type Database = {
       };
     };
     Functions: {
+      billing_set_invoice: {
+        Args: { p_payment_provider_id: string; p_status: string; p_numero: string; p_pdf: string; p_xml: string; p_erro: string; p_invoice_id: string };
+        Returns: undefined;
+      };
+      billing_mark_paid: {
+        Args: { p_provider_id: string; p_pago_em: string; p_metodo: string };
+        Returns: string;
+      };
       run_contract_renewals: {
         Args: never;
         Returns: number;

@@ -255,3 +255,14 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Contrato assinado vira cliente no banco** (`sign_contract`): cria o cliente com pacote, valor, vencimento e contato do lead, atribui ao owner, marca "Contrato assinado" no checklist, registra na linha do tempo e roda `generate_month` (cobrança e posts do primeiro mês).
 - **Renovação**: aviso 30 dias antes do fim (`run_contract_renewals`, pg_cron diário) e lista "Renovações chegando" no Comercial.
 - **Na Em pauta hoje**: "abriu a proposta N vezes desde ontem" em Com quem falar e "Contrato para assinar" em Com o cliente (só owner/admin).
+
+## 2026-11-07 · Pauta, Fase 11: financeiro
+
+- **Abas do design** (Recebimentos, Notas fiscais, Despesas, Rentabilidade, Contador) por `?aba=`, com os 4 indicadores (previsto, recebido, a receber, em atraso) e a lateral de cobrança automática, contador e despesas. Só owner/admin.
+- **Cobranças avulsas e de escopo na mesma tabela `payments`** (`origem`). A unicidade passou a valer só para a mensalidade (índice parcial) e o `generate_month` foi recriado com `on conflict ... where origem = 'mensalidade'`. Teste prova que a mensalidade continua sem duplicar.
+- **Adapter `src/lib/billing`**: "manual" (sem integração, a pessoa marca como paga) e "asaas" (cliente, cobrança boleto ou Pix com QR, NFS-e). Asaas em demonstração gera boleto e Pix de exemplo, com botão "Simular pagamento" que faz o mesmo que o webhook. Real usa sandbox por padrão.
+- **Webhook `/api/webhooks/asaas`** valida o cabeçalho `asaas-access-token` com comparação de tempo constante; dá baixa (`billing_mark_paid`), avisa owner/admin e pede a NFS-e se a emissão automática estiver ligada. Eventos de nota atualizam número, PDF, XML ou erro ("Corrigir e emitir" pede de novo).
+- **Cobrança automática** em `/api/jobs/cobrancas` (diária): gera boleto e Pix X dias antes do vencimento. O envio pelo WhatsApp continua sendo um clique (wa.me), com a mensagem pronta incluindo Pix copia e cola.
+- **Escopo extra "Somar na próxima cobrança"** soma no valor da próxima cobrança em aberto sem boleto gerado e marca o extra como cobrado.
+- **Rentabilidade** = recebido no mês menos despesas lançadas para o cliente. Despesas gerais entram só no resultado do mês. Alternativa: ratear despesas gerais por cliente (fica para depois).
+- **Fechamento para o contador** por e-mail com o extrato de recebimentos (com links de PDF e XML das notas) e despesas no corpo, registrado em `accounting_closings`. Sem anexos ZIP nesta rodada (o Asaas já guarda os arquivos das notas).

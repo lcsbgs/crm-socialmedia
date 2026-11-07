@@ -44,7 +44,8 @@ select set_eq(
         'get_invitation_preview', 'get_briefing_form', 'submit_briefing', 'get_brand_kit_public', 'generate_month_all',
         'portal_approve_all', 'portal_plan_respond', 'run_approval_reminders',
         'claim_publish_jobs', 'complete_publish_job', 'fail_publish_job', 'get_social_connection_secret', 'run_meeting_briefs',
-        'register_proposal_view', 'accept_proposal', 'sign_contract', 'run_contract_renewals'],
+        'register_proposal_view', 'accept_proposal', 'sign_contract', 'run_contract_renewals',
+        'billing_mark_paid', 'billing_set_invoice'],
   'funções internas ficam só para service_role');
 
 select * from finish();

@@ -58,3 +58,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 ## Fase 10: comercial (concluída)
 - Feito: migração `20261107140000_sales.sql`, funil, editor de proposta, páginas públicas `/pr` e `/ct`, adapter de assinatura e webhook, sinais na Em pauta hoje.
 - Próxima: Fase 11, financeiro.
+
+## Fase 11: financeiro (concluída)
+- Feito: migração `20261107150000_finance.sql`, `src/lib/billing`, tela nova, webhook e job.
+- Falta: anexos (ZIP) no fechamento; configuração fiscal do Asaas (serviço municipal) é TODO.
+- Próxima: Fase 12, relatórios e acabamento.

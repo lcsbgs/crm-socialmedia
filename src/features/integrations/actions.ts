@@ -19,6 +19,17 @@ export async function startIntegration(formData: FormData) {
   const slug = z.string().min(1).parse(formData.get("slug"));
   const back = String(formData.get("back") || `/w/${slug}/ajustes/integracoes`);
   if (isMockMode()) redirect(`/w/${slug}/ajustes/integracoes/conectar/${id}?back=${encodeURIComponent(back)}`);
+  if (id === "asaas" || id === "assinatura") {
+    // Sem OAuth: a chave fica no servidor (.env). Aqui só registramos que o espaço usa o provedor.
+    const configured = id === "asaas" ? !!process.env.ASAAS_API_KEY : !!(process.env.CLICKSIGN_ACCESS_TOKEN || process.env.ZAPSIGN_API_TOKEN);
+    if (!configured) redirect(`${back}?erro=${id}`);
+    const { getWorkspaceBySlug } = await import("@/features/workspaces/queries");
+    const workspace = await getWorkspaceBySlug(slug);
+    const { saveIntegrationConnection } = await import("./store");
+    await saveIntegrationConnection({ workspaceId: workspace.id, provider: id, simulated: false, conta: id === "asaas" ? "Asaas" : (process.env.SIGNATURE_PROVIDER ?? "clicksign") });
+    revalidatePath("/w", "layout");
+    redirect(back);
+  }
   redirect(`/api/integrations/${id}/start?slug=${slug}&back=${encodeURIComponent(back)}`);
 }
 
