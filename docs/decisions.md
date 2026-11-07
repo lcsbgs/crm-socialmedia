@@ -266,3 +266,11 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Escopo extra "Somar na próxima cobrança"** soma no valor da próxima cobrança em aberto sem boleto gerado e marca o extra como cobrado.
 - **Rentabilidade** = recebido no mês menos despesas lançadas para o cliente. Despesas gerais entram só no resultado do mês. Alternativa: ratear despesas gerais por cliente (fica para depois).
 - **Fechamento para o contador** por e-mail com o extrato de recebimentos (com links de PDF e XML das notas) e despesas no corpo, registrado em `accounting_closings`. Sem anexos ZIP nesta rodada (o Asaas já guarda os arquivos das notas).
+
+## 2026-11-07 · Pauta, Fase 12: relatórios e acabamento
+
+- **Métricas diárias** por conta do Instagram ligada a cliente (`metrics_daily`), coletadas por `/api/jobs/metricas` (alcance, visualizações, interações e seguidores pela Graph API). Em demonstração os números são determinísticos por conta e dia e ficam marcados como simulados (o relatório mostra o selo).
+- **Relatório mensal** (`reports`): resumo montado por função pura testada (`buildReportSummary`: soma, variação contra o mês anterior só quando existe, posts por formato, aprovados de primeira, ajustes). O job do dia 1 gera os resumos; a leitura da IA (`relatorio@1`) é escrita quando a equipe gera ou abre, usando o plano de IA de quem revisa. Publicado vira página `/r/[token]` (link no portal) e PDF pela impressão.
+- **Busca ⌘K** passou a achar posts, tarefas, reuniões e leads (leads só para owner/admin, pelo RLS).
+- **Resumo diário por e-mail** opcional em Minha conta (`profiles.resumo_diario`), job `/api/jobs/resumo` às 7h com números reais de cada espaço.
+- **Notificações in-app**: novos tipos (lembrete, escopo, planejamento, publicação, pagamento, proposta) com ícone próprio no sino.

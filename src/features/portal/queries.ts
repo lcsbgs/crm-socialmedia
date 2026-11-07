@@ -91,12 +91,20 @@ export async function getPortal(token: string) {
     midia: midia_urls.filter((p) => signed.has(p)).map((p) => ({ url: signed.get(p)!, kind: kind(p) })),
   }));
 
+  const { data: reports } = await admin
+    .from("reports")
+    .select("competencia, token")
+    .eq("client_id", client.id)
+    .eq("status", "publicado")
+    .order("competencia", { ascending: false })
+    .limit(6);
   const contato = Array.isArray(client.contatos) ? (client.contatos[0] as { nome?: string } | undefined) : undefined;
   return {
     clientNome: client.nome,
     clientCor: client.cor ?? 0,
     handle: client.instagram_handle ?? client.nome.toLowerCase().replace(/[^a-z0-9]+/g, ""),
     contatoNome: contato?.nome?.split(" ")[0] ?? "",
+    reports: (reports ?? []).map((r) => ({ competencia: r.competencia, token: r.token })),
     plan: plan
       ? {
           competencia: plan.competencia,

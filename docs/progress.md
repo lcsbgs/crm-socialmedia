@@ -63,3 +63,7 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261107150000_finance.sql`, `src/lib/billing`, tela nova, webhook e job.
 - Falta: anexos (ZIP) no fechamento; configuração fiscal do Asaas (serviço municipal) é TODO.
 - Próxima: Fase 12, relatórios e acabamento.
+
+## Fase 12: relatórios e acabamento (concluída)
+- Feito: migração `20261107160000_reports.sql`, métricas, relatórios, busca, resumo diário, Minha conta.
+- Próxima: Fase 13, revisão final.

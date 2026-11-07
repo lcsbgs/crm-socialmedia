@@ -37,6 +37,9 @@ import { ClientFileUploader } from "@/features/clients/components/hub/file-uploa
 import { OnboardingChecklist } from "@/features/clients/components/hub/onboarding-checklist";
 import { pillarColors, StrategyEditor } from "@/features/clients/components/hub/strategy-editor";
 import { TimelineNoteForm } from "@/features/clients/components/hub/timeline-note-form";
+import type { ReportSummary } from "@/features/reports/build";
+import { GenerateReportButton, ReportReading } from "@/features/reports/components/report-editor";
+import { ReportView } from "@/features/reports/components/report-view";
 import { DeleteClientForm } from "@/features/clients/components/record/delete-client";
 import { IntegrationButton } from "@/features/integrations/components/action-buttons";
 import { ClientAccounts } from "@/features/integrations/components/client-accounts";
@@ -217,7 +220,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
       ) : aba === "escopo" ? (
         <ScopeTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "relatorios" ? (
-        <EmptyState title="Relatórios mensais" description="O relatório do mês com métricas e leitura da IA aparece aqui quando as métricas forem coletadas." />
+        <ReportsTab workspaceId={workspace.id} clientId={id} month={month} />
       ) : aba === "timeline" ? (
         <TimelineTab workspaceId={workspace.id} clientId={id} />
       ) : (
@@ -445,6 +448,37 @@ async function OverviewTab({
           </Card>
         ) : null}
       </aside>
+    </div>
+  );
+}
+
+async function ReportsTab({ workspaceId, clientId, month }: { workspaceId: string; clientId: string; month: string }) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const { data: reports } = await supabase.from("reports").select("*").eq("client_id", clientId).order("competencia", { ascending: false }).limit(12);
+  const prev = shiftMonth(todayISO().slice(0, 7), -1);
+  const selected = reports?.find((r) => r.competencia.startsWith(month)) ?? reports?.[0];
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <GenerateReportButton workspaceId={workspaceId} clientId={clientId} month={prev} label={`Gerar relatório de ${monthLabel(prev).split(" ")[0].toLowerCase()}`} />
+        {(reports ?? []).map((r) => (
+          <Link key={r.id} href={`?aba=relatorios&mes=${r.competencia.slice(0, 7)}`} className={buttonClasses(r.id === selected?.id ? "dark" : "outline", "sm")}>
+            {monthLabel(r.competencia.slice(0, 7))}
+          </Link>
+        ))}
+      </div>
+      {selected ? (
+        <Card>
+          <CardHeader title={`Relatório de ${monthLabel(selected.competencia.slice(0, 7)).toLowerCase()}`} description={selected.status === "publicado" ? "Publicado no portal do cliente." : "Rascunho: revise a leitura e publique."} />
+          <ReportView resumo={selected.resumo as unknown as ReportSummary} leitura={null} />
+          <div className="mt-5">
+            <ReportReading id={selected.id} leitura={selected.leitura ?? ""} status={selected.status} url={`${publicEnv.NEXT_PUBLIC_APP_URL}/r/${selected.token}`} />
+          </div>
+        </Card>
+      ) : (
+        <EmptyState title="Nenhum relatório ainda" description="O relatório do mês sai sozinho no dia 1. Para gerar agora, use o botão acima." />
+      )}
     </div>
   );
 }

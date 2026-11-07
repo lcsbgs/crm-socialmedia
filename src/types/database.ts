@@ -23,6 +23,100 @@ export type Database = {
   };
   public: {
     Tables: {
+      reports: {
+        Row: {
+          client_id: string;
+          competencia: string;
+          gerado_em: string;
+          id: string;
+          leitura: string | null;
+          publicado_em: string | null;
+          resumo: Json;
+          status: string;
+          token: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          competencia: string;
+          gerado_em?: string;
+          id?: string;
+          leitura?: string | null;
+          publicado_em?: string | null;
+          resumo?: Json;
+          status?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          competencia?: string;
+          gerado_em?: string;
+          id?: string;
+          leitura?: string | null;
+          publicado_em?: string | null;
+          resumo?: Json;
+          status?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reports_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      metrics_daily: {
+        Row: {
+          alcance: number;
+          client_id: string;
+          created_at: string;
+          data: string;
+          id: string;
+          impressoes: number;
+          interacoes: number;
+          seguidores: number | null;
+          simulated: boolean;
+          social_account_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          alcance?: number;
+          client_id: string;
+          created_at?: string;
+          data: string;
+          id?: string;
+          impressoes?: number;
+          interacoes?: number;
+          seguidores?: number | null;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          alcance?: number;
+          client_id?: string;
+          created_at?: string;
+          data?: string;
+          id?: string;
+          impressoes?: number;
+          interacoes?: number;
+          seguidores?: number | null;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       accounting_closings: {
         Row: {
           competencia: string;
@@ -1781,6 +1875,7 @@ export type Database = {
           last_workspace_id: string | null;
           nome: string;
           onboarded_at: string | null;
+          resumo_diario: boolean;
           updated_at: string;
         };
         ComputedFields: never;
@@ -1793,6 +1888,7 @@ export type Database = {
           last_workspace_id?: string | null;
           nome?: string;
           onboarded_at?: string | null;
+          resumo_diario?: boolean;
           updated_at?: string;
         };
         Update: {
@@ -1804,6 +1900,7 @@ export type Database = {
           last_workspace_id?: string | null;
           nome?: string;
           onboarded_at?: string | null;
+          resumo_diario?: boolean;
           updated_at?: string;
         };
         Relationships: [

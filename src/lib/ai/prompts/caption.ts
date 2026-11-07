@@ -68,3 +68,14 @@ export const diagnosisPrompt: PromptDefinition<{ empresa: string; segmento?: str
     maxTokens: 400,
   }),
 };
+
+export const reportPrompt: PromptDefinition<{ cliente: string; mes: string; resumo: string }> = {
+  id: "relatorio",
+  version: "relatorio@1",
+  credits: 3,
+  build: (v) => ({
+    system: `Você escreve a leitura do relatório mensal de redes sociais para o dono de um pequeno negócio. ${baseRules}`,
+    user: `Cliente: ${v.cliente}. Mês: ${v.mes}.\nDados do mês (JSON): ${v.resumo}\nEscreva em até 6 frases: o que aconteceu, o que funcionou melhor e uma sugestão para o próximo mês. Use só os dados fornecidos.`,
+    maxTokens: 500,
+  }),
+};

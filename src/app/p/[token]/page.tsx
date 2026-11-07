@@ -59,6 +59,23 @@ export default async function PortalPage({ params }: PageProps<"/p/[token]">) {
           <PortalPlan token={token} plan={portal.plan} monthName={monthLabel(portal.plan.competencia.slice(0, 7)).split(" ")[0].toLowerCase()} />
         ) : null}
 
+        {portal.reports.length ? (
+          <section aria-labelledby="h-rel" className="space-y-2">
+            <h2 id="h-rel" className="font-display text-lg">
+              Relatórios
+            </h2>
+            <ul className="flex flex-wrap gap-2">
+              {portal.reports.map((r) => (
+                <li key={r.token}>
+                  <a href={`/r/${r.token}`} className="inline-flex h-10 items-center rounded-full bg-surface px-4 text-base font-semibold">
+                    {monthLabel(r.competencia.slice(0, 7))}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         {portal.history.length ? (
           <section aria-labelledby="historico" className="space-y-2">
             <h2 id="historico" className="font-display text-lg">

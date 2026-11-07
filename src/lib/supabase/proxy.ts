@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
-const PUBLIC_PREFIXES = ["/login", "/cadastro", "/auth", "/p/", "/b/", "/k/", "/pr/", "/ct/", "/convite", "/api/webhooks", "/api/jobs"];
+const PUBLIC_PREFIXES = ["/login", "/cadastro", "/auth", "/p/", "/b/", "/k/", "/pr/", "/ct/", "/r/", "/convite", "/api/webhooks", "/api/jobs"];
 
 function isPublic(pathname: string) {
   return pathname === "/" || PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
