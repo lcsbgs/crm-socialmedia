@@ -4,7 +4,7 @@
 
 **Pronto (fases 0 a 13, todas commitadas):** design system e casca do design; login por e-mail e Google/Apple/ChatGPT em demonstração (estrutura real pronta); equipe com papéis, clientes atribuídos e convites com lugar em espera; onboarding em 3 passos; Em pauta hoje com saudação e 4 blocos; página do cliente com estratégia, kit, arquivos, briefing e linha do tempo; pacotes, geração do mês e calendário; produção com editor completo e IA (Anthropic, ChatGPT e demonstração); portal do cliente; publicação na Meta com fila; Google, Granola e Canva; comercial com propostas e contratos; financeiro com Asaas e NFS-e; relatórios mensais; busca ⌘K e resumo diário.
 **Qualidade:** 19 arquivos de teste de banco (234 asserções, incluindo isolamento entre espaços e membro sem financeiro), 45 testes de TypeScript, typecheck, lint e build verdes; nenhum segredo nos bundles do navegador; seed com 10 clientes e 290 posts responde em menos de 15 ms.
-**Integrações:** todas em modo demonstração (`INTEGRATIONS_MODE=mock`), com selo "modo demonstração" e a estrutura real marcada com `TODO(oauth-setup)` (31 pontos).
+**Integrações:** todas em modo demonstração (`INTEGRATIONS_MODE=mock`), com selo "modo demonstração" e a estrutura real marcada com `TODO(oauth-setup)` (18 pontos).
 
 **Pendente e por quê:**
 - **Banco remoto migrado pela metade**: o projeto estava pausado; ao voltar, apliquei 5 migrações e a 6ª parou porque o Supabase pediu confirmação humana (um `drop function` e um `delete`, sem efeito num banco vazio). Faltam `20261028110000` em diante. Passo a passo em `docs/beta-checklist.md`.
