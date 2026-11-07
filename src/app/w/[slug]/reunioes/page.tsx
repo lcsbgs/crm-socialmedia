@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { ClientTag } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { IntegrationButton } from "@/features/integrations/components/action-buttons";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
 import { spDate, spTime } from "@/lib/dates";
@@ -50,6 +51,11 @@ export default async function MeetingsPage({ params }: PageProps<"/w/[slug]/reun
       <PageHeader
         title="Reuniões"
         description="Para criar uma reunião, abra o cliente e use Nova reunião."
+        action={
+          <IntegrationButton kind="sync-google" workspaceId={workspace.id}>
+            Trazer do Google Agenda
+          </IntegrationButton>
+        }
       />
       {all.length === 0 ? (
         <EmptyState icon={Video} title="Nenhuma reunião ainda" description="As reuniões com clientes aparecem aqui, com o brief e a ata." />

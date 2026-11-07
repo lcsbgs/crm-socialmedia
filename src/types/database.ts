@@ -1106,12 +1106,18 @@ export type Database = {
         Row: {
           ata_confirmada_em: string | null;
           ata_ia: Json | null;
+          brief_avisado_em: string | null;
           client_id: string;
           created_at: string;
           data: string;
           decisoes: NonNullable<Json>;
+          duracao_min: number;
+          google_event_id: string | null;
+          granola_note_id: string | null;
           id: string;
+          meet_link: string | null;
           notas_brutas: string;
+          origem: string;
           titulo: string;
           updated_at: string;
           workspace_id: string;
@@ -1120,12 +1126,18 @@ export type Database = {
         Insert: {
           ata_confirmada_em?: string | null;
           ata_ia?: Json | null;
+          brief_avisado_em?: string | null;
           client_id: string;
           created_at?: string;
           data?: string;
           decisoes?: NonNullable<Json>;
+          duracao_min?: number;
+          google_event_id?: string | null;
+          granola_note_id?: string | null;
           id?: string;
+          meet_link?: string | null;
           notas_brutas?: string;
+          origem?: string;
           titulo?: string;
           updated_at?: string;
           workspace_id: string;
@@ -1133,12 +1145,18 @@ export type Database = {
         Update: {
           ata_confirmada_em?: string | null;
           ata_ia?: Json | null;
+          brief_avisado_em?: string | null;
           client_id?: string;
           created_at?: string;
           data?: string;
           decisoes?: NonNullable<Json>;
+          duracao_min?: number;
+          google_event_id?: string | null;
+          granola_note_id?: string | null;
           id?: string;
+          meet_link?: string | null;
           notas_brutas?: string;
+          origem?: string;
           titulo?: string;
           updated_at?: string;
           workspace_id?: string;
@@ -1628,6 +1646,10 @@ export type Database = {
       };
     };
     Functions: {
+      run_meeting_briefs: {
+        Args: never;
+        Returns: number;
+      };
       get_integration_secret: {
         Args: { p_workspace_id: string; p_provider: string };
         Returns: { id: string; access_token_enc: string | null; refresh_token_enc: string | null; expires_at: string | null; simulated: boolean; config: Json }[];

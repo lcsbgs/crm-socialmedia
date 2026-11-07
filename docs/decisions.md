@@ -236,3 +236,11 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Instagram sem página** usa o Business Login for Instagram e o host `graph.instagram.com`.
 - **Renovação de tokens** em `POST /api/jobs/renovar-tokens` (diária): renova o que vence em 7 dias; se falhar, marca a conexão como expirada e o erro aparece como "Reconectar".
 - **Tabela genérica `integration_connections`** criada já aqui para Google, Canva, Granola, Asaas e assinatura (pessoais ou do espaço).
+
+## 2026-11-07 · Pauta, Fase 9: Google, Granola e Canva
+
+- **Conexões pessoais** (Google, Canva, Granola) em `integration_connections`, uma por pessoa e espaço; OAuth real genérico com PKCE em `/api/integrations/[id]/start` e `/callback`.
+- **Google Agenda**: "Trazer do Google Agenda" importa os próximos 7 dias e liga cada evento ao cliente pelo e-mail dos convidados (contatos do cliente); eventos sem e-mail de cliente ficam de fora. Reunião criada no Pauta pode virar evento com Meet. **Drive**: escopo `drive.file`; "Criar pasta no Drive" grava o link no cliente. O seletor do Drive real (Google Picker) fica como TODO; em demonstração, uma tela simulada gera a arte.
+- **Granola como cliente MCP** (JSON-RPC via HTTP, chamadas `search_meetings` e `get_meetings`), sem dependência nova. As notas entram nas anotações da reunião e passam pelo fluxo de ata que já existia (sugestões que a pessoa confirma antes de virar tarefa). Colar as notas continua funcionando.
+- **Brief da reunião** montado com dados reais (posts esperando, última decisão, tarefas em aberto, pagamento do mês para owner/admin, publicados no mês passado) e aviso 15 minutos antes (`run_meeting_briefs`, pg_cron a cada 5 minutos e `/api/jobs/briefs`).
+- **Canva nos dois sentidos**: "Criar no Canva" cria o design pela Connect API e abre o editor com `correlation_state`; o retorno (`/api/integrations/canva/return`) exporta PNG e salva como nova versão. App em `apps/canva-app` (Apps SDK) com "Enviar para o Pauta", identificado por um código gerado em Ajustes e o código do post. Em demonstração, uma tela simulada desenha a arte com as cores do kit da marca.

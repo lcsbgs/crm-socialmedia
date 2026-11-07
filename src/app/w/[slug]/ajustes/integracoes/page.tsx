@@ -5,6 +5,7 @@ import { buttonClasses } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { disconnectMeta, startIntegration } from "@/features/integrations/actions";
+import { CanvaAppCode } from "@/features/integrations/components/canva-app-code";
 import { integrations } from "@/features/integrations/catalog";
 import { getWorkspaceBySlug } from "@/features/workspaces/queries";
 import { isMockMode } from "@/lib/integrations/mode";
@@ -72,6 +73,7 @@ export default async function IntegrationsPage({ params, searchParams }: PagePro
                 ) : (
                   <span className="text-sm text-muted">Só owner e admin conectam.</span>
                 )}
+                {i.id === "canva" && other ? <CanvaAppCode workspaceId={workspace.id} /> : null}
                 {metaConn && workspace.canManage ? (
                   <form action={disconnectMeta}>
                     <input type="hidden" name="connectionId" value={metaConn.id} />

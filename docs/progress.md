@@ -49,3 +49,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migrações `20261107110000_meta_publishing.sql` e `20261107120000_integrations.sql`, adapter, fila, rotas OAuth e jobs, telas.
 - Falta: agendar `/api/jobs/publicar` (a cada minuto) e `/api/jobs/renovar-tokens` (diário) no pg_cron + pg_net, que depende da URL do app e do `CRON_SECRET` (ver beta-checklist). Métricas de insights ficam para a Fase 12.
 - Próxima: Fase 9, integrações Google, Granola e Canva.
+
+## Fase 9: integrações Google, Granola e Canva (concluída em modo demonstração)
+- Feito: migração `20261107130000_meetings_integrations.sql`, adapters, rotas OAuth, telas simuladas, brief, app do Canva.
+- Falta (depende de credenciais): Google Picker, renovação do token do Google, descoberta OAuth do Granola.
+- Próxima: Fase 10, comercial.

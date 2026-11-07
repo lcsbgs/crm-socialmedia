@@ -109,3 +109,24 @@ export async function retryPublish(input: { jobId: string }) {
   revalidatePath("/w", "layout");
   return error ? { error: "Não foi possível tentar de novo." } : { ok: true };
 }
+
+// Código que o app do Pauta no Canva usa para identificar a pessoa.
+export async function generateCanvaAppCode(input: { workspaceId: string }) {
+  const user = await requireUser();
+  const { randomBytes } = await import("node:crypto");
+  const code = randomBytes(18).toString("base64url");
+  const supabase = await createClient();
+  const { data: conn } = await supabase
+    .from("integration_connections")
+    .select("id, config")
+    .eq("workspace_id", z.uuid().parse(input.workspaceId))
+    .eq("provider", "canva")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!conn) return { error: "Conecte o Canva primeiro." };
+  await supabase
+    .from("integration_connections")
+    .update({ config: { ...((conn.config as Record<string, unknown>) ?? {}), app_code: code } })
+    .eq("id", conn.id);
+  return { ok: true, code };
+}

@@ -43,7 +43,7 @@ select set_eq(
   array['portal_respond', 'mark_overdue_payments', 'create_workspace_for', 'workspace_seat_usage',
         'get_invitation_preview', 'get_briefing_form', 'submit_briefing', 'get_brand_kit_public', 'generate_month_all',
         'portal_approve_all', 'portal_plan_respond', 'run_approval_reminders',
-        'claim_publish_jobs', 'complete_publish_job', 'fail_publish_job', 'get_social_connection_secret'],
+        'claim_publish_jobs', 'complete_publish_job', 'fail_publish_job', 'get_social_connection_secret', 'run_meeting_briefs'],
   'funções internas ficam só para service_role');
 
 select * from finish();

@@ -38,6 +38,7 @@ import { OnboardingChecklist } from "@/features/clients/components/hub/onboardin
 import { pillarColors, StrategyEditor } from "@/features/clients/components/hub/strategy-editor";
 import { TimelineNoteForm } from "@/features/clients/components/hub/timeline-note-form";
 import { DeleteClientForm } from "@/features/clients/components/record/delete-client";
+import { IntegrationButton } from "@/features/integrations/components/action-buttons";
 import { ClientAccounts } from "@/features/integrations/components/client-accounts";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import {
@@ -584,7 +585,16 @@ async function FilesTab({ workspaceId, client, slug, canManage }: { workspaceId:
           <TacitApprovalSelect workspaceId={workspaceId} clientId={client.id} horas={client.aprovacao_tacita_horas} />
         </Card>
         <Card>
-          <CardHeader title="Instagram e pasta" />
+          <CardHeader
+            title="Instagram e pasta"
+            action={
+              client.drive_folder_url ? undefined : (
+                <IntegrationButton kind="drive-folder" workspaceId={workspaceId} clientId={client.id}>
+                  Criar pasta no Drive
+                </IntegrationButton>
+              )
+            }
+          />
           <ClientChannelsForm
             workspaceId={workspaceId}
             clientId={client.id}
