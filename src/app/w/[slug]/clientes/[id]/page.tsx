@@ -38,6 +38,7 @@ import { OnboardingChecklist } from "@/features/clients/components/hub/onboardin
 import { pillarColors, StrategyEditor } from "@/features/clients/components/hub/strategy-editor";
 import { TimelineNoteForm } from "@/features/clients/components/hub/timeline-note-form";
 import { DeleteClientForm } from "@/features/clients/components/record/delete-client";
+import { ClientAccounts } from "@/features/integrations/components/client-accounts";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import {
   getBrandKit,
@@ -209,7 +210,7 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
       ) : aba === "reunioes" ? (
         <MeetingsTab workspaceId={workspace.id} clientId={id} slug={slug} />
       ) : aba === "arquivos" ? (
-        <FilesTab workspaceId={workspace.id} client={client} />
+        <FilesTab workspaceId={workspace.id} client={client} slug={slug} canManage={workspace.canManage} />
       ) : aba === "financeiro" && canFinance ? (
         <FinanceTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "escopo" ? (
@@ -502,7 +503,19 @@ async function StrategyTab({ workspaceId, clientId }: { workspaceId: string; cli
 // Arquivos: kit da marca, briefing, canais e arquivos gerais
 // ------------------------------------------------------------
 
-async function FilesTab({ workspaceId, client }: { workspaceId: string; client: ClientRow }) {
+async function FilesTab({ workspaceId, client, slug, canManage }: { workspaceId: string; client: ClientRow; slug: string; canManage: boolean }) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const [{ data: accounts }, { data: conns }, { data: names }] = await Promise.all([
+    supabase.from("social_accounts").select("id, plataforma, nome, client_id, connection_id").eq("workspace_id", workspaceId).order("nome"),
+    supabase.from("social_connections").select("id, simulated").eq("workspace_id", workspaceId),
+    supabase.from("clients").select("id, nome").eq("workspace_id", workspaceId),
+  ]);
+  const accountViews = (accounts ?? []).map((a) => ({
+    ...a,
+    clientNome: names?.find((n) => n.id === a.client_id)?.nome ?? null,
+    simulated: conns?.find((c) => c.id === a.connection_id)?.simulated ?? false,
+  }));
   const [kit, marca, geral] = await Promise.all([
     getBrandKit(workspaceId, client.id),
     getClientFiles(workspaceId, client.id, "marca"),
@@ -563,11 +576,15 @@ async function FilesTab({ workspaceId, client }: { workspaceId: string; client: 
           ) : null}
         </Card>
         <Card>
+          <CardHeader title="Onde publica" description="Contas da Meta deste cliente." />
+          <ClientAccounts workspaceId={workspaceId} clientId={client.id} accounts={accountViews} canManage={canManage} settingsHref={`/w/${slug}/ajustes/integracoes`} />
+        </Card>
+        <Card>
           <CardHeader title="Aprovação tácita" />
           <TacitApprovalSelect workspaceId={workspaceId} clientId={client.id} horas={client.aprovacao_tacita_horas} />
         </Card>
         <Card>
-          <CardHeader title="Onde publica e pasta" />
+          <CardHeader title="Instagram e pasta" />
           <ClientChannelsForm
             workspaceId={workspaceId}
             clientId={client.id}

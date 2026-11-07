@@ -226,3 +226,13 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Aprovação tácita é opcional por cliente** (48 h, 72 h ou 5 dias), desligada por padrão; registra "Aprovação tácita (sem resposta no prazo)" como autor.
 - **Jobs**: `run_approval_reminders()` agendado de hora em hora no pg_cron, e também exposto em `POST /api/jobs/lembretes` protegido por `CRON_SECRET`.
 - **Migrações no remoto pelo MCP** ficam com número de versão diferente do arquivo (ex.: `deliverables` virou `20261107033129`). Antes de usar `supabase db push`, alinhar com `supabase migration repair` (passo a passo em `docs/beta-checklist.md`).
+
+## 2026-11-07 · Pauta, Fase 8: publicação Meta
+
+- **Conexão por espaço, feita por owner/admin** (`social_connections`), com token de longa duração cifrado e sem grant de leitura da coluna. O token da página do Facebook é pedido na hora de publicar, não guardado.
+- **Contas descobertas ficam em `social_accounts`** e são ligadas a um cliente na aba Arquivos do cliente. Só contas do próprio cliente aparecem para agendar (o banco confere).
+- **Fila no banco** (`publish_jobs`) com `claim ... for update skip locked`, backoff de 1, 5, 15 e 60 minutos até 5 tentativas; erro definitivo (token expirado, permissão, mídia recusada) para na hora e avisa a equipe. Processamento em `POST /api/jobs/publicar` (a cada minuto, `CRON_SECRET`), porque a chamada à Meta acontece no servidor do app, não no banco.
+- **Adapter da Meta** (`src/lib/integrations/meta`): imagem, carrossel (itens + container CAROUSEL), reels e vídeo (espera o processamento), stories e página do Facebook (photos, videos ou feed). Erros da Graph API traduzidos para frases legíveis. Testado com uma Graph API falsa.
+- **Instagram sem página** usa o Business Login for Instagram e o host `graph.instagram.com`.
+- **Renovação de tokens** em `POST /api/jobs/renovar-tokens` (diária): renova o que vence em 7 dias; se falhar, marca a conexão como expirada e o erro aparece como "Reconectar".
+- **Tabela genérica `integration_connections`** criada já aqui para Google, Canva, Granola, Asaas e assinatura (pessoais ou do espaço).

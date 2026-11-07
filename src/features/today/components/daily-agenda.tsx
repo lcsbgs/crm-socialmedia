@@ -270,7 +270,7 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
           {agenda.publicacoes.length ? (
             <ul className="flex flex-col gap-1">
               {agenda.publicacoes.map((p) => (
-                <li key={p.key} className="flex items-center gap-3 px-1 py-1.5">
+                <li key={p.key} className="flex flex-wrap items-center gap-3 px-1 py-1.5">
                   <span className="min-w-12 font-display text-md">{p.hora ?? "hoje"}</span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-semibold">{p.titulo}</span>
@@ -281,7 +281,26 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
                       </Sub>
                     ) : null}
                   </span>
-                  {p.noAr ? <Badge tone="success">no ar</Badge> : <Badge tone="neutral">agendado</Badge>}
+                  {p.erro ? (
+                    <Badge tone="danger">Falhou</Badge>
+                  ) : p.noAr ? (
+                    <Badge tone="success">no ar</Badge>
+                  ) : (
+                    <Badge tone="neutral">agendado</Badge>
+                  )}
+                  {p.erro ? (
+                    <div className="flex w-full flex-wrap items-center gap-2 rounded-inner bg-late-tonal-2 px-3 py-2 text-sm text-late-ink">
+                      <span className="flex-1">
+                        <b>{p.client?.nome}:</b> {p.erro}
+                      </span>
+                      <Link href={`${base}/ajustes/integracoes`} className={buttonClasses("outline", "xs")}>
+                        Reconectar
+                      </Link>
+                      <Link href={`${base}/producao?entrega=${p.id}`} className={buttonClasses("ghost", "xs")}>
+                        Abrir post
+                      </Link>
+                    </div>
+                  ) : null}
                 </li>
               ))}
             </ul>

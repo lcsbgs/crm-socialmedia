@@ -44,3 +44,8 @@ Leia este arquivo, depois `docs/gaps.md` e o fim de `docs/decisions.md`. Rode `s
 - Feito: migração `20261107100000_portal.sql`, portal refeito, envio do planejamento e aprovação tácita na página do cliente, rota de job.
 - Banco remoto: o projeto voltou (`ACTIVE_HEALTHY`) e estava vazio (0 usuários). Apliquei pelo MCP: deliverables, approvals, meetings, scope_finance, client_color. **Parou em `deliverable_slots`**: o servidor do Supabase pediu confirmação humana (a migração tem `drop function` e `delete`, sem efeito num banco vazio) e não houve resposta. Faltam aplicar, nesta ordem: deliverable_slots (sem a view, recriada depois), deliverable_activity, notifications_brand e todas as `202611*`. Ver `docs/beta-checklist.md`.
 - Próxima: Fase 8, publicação Meta.
+
+## Fase 8: publicação Meta (concluída)
+- Feito: migrações `20261107110000_meta_publishing.sql` e `20261107120000_integrations.sql`, adapter, fila, rotas OAuth e jobs, telas.
+- Falta: agendar `/api/jobs/publicar` (a cada minuto) e `/api/jobs/renovar-tokens` (diário) no pg_cron + pg_net, que depende da URL do app e do `CRON_SECRET` (ver beta-checklist). Métricas de insights ficam para a Fase 12.
+- Próxima: Fase 9, integrações Google, Granola e Canva.

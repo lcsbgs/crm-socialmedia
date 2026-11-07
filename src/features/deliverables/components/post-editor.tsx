@@ -30,6 +30,7 @@ import {
 } from "../detail-actions";
 import { columnOf, deliverableLabel, formatLabels, stageOrder, statusLabels } from "../schemas";
 import { MediaUploader } from "./media-uploader";
+import { SchedulePanel } from "./schedule-panel";
 
 const LIMIT = 2200;
 const formatOptions = Object.entries(formatLabels).map(([value, label]) => ({ value, label }));
@@ -44,7 +45,6 @@ function nextStep(status: DeliverableDetail["status"]) {
     case "ajuste":
       return { to: "em_aprovacao" as const, label: "Enviar para aprovação" };
     case "aprovado":
-      return { to: "agendado" as const, label: "Agendar publicação" };
     case "agendado":
       return { to: "publicado" as const, label: "Marcar como publicado" };
     default:
@@ -189,6 +189,10 @@ export function PostEditor({
         <MediaUploader workspaceId={detail.workspaceId} clientId={detail.client.id} deliverableId={detail.id} media={detail.media} onChanged={reload} />
         <p className="text-xs text-muted">Quando você clicar em &quot;Voltar para o Pauta&quot; no Canva, a arte entra aqui como nova versão.</p>
       </section>
+
+      {["aprovado", "agendado", "publicado"].includes(detail.status) || detail.jobs.length ? (
+        <SchedulePanel detail={detail} reload={reload} />
+      ) : null}
 
       <section aria-labelledby="h-leg" className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center justify-between gap-2">

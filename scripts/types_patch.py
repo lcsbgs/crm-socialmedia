@@ -86,3 +86,19 @@ def add_enum_values(enum, values):
         e = s.index("]", c)
         s = s[:c] + f"      {enum}: [" + ", ".join(f'"{v}"' for v in allv) + s[e:]
     _write(s)
+
+
+def add_relationship(table, column, ref_table, ref_column="id", one_to_one=False):
+    s = _read()
+    i = _block(s, table)
+    j = s.index("        Relationships: [", i)
+    end = s.index("];\n", j) if s.startswith("        Relationships: [];", j) else s.index("\n        ];\n", j) + 1 + len("        ")
+    body = s[j + len("        Relationships: ["):end]
+    name = f"{table}_{column}_fkey"
+    if name in body:
+        return
+    rel = (f"\n          {{\n            foreignKeyName: \"{name}\";\n            columns: [\"{column}\"];\n"
+           f"            isOneToOne: {'true' if one_to_one else 'false'};\n            referencedRelation: \"{ref_table}\";\n"
+           f"            referencedColumns: [\"{ref_column}\"];\n          }},")
+    new_body = (body.rstrip() + rel + "\n        ") if body.strip() else (rel + "\n        ")
+    _write(s[: j + len("        Relationships: [")] + new_body + s[end:])

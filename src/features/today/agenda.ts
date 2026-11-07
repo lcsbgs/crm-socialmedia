@@ -44,6 +44,8 @@ export type RawPayment = {
   contato: { nome: string; telefone: string } | null;
 };
 
+export type RawPublishError = { deliverableId: string; titulo: string; erro: string; quando: string; client: AgendaClient };
+
 export type AgendaInput = {
   today: string; // YYYY-MM-DD no fuso do estúdio
   now: string; // ISO
@@ -56,6 +58,7 @@ export type AgendaInput = {
   tasks: RawTask[];
   posts: RawPost[];
   payments: RawPayment[];
+  publishErrors?: RawPublishError[];
 };
 
 type Base = { key: string; client: AgendaClient | null; responsavel: AgendaPerson | null };
@@ -92,6 +95,7 @@ export type PublicacaoItem = Base & {
   titulo: string;
   hora: string | null;
   noAr: boolean;
+  erro?: string | null;
 };
 
 export type DinheiroItem = Base & {
@@ -260,6 +264,22 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
       responsavel: person(p.responsavelId),
     }))
     .sort((a, b) => (a.hora ?? "99").localeCompare(b.hora ?? "99"));
+
+  // Falhas de publicação vêm primeiro, com o erro legível.
+  for (const f of input.publishErrors ?? []) {
+    if (!myClient(f.client.id)) continue;
+    publicacoes.unshift({
+      key: `falha:${f.deliverableId}`,
+      kind: "publicacao",
+      id: f.deliverableId,
+      titulo: f.titulo,
+      hora: spTime(f.quando),
+      noAr: false,
+      erro: f.erro,
+      client: f.client,
+      responsavel: null,
+    });
+  }
 
   // Dinheiro: cobranças vencidas ou vencendo hoje.
   const dinheiro: DinheiroItem[] = input.payments

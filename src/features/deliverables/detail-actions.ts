@@ -30,6 +30,9 @@ export type DeliverableDetail = {
   versaoAtual: number;
   versions: { numero: number; origem: string; created_at: string; legenda: string | null; thumb: string | null }[];
   pilares: string[];
+  accounts: { id: string; plataforma: string; nome: string; simulated: boolean }[];
+  jobs: { id: string; account: string; status: string; agendado_para: string; erro: string | null; tentativas: number }[];
+  published: { permalink: string | null; publicado_em: string; simulated: boolean }[];
   client: {
     id: string;
     nome: string;
@@ -112,7 +115,7 @@ export async function getDeliverableDetail(input: {
     ]);
   if (!d) return null;
 
-  const [{ data: versions }, { data: strategy }] = await Promise.all([
+  const [{ data: versions }, { data: strategy }, { data: accounts }, { data: conns }, { data: jobs }, { data: published }] = await Promise.all([
     supabase
       .from("deliverable_versions")
       .select("numero, origem, created_at, legenda, midia_paths")
@@ -120,6 +123,15 @@ export async function getDeliverableDetail(input: {
       .order("numero", { ascending: false })
       .limit(20),
     supabase.from("client_strategies").select("pilares").eq("client_id", d.client.id).maybeSingle(),
+    supabase.from("social_accounts").select("id, plataforma, nome, connection_id").eq("client_id", d.client.id),
+    supabase.from("social_connections").select("id, simulated").eq("workspace_id", workspaceId),
+    supabase
+      .from("publish_jobs")
+      .select("id, status, agendado_para, erro_mensagem, tentativas, social_account_id")
+      .eq("deliverable_id", id)
+      .neq("status", "cancelado")
+      .order("created_at", { ascending: false }),
+    supabase.from("published_posts").select("permalink, publicado_em, simulated").eq("deliverable_id", id),
   ]);
   const versionThumbs = await signMedia((versions ?? []).map((v) => v.midia_paths[0]).filter(Boolean));
   const signed = await signMedia(d.midia_urls);
@@ -152,6 +164,21 @@ export async function getDeliverableDetail(input: {
       thumb: v.midia_paths[0] ? (versionThumbs.get(v.midia_paths[0]) ?? null) : null,
     })),
     pilares: z.array(z.object({ nome: z.string() })).catch([]).parse(strategy?.pilares ?? []).map((p) => p.nome),
+    accounts: (accounts ?? []).map((a) => ({
+      id: a.id,
+      plataforma: a.plataforma,
+      nome: a.nome,
+      simulated: conns?.find((c) => c.id === a.connection_id)?.simulated ?? false,
+    })),
+    jobs: (jobs ?? []).map((j) => ({
+      id: j.id,
+      account: accounts?.find((a) => a.id === j.social_account_id)?.nome ?? "conta",
+      status: j.status,
+      agendado_para: j.agendado_para,
+      erro: j.erro_mensagem,
+      tentativas: j.tentativas,
+    })),
+    published: published ?? [],
     client: {
       id: d.client.id,
       nome: d.client.nome,

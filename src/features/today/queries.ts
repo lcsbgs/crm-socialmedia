@@ -41,6 +41,13 @@ export async function getDailyAgenda(
   const dayEnd = new Date(`${addDays(today, 1)}T00:00:00-03:00`).toISOString();
   const twoDaysAgo = new Date(Date.now() - 2 * 86_400_000).toISOString();
 
+  const { data: failed } = await supabase
+    .from("publish_jobs")
+    .select("deliverable_id, erro_mensagem, agendado_para, deliverable:deliverables!inner (titulo, slot_label, client_id)")
+    .eq("workspace_id", workspaceId)
+    .eq("status", "erro")
+    .gte("agendado_para", new Date(Date.now() - 7 * 86_400_000).toISOString())
+    .limit(20);
   const [clients, members, mine, meetings, adjustments, tasks, posts, payments] = await Promise.all([
     supabase.from("clients").select("id, nome, cor, contatos, portal_token").eq("workspace_id", workspaceId),
     supabase.from("workspace_members").select("user_id, profile:profiles!inner (nome)").eq("workspace_id", workspaceId),
@@ -128,6 +135,13 @@ export async function getDailyAgenda(
       portalUrl: byId.get(p.client_id)?.portal_token
         ? `${publicEnv.NEXT_PUBLIC_APP_URL}/p/${byId.get(p.client_id)?.portal_token}`
         : null,
+    })),
+    publishErrors: (failed ?? []).map((f) => ({
+      deliverableId: f.deliverable_id,
+      titulo: deliverableLabel(f.deliverable),
+      erro: f.erro_mensagem ?? "A Meta recusou a publicação.",
+      quando: f.agendado_para,
+      client: client(f.deliverable.client_id),
     })),
     payments: (payments.data ?? []).map((p) => ({
       id: p.id,

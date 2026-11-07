@@ -23,6 +23,261 @@ export type Database = {
   };
   public: {
     Tables: {
+      integration_connections: {
+        Row: {
+          access_token_enc: string | null;
+          config: Json;
+          conta: string | null;
+          created_at: string;
+          expires_at: string | null;
+          id: string;
+          provider: string;
+          refresh_token_enc: string | null;
+          scopes: string[];
+          simulated: boolean;
+          status: string;
+          updated_at: string;
+          user_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_token_enc?: string | null;
+          config?: Json;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          access_token_enc?: string | null;
+          config?: Json;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider?: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      published_posts: {
+        Row: {
+          deliverable_id: string;
+          external_id: string;
+          id: string;
+          permalink: string | null;
+          publicado_em: string;
+          simulated: boolean;
+          social_account_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          deliverable_id: string;
+          external_id: string;
+          id?: string;
+          permalink?: string | null;
+          publicado_em?: string;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          deliverable_id?: string;
+          external_id?: string;
+          id?: string;
+          permalink?: string | null;
+          publicado_em?: string;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "published_posts_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      publish_jobs: {
+        Row: {
+          agendado_para: string;
+          created_at: string;
+          deliverable_id: string;
+          erro_codigo: string | null;
+          erro_mensagem: string | null;
+          id: string;
+          proxima_tentativa_em: string | null;
+          social_account_id: string;
+          status: string;
+          tentativas: number;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          agendado_para: string;
+          created_at?: string;
+          deliverable_id: string;
+          erro_codigo?: string | null;
+          erro_mensagem?: string | null;
+          id?: string;
+          proxima_tentativa_em?: string | null;
+          social_account_id: string;
+          status?: string;
+          tentativas?: number;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          agendado_para?: string;
+          created_at?: string;
+          deliverable_id?: string;
+          erro_codigo?: string | null;
+          erro_mensagem?: string | null;
+          id?: string;
+          proxima_tentativa_em?: string | null;
+          social_account_id?: string;
+          status?: string;
+          tentativas?: number;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "publish_jobs_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "publish_jobs_social_account_id_fkey";
+            columns: ["social_account_id"];
+            isOneToOne: false;
+            referencedRelation: "social_accounts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      social_accounts: {
+        Row: {
+          avatar_url: string | null;
+          client_id: string | null;
+          connection_id: string;
+          created_at: string;
+          external_id: string;
+          id: string;
+          nome: string;
+          page_id: string | null;
+          plataforma: string;
+          username: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_url?: string | null;
+          client_id?: string | null;
+          connection_id: string;
+          created_at?: string;
+          external_id: string;
+          id?: string;
+          nome: string;
+          page_id?: string | null;
+          plataforma: string;
+          username?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          avatar_url?: string | null;
+          client_id?: string | null;
+          connection_id?: string;
+          created_at?: string;
+          external_id?: string;
+          id?: string;
+          nome?: string;
+          page_id?: string | null;
+          plataforma?: string;
+          username?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "social_accounts_connection_id_fkey";
+            columns: ["connection_id"];
+            isOneToOne: false;
+            referencedRelation: "social_connections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      social_connections: {
+        Row: {
+          access_token_enc: string | null;
+          conectado_por: string | null;
+          conta_nome: string | null;
+          created_at: string;
+          expires_at: string | null;
+          id: string;
+          provider: string;
+          scopes: string[];
+          simulated: boolean;
+          status: string;
+          ultimo_erro: string | null;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_token_enc?: string | null;
+          conectado_por?: string | null;
+          conta_nome?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider: string;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          ultimo_erro?: string | null;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          access_token_enc?: string | null;
+          conectado_por?: string | null;
+          conta_nome?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider?: string;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          ultimo_erro?: string | null;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
       month_plans: {
         Row: {
           autor_nome: string | null;
@@ -64,7 +319,15 @@ export type Database = {
           status?: string;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "month_plans_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       ai_connections: {
         Row: {
@@ -196,7 +459,15 @@ export type Database = {
           origem?: string;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_versions_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       timeline_events: {
         Row: {
@@ -233,7 +504,15 @@ export type Database = {
           titulo?: string;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "timeline_events_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       client_files: {
         Row: {
@@ -273,7 +552,15 @@ export type Database = {
           uploaded_by?: string | null;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "client_files_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       brand_kits: {
         Row: {
@@ -1341,6 +1628,38 @@ export type Database = {
       };
     };
     Functions: {
+      get_integration_secret: {
+        Args: { p_workspace_id: string; p_provider: string };
+        Returns: { id: string; access_token_enc: string | null; refresh_token_enc: string | null; expires_at: string | null; simulated: boolean; config: Json }[];
+      };
+      get_social_connection_secret: {
+        Args: { p_connection_id: string };
+        Returns: { access_token_enc: string | null; expires_at: string | null; simulated: boolean; provider: string }[];
+      };
+      fail_publish_job: {
+        Args: { p_job_id: string; p_codigo: string; p_mensagem: string; p_recuperavel: boolean };
+        Returns: undefined;
+      };
+      complete_publish_job: {
+        Args: { p_job_id: string; p_external_id: string; p_permalink: string; p_simulated?: boolean };
+        Returns: undefined;
+      };
+      claim_publish_jobs: {
+        Args: { p_limit?: number };
+        Returns: Database["public"]["Tables"]["publish_jobs"]["Row"][];
+      };
+      retry_publish_job: {
+        Args: { p_job_id: string };
+        Returns: undefined;
+      };
+      cancel_schedule: {
+        Args: { p_deliverable_id: string };
+        Returns: undefined;
+      };
+      schedule_deliverable: {
+        Args: { p_deliverable_id: string; p_account_ids: string[]; p_quando: string };
+        Returns: number;
+      };
       run_approval_reminders: {
         Args: never;
         Returns: { lembretes: number; tacitas: number }[];
