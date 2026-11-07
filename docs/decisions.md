@@ -274,3 +274,9 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Busca ⌘K** passou a achar posts, tarefas, reuniões e leads (leads só para owner/admin, pelo RLS).
 - **Resumo diário por e-mail** opcional em Minha conta (`profiles.resumo_diario`), job `/api/jobs/resumo` às 7h com números reais de cada espaço.
 - **Notificações in-app**: novos tipos (lembrete, escopo, planejamento, publicação, pagamento, proposta) com ícone próprio no sino.
+
+## 2026-11-07 · Pauta, Fase 13: revisão final
+
+- **Seed de demonstração novo** (`demo@pauta.dev` / `demo123456`, Júlia como membro com 5 dos 10 clientes) no lugar do seed do MVP, para exercitar RLS e desempenho com volume (290 posts).
+- **Conferência visual parcial**: só as telas sem login puderam ser renderizadas neste ambiente; o restante fica no checklist do beta.
+- **Migrações restantes no remoto ficam para a pessoa dona do projeto** confirmar, porque o Supabase exige confirmação humana para comandos com `drop`/`delete` (regra 4: nada destrutivo sem confirmação).
