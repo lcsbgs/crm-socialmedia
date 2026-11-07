@@ -33,7 +33,7 @@ reset role;
 
 -- authenticated também não chama portal_respond
 select ok(not has_function_privilege('authenticated',
-  'public.portal_respond(uuid, uuid, public.approval_decision, text, text)', 'execute'),
+  'public.portal_respond(uuid, uuid, public.approval_decision, text, text, text, text, jsonb)', 'execute'),
   'authenticated não executa portal_respond');
 
 -- service role (servidor do portal)
@@ -60,8 +60,8 @@ reset role;
 
 select results_eq(
   $$ select status::text from deliverables where id in ('dddddddd-0000-4000-a000-000000000001', 'dddddddd-0000-4000-a000-000000000002') order by titulo $$,
-  $$ values ('aprovado'), ('produzir') $$,
-  'aprovação move para aprovado e ajuste volta para produzir');
+  $$ values ('aprovado'), ('ajuste') $$,
+  'aprovação move para aprovado e ajuste vai para Ajuste pedido');
 select is((select count(*)::int from client_timeline where tipo like 'aprovacao_%' and workspace_id = (select ws from ids)), 2, 'respostas na linha do tempo');
 
 select * from finish();

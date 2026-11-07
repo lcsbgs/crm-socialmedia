@@ -164,6 +164,16 @@ describe("getDailyAgenda (montagem)", () => {
     expect(time.cliente).toHaveLength(1);
   });
 
+  it("falha de publicação aparece primeiro com o erro", () => {
+    const a = buildDailyAgenda(
+      base({
+        posts: [post({ id: "x", status: "agendado", hora: "18:00:00" })],
+        publishErrors: [{ deliverableId: "z", titulo: "Desafio", erro: "Token expirado", quando: "2026-11-06T22:00:00Z", client: clinica }],
+      }),
+    );
+    expect(a.publicacoes[0]).toMatchObject({ id: "z", erro: "Token expirado", hora: "19:00" });
+  });
+
   it("concluídas hoje vão para Feito hoje", () => {
     const a = buildDailyAgenda(
       base({

@@ -143,6 +143,18 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
                   </li>
                 );
               }
+              if (i.kind === "proposta") {
+                return (
+                  <li key={i.key} className="flex items-center gap-3 px-1 py-2">
+                    <span className="min-w-0 flex-1 text-md">
+                      <b>{i.lead}</b> abriu a proposta {i.vezes === 1 ? "1 vez" : `${i.vezes} vezes`} desde ontem
+                    </span>
+                    <a href={whatsappLink(i.telefone, "Oi! Viu a proposta? Posso tirar alguma dúvida?")} target="_blank" rel="noreferrer" className={buttonClasses("outline", "sm")}>
+                      Chamar no WhatsApp
+                    </a>
+                  </li>
+                );
+              }
               if (i.kind === "ajuste") {
                 return (
                   <li key={i.key} className="flex items-center gap-3 px-1 py-2">
@@ -235,8 +247,19 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
           </ul>
         </Section>
 
-        <Section id="h-cliente" title="Com o cliente" meta="esperando resposta deles" isEmpty={!agenda.cliente.length} empty="Nenhum cliente com post esperando aprovação.">
+        <Section id="h-cliente" title="Com o cliente" meta="esperando resposta deles" isEmpty={!agenda.cliente.length && !agenda.contratos.length} empty="Nenhum cliente com post esperando aprovação.">
           <ul className="flex flex-col gap-1">
+            {agenda.contratos.map((c) => (
+              <li key={c.key} className="flex flex-wrap items-center gap-3 px-1 py-2">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-md font-semibold">Contrato para assinar</span>
+                  <Sub>
+                    {c.lead}, enviado {formatRelativeTime(c.desde)}
+                  </Sub>
+                </span>
+                <Badge tone="warning">Aguardando</Badge>
+              </li>
+            ))}
             {agenda.cliente.map((i) => {
               const nome = i.contato?.nome ? firstName(i.contato.nome) : "";
               const msg = `${nome ? `Oi, ${nome}!` : "Oi!"} ${i.quantos === 1 ? "Tem 1 post" : `Tem ${i.quantos} posts`} esperando seu ok.${i.portalUrl ? ` É só abrir: ${i.portalUrl}` : ""}`;
@@ -270,7 +293,7 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
           {agenda.publicacoes.length ? (
             <ul className="flex flex-col gap-1">
               {agenda.publicacoes.map((p) => (
-                <li key={p.key} className="flex items-center gap-3 px-1 py-1.5">
+                <li key={p.key} className="flex flex-wrap items-center gap-3 px-1 py-1.5">
                   <span className="min-w-12 font-display text-md">{p.hora ?? "hoje"}</span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-semibold">{p.titulo}</span>
@@ -281,7 +304,26 @@ export function DailyAgendaView({ agenda, canSeeFinance }: { agenda: DailyAgenda
                       </Sub>
                     ) : null}
                   </span>
-                  {p.noAr ? <Badge tone="success">no ar</Badge> : <Badge tone="neutral">agendado</Badge>}
+                  {p.erro ? (
+                    <Badge tone="danger">Falhou</Badge>
+                  ) : p.noAr ? (
+                    <Badge tone="success">no ar</Badge>
+                  ) : (
+                    <Badge tone="neutral">agendado</Badge>
+                  )}
+                  {p.erro ? (
+                    <div className="flex w-full flex-wrap items-center gap-2 rounded-inner bg-late-tonal-2 px-3 py-2 text-sm text-late-ink">
+                      <span className="flex-1">
+                        <b>{p.client?.nome}:</b> {p.erro}
+                      </span>
+                      <Link href={`${base}/ajustes/integracoes`} className={buttonClasses("outline", "xs")}>
+                        Reconectar
+                      </Link>
+                      <Link href={`${base}/producao?entrega=${p.id}`} className={buttonClasses("ghost", "xs")}>
+                        Abrir post
+                      </Link>
+                    </div>
+                  ) : null}
                 </li>
               ))}
             </ul>

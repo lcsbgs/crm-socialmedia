@@ -29,6 +29,7 @@ import { SegmentedBar } from "@/components/ui/progress-bar";
 import { Tabs } from "@/components/ui/tabs";
 import { ClientForm } from "@/features/clients/components/client-form";
 import { BrandKitEditor } from "@/features/clients/components/hub/brand-kit-editor";
+import { SendPlanButton, TacitApprovalSelect } from "@/features/clients/components/hub/approval-settings";
 import { BriefingLink } from "@/features/clients/components/hub/briefing-link";
 import { ClientChannelsForm } from "@/features/clients/components/hub/client-channels-form";
 import { ClientFileList } from "@/features/clients/components/hub/file-list";
@@ -36,7 +37,12 @@ import { ClientFileUploader } from "@/features/clients/components/hub/file-uploa
 import { OnboardingChecklist } from "@/features/clients/components/hub/onboarding-checklist";
 import { pillarColors, StrategyEditor } from "@/features/clients/components/hub/strategy-editor";
 import { TimelineNoteForm } from "@/features/clients/components/hub/timeline-note-form";
+import type { ReportSummary } from "@/features/reports/build";
+import { GenerateReportButton, ReportReading } from "@/features/reports/components/report-editor";
+import { ReportView } from "@/features/reports/components/report-view";
 import { DeleteClientForm } from "@/features/clients/components/record/delete-client";
+import { IntegrationButton } from "@/features/integrations/components/action-buttons";
+import { ClientAccounts } from "@/features/integrations/components/client-accounts";
 import { ClientStatusBadge } from "@/features/clients/components/status-badge";
 import {
   getBrandKit,
@@ -193,17 +199,28 @@ export default async function ClientPage({ params, searchParams }: PageProps<"/w
       ) : aba === "producao" ? (
         <DeliverablesTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "calendario" ? (
-        <CalendarTab workspaceId={workspace.id} clientId={id} month={month} />
+        <div className="flex flex-col gap-4">
+          <SendPlanButton
+            clientId={id}
+            month={month}
+            monthName={monthLabel(month).split(" ")[0].toLowerCase()}
+            status={await monthPlanStatus(id, month)}
+            portalUrl={`${publicEnv.NEXT_PUBLIC_APP_URL}/p/${client.portal_token}`}
+            phone={contatos[0]?.telefone || null}
+            contato={contatos[0]?.nome ? firstName(contatos[0].nome) : ""}
+          />
+          <CalendarTab workspaceId={workspace.id} clientId={id} month={month} />
+        </div>
       ) : aba === "reunioes" ? (
         <MeetingsTab workspaceId={workspace.id} clientId={id} slug={slug} />
       ) : aba === "arquivos" ? (
-        <FilesTab workspaceId={workspace.id} client={client} />
+        <FilesTab workspaceId={workspace.id} client={client} slug={slug} canManage={workspace.canManage} />
       ) : aba === "financeiro" && canFinance ? (
         <FinanceTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "escopo" ? (
         <ScopeTab workspaceId={workspace.id} clientId={id} />
       ) : aba === "relatorios" ? (
-        <EmptyState title="Relatórios mensais" description="O relatório do mês com métricas e leitura da IA aparece aqui quando as métricas forem coletadas." />
+        <ReportsTab workspaceId={workspace.id} clientId={id} month={month} />
       ) : aba === "timeline" ? (
         <TimelineTab workspaceId={workspace.id} clientId={id} />
       ) : (
@@ -435,6 +452,44 @@ async function OverviewTab({
   );
 }
 
+async function ReportsTab({ workspaceId, clientId, month }: { workspaceId: string; clientId: string; month: string }) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const { data: reports } = await supabase.from("reports").select("*").eq("client_id", clientId).order("competencia", { ascending: false }).limit(12);
+  const prev = shiftMonth(todayISO().slice(0, 7), -1);
+  const selected = reports?.find((r) => r.competencia.startsWith(month)) ?? reports?.[0];
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <GenerateReportButton workspaceId={workspaceId} clientId={clientId} month={prev} label={`Gerar relatório de ${monthLabel(prev).split(" ")[0].toLowerCase()}`} />
+        {(reports ?? []).map((r) => (
+          <Link key={r.id} href={`?aba=relatorios&mes=${r.competencia.slice(0, 7)}`} className={buttonClasses(r.id === selected?.id ? "dark" : "outline", "sm")}>
+            {monthLabel(r.competencia.slice(0, 7))}
+          </Link>
+        ))}
+      </div>
+      {selected ? (
+        <Card>
+          <CardHeader title={`Relatório de ${monthLabel(selected.competencia.slice(0, 7)).toLowerCase()}`} description={selected.status === "publicado" ? "Publicado no portal do cliente." : "Rascunho: revise a leitura e publique."} />
+          <ReportView resumo={selected.resumo as unknown as ReportSummary} leitura={null} />
+          <div className="mt-5">
+            <ReportReading id={selected.id} leitura={selected.leitura ?? ""} status={selected.status} url={`${publicEnv.NEXT_PUBLIC_APP_URL}/r/${selected.token}`} />
+          </div>
+        </Card>
+      ) : (
+        <EmptyState title="Nenhum relatório ainda" description="O relatório do mês sai sozinho no dia 1. Para gerar agora, use o botão acima." />
+      )}
+    </div>
+  );
+}
+
+async function monthPlanStatus(clientId: string, month: string) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const { data } = await supabase.from("month_plans").select("status").eq("client_id", clientId).eq("competencia", `${month}-01`).maybeSingle();
+  return data?.status ?? null;
+}
+
 async function countAdjustments(workspaceId: string, clientId: string, month: string) {
   const { createClient } = await import("@/lib/supabase/server");
   const supabase = await createClient();
@@ -483,7 +538,19 @@ async function StrategyTab({ workspaceId, clientId }: { workspaceId: string; cli
 // Arquivos: kit da marca, briefing, canais e arquivos gerais
 // ------------------------------------------------------------
 
-async function FilesTab({ workspaceId, client }: { workspaceId: string; client: ClientRow }) {
+async function FilesTab({ workspaceId, client, slug, canManage }: { workspaceId: string; client: ClientRow; slug: string; canManage: boolean }) {
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const [{ data: accounts }, { data: conns }, { data: names }] = await Promise.all([
+    supabase.from("social_accounts").select("id, plataforma, nome, client_id, connection_id").eq("workspace_id", workspaceId).order("nome"),
+    supabase.from("social_connections").select("id, simulated").eq("workspace_id", workspaceId),
+    supabase.from("clients").select("id, nome").eq("workspace_id", workspaceId),
+  ]);
+  const accountViews = (accounts ?? []).map((a) => ({
+    ...a,
+    clientNome: names?.find((n) => n.id === a.client_id)?.nome ?? null,
+    simulated: conns?.find((c) => c.id === a.connection_id)?.simulated ?? false,
+  }));
   const [kit, marca, geral] = await Promise.all([
     getBrandKit(workspaceId, client.id),
     getClientFiles(workspaceId, client.id, "marca"),
@@ -544,7 +611,24 @@ async function FilesTab({ workspaceId, client }: { workspaceId: string; client: 
           ) : null}
         </Card>
         <Card>
-          <CardHeader title="Onde publica e pasta" />
+          <CardHeader title="Onde publica" description="Contas da Meta deste cliente." />
+          <ClientAccounts workspaceId={workspaceId} clientId={client.id} accounts={accountViews} canManage={canManage} settingsHref={`/w/${slug}/ajustes/integracoes`} />
+        </Card>
+        <Card>
+          <CardHeader title="Aprovação tácita" />
+          <TacitApprovalSelect workspaceId={workspaceId} clientId={client.id} horas={client.aprovacao_tacita_horas} />
+        </Card>
+        <Card>
+          <CardHeader
+            title="Instagram e pasta"
+            action={
+              client.drive_folder_url ? undefined : (
+                <IntegrationButton kind="drive-folder" workspaceId={workspaceId} clientId={client.id}>
+                  Criar pasta no Drive
+                </IntegrationButton>
+              )
+            }
+          />
           <ClientChannelsForm
             workspaceId={workspaceId}
             clientId={client.id}

@@ -26,6 +26,7 @@ create table if not exists auth.users (
   instance_id uuid, id uuid primary key, aud text, role text, email text unique,
   encrypted_password text, email_confirmed_at timestamptz, raw_app_meta_data jsonb default '{}'::jsonb,
   raw_user_meta_data jsonb default '{}'::jsonb, is_anonymous boolean default false,
+  confirmation_token text default '', recovery_token text default '', email_change text default '', email_change_token_new text default '',
   created_at timestamptz default now(), updated_at timestamptz default now(), last_sign_in_at timestamptz
 );
 create table if not exists auth.identities (

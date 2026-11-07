@@ -44,6 +44,12 @@ export type RawPayment = {
   contato: { nome: string; telefone: string } | null;
 };
 
+export type RawSalesSignal =
+  | { kind: "proposta"; proposalId: string; lead: string; vezes: number; telefone: string | null }
+  | { kind: "contrato"; contractId: string; lead: string; desde: string };
+
+export type RawPublishError = { deliverableId: string; titulo: string; erro: string; quando: string; client: AgendaClient };
+
 export type AgendaInput = {
   today: string; // YYYY-MM-DD no fuso do estúdio
   now: string; // ISO
@@ -56,6 +62,8 @@ export type AgendaInput = {
   tasks: RawTask[];
   posts: RawPost[];
   payments: RawPayment[];
+  publishErrors?: RawPublishError[];
+  sales?: RawSalesSignal[];
 };
 
 type Base = { key: string; client: AgendaClient | null; responsavel: AgendaPerson | null };
@@ -63,7 +71,8 @@ type Base = { key: string; client: AgendaClient | null; responsavel: AgendaPerso
 export type FalarItem =
   | (Base & { kind: "reuniao"; id: string; titulo: string; hora: string; destaque: boolean })
   | (Base & { kind: "ajuste"; deliverableId: string; quantos: number; desde: string; autor: string | null })
-  | (Base & { kind: "ata"; taskId: string; titulo: string });
+  | (Base & { kind: "ata"; taskId: string; titulo: string })
+  | (Base & { kind: "proposta"; proposalId: string; lead: string; vezes: number; telefone: string | null });
 
 export type FazerItem =
   | (Base & { kind: "tarefa"; id: string; titulo: string; atrasoDias: number; dueDate: string | null })
@@ -75,6 +84,8 @@ export type FazerItem =
       atrasoDias: number;
       dataPublicacao: string;
     });
+
+export type ContratoItem = Base & { kind: "contrato"; contractId: string; lead: string; desde: string };
 
 export type ClienteItem = Base & {
   kind: "aprovacao";
@@ -92,6 +103,7 @@ export type PublicacaoItem = Base & {
   titulo: string;
   hora: string | null;
   noAr: boolean;
+  erro?: string | null;
 };
 
 export type DinheiroItem = Base & {
@@ -111,6 +123,7 @@ export type DailyAgenda = {
   falar: FalarItem[];
   fazer: FazerItem[];
   cliente: ClienteItem[];
+  contratos: ContratoItem[];
   publicacoes: PublicacaoItem[];
   dinheiro: DinheiroItem[];
   feitoHoje: FeitoItem[];
@@ -188,6 +201,14 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
     });
   }
 
+  for (const sig of input.sales ?? []) {
+    if (sig.kind !== "proposta" || scope === "minha") continue;
+    falar.push({ key: `proposta:${sig.proposalId}`, kind: "proposta", proposalId: sig.proposalId, lead: sig.lead, vezes: sig.vezes, telefone: sig.telefone, client: null, responsavel: null });
+  }
+  const contratos: ContratoItem[] = (input.sales ?? [])
+    .filter((x): x is Extract<RawSalesSignal, { kind: "contrato" }> => x.kind === "contrato")
+    .map((x) => ({ key: `contrato:${x.contractId}`, kind: "contrato", contractId: x.contractId, lead: x.lead, desde: x.desde, client: null, responsavel: null }));
+
   // O que fazer: tarefas até hoje (menos as de ata, que ficam em Com quem falar) e posts atrasados na produção.
   const fazer: FazerItem[] = [];
   for (const t of pendentes) {
@@ -261,6 +282,22 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
     }))
     .sort((a, b) => (a.hora ?? "99").localeCompare(b.hora ?? "99"));
 
+  // Falhas de publicação vêm primeiro, com o erro legível.
+  for (const f of input.publishErrors ?? []) {
+    if (!myClient(f.client.id)) continue;
+    publicacoes.unshift({
+      key: `falha:${f.deliverableId}`,
+      kind: "publicacao",
+      id: f.deliverableId,
+      titulo: f.titulo,
+      hora: spTime(f.quando),
+      noAr: false,
+      erro: f.erro,
+      client: f.client,
+      responsavel: null,
+    });
+  }
+
   // Dinheiro: cobranças vencidas ou vencendo hoje.
   const dinheiro: DinheiroItem[] = input.payments
     .filter((p) => p.status !== "pago" && p.vencimento <= today)
@@ -297,12 +334,13 @@ export function buildDailyAgenda(input: AgendaInput): DailyAgenda {
       reunioes: meetings.length,
       postsNoAr: publicacoes.length,
       clientesEsperando: cliente.length,
-      total: falar.length + fazer.length + cliente.length + publicacoes.length + dinheiro.length,
+      total: falar.length + fazer.length + cliente.length + contratos.length + publicacoes.length + dinheiro.length,
       atrasados,
     },
     falar,
     fazer,
     cliente,
+    contratos,
     publicacoes,
     dinheiro,
     feitoHoje,

@@ -23,6 +23,767 @@ export type Database = {
   };
   public: {
     Tables: {
+      reports: {
+        Row: {
+          client_id: string;
+          competencia: string;
+          gerado_em: string;
+          id: string;
+          leitura: string | null;
+          publicado_em: string | null;
+          resumo: Json;
+          status: string;
+          token: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id: string;
+          competencia: string;
+          gerado_em?: string;
+          id?: string;
+          leitura?: string | null;
+          publicado_em?: string | null;
+          resumo?: Json;
+          status?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string;
+          competencia?: string;
+          gerado_em?: string;
+          id?: string;
+          leitura?: string | null;
+          publicado_em?: string | null;
+          resumo?: Json;
+          status?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reports_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      metrics_daily: {
+        Row: {
+          alcance: number;
+          client_id: string;
+          created_at: string;
+          data: string;
+          id: string;
+          impressoes: number;
+          interacoes: number;
+          seguidores: number | null;
+          simulated: boolean;
+          social_account_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          alcance?: number;
+          client_id: string;
+          created_at?: string;
+          data: string;
+          id?: string;
+          impressoes?: number;
+          interacoes?: number;
+          seguidores?: number | null;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          alcance?: number;
+          client_id?: string;
+          created_at?: string;
+          data?: string;
+          id?: string;
+          impressoes?: number;
+          interacoes?: number;
+          seguidores?: number | null;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      accounting_closings: {
+        Row: {
+          competencia: string;
+          enviado_em: string;
+          enviado_para: string | null;
+          id: string;
+          resumo: Json;
+          simulated: boolean;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          competencia: string;
+          enviado_em?: string;
+          enviado_para?: string | null;
+          id?: string;
+          resumo?: Json;
+          simulated?: boolean;
+          workspace_id: string;
+        };
+        Update: {
+          competencia?: string;
+          enviado_em?: string;
+          enviado_para?: string | null;
+          id?: string;
+          resumo?: Json;
+          simulated?: boolean;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      expenses: {
+        Row: {
+          categoria: string;
+          client_id: string | null;
+          comprovante_path: string | null;
+          created_at: string;
+          data: string;
+          descricao: string;
+          id: string;
+          updated_at: string;
+          valor: number;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          categoria?: string;
+          client_id?: string | null;
+          comprovante_path?: string | null;
+          created_at?: string;
+          data?: string;
+          descricao: string;
+          id?: string;
+          updated_at?: string;
+          valor: number;
+          workspace_id: string;
+        };
+        Update: {
+          categoria?: string;
+          client_id?: string | null;
+          comprovante_path?: string | null;
+          created_at?: string;
+          data?: string;
+          descricao?: string;
+          id?: string;
+          updated_at?: string;
+          valor?: number;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      contracts: {
+        Row: {
+          assinado_em: string | null;
+          assinante_ip: string | null;
+          assinante_nome: string | null;
+          client_id: string | null;
+          corpo: string;
+          created_at: string;
+          enviado_em: string | null;
+          fim: string | null;
+          id: string;
+          inicio: string | null;
+          lead_id: string | null;
+          proposal_id: string | null;
+          provider: string;
+          provider_doc_id: string | null;
+          provider_sign_url: string | null;
+          renovacao_avisada_em: string | null;
+          status: string;
+          titulo: string;
+          token: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          assinado_em?: string | null;
+          assinante_ip?: string | null;
+          assinante_nome?: string | null;
+          client_id?: string | null;
+          corpo: string;
+          created_at?: string;
+          enviado_em?: string | null;
+          fim?: string | null;
+          id?: string;
+          inicio?: string | null;
+          lead_id?: string | null;
+          proposal_id?: string | null;
+          provider?: string;
+          provider_doc_id?: string | null;
+          provider_sign_url?: string | null;
+          renovacao_avisada_em?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          assinado_em?: string | null;
+          assinante_ip?: string | null;
+          assinante_nome?: string | null;
+          client_id?: string | null;
+          corpo?: string;
+          created_at?: string;
+          enviado_em?: string | null;
+          fim?: string | null;
+          id?: string;
+          inicio?: string | null;
+          lead_id?: string | null;
+          proposal_id?: string | null;
+          provider?: string;
+          provider_doc_id?: string | null;
+          provider_sign_url?: string | null;
+          renovacao_avisada_em?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "contracts_lead_id_fkey";
+            columns: ["lead_id"];
+            isOneToOne: false;
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "contracts_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "contracts_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposal_views: {
+        Row: {
+          id: string;
+          ip: string | null;
+          proposal_id: string;
+          user_agent: string | null;
+          viewed_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          ip?: string | null;
+          proposal_id: string;
+          user_agent?: string | null;
+          viewed_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          id?: string;
+          ip?: string | null;
+          proposal_id?: string;
+          user_agent?: string | null;
+          viewed_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposal_views_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      proposals: {
+        Row: {
+          aceita_em: string | null;
+          aceite_ip: string | null;
+          aceite_nome: string | null;
+          created_at: string;
+          dia_vencimento: number;
+          diagnostico: string | null;
+          duracao_meses: number;
+          enviada_em: string | null;
+          id: string;
+          itens: Json;
+          lead_id: string;
+          observacoes: string | null;
+          package_template_id: string | null;
+          status: string;
+          titulo: string;
+          token: string;
+          updated_at: string;
+          validade: string | null;
+          valor_mensal: number;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          aceita_em?: string | null;
+          aceite_ip?: string | null;
+          aceite_nome?: string | null;
+          created_at?: string;
+          dia_vencimento?: number;
+          diagnostico?: string | null;
+          duracao_meses?: number;
+          enviada_em?: string | null;
+          id?: string;
+          itens?: Json;
+          lead_id: string;
+          observacoes?: string | null;
+          package_template_id?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          validade?: string | null;
+          valor_mensal?: number;
+          workspace_id: string;
+        };
+        Update: {
+          aceita_em?: string | null;
+          aceite_ip?: string | null;
+          aceite_nome?: string | null;
+          created_at?: string;
+          dia_vencimento?: number;
+          diagnostico?: string | null;
+          duracao_meses?: number;
+          enviada_em?: string | null;
+          id?: string;
+          itens?: Json;
+          lead_id?: string;
+          observacoes?: string | null;
+          package_template_id?: string | null;
+          status?: string;
+          titulo?: string;
+          token?: string;
+          updated_at?: string;
+          validade?: string | null;
+          valor_mensal?: number;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "proposals_lead_id_fkey";
+            columns: ["lead_id"];
+            isOneToOne: false;
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "proposals_package_template_id_fkey";
+            columns: ["package_template_id"];
+            isOneToOne: false;
+            referencedRelation: "package_templates";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      leads: {
+        Row: {
+          client_id: string | null;
+          contato_nome: string | null;
+          created_at: string;
+          email: string | null;
+          etapa: string;
+          id: string;
+          nome: string;
+          notas: string | null;
+          ordem: number;
+          origem: string | null;
+          perdido_motivo: string | null;
+          segmento: string | null;
+          telefone: string | null;
+          updated_at: string;
+          valor_estimado: number | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_id?: string | null;
+          contato_nome?: string | null;
+          created_at?: string;
+          email?: string | null;
+          etapa?: string;
+          id?: string;
+          nome: string;
+          notas?: string | null;
+          ordem?: number;
+          origem?: string | null;
+          perdido_motivo?: string | null;
+          segmento?: string | null;
+          telefone?: string | null;
+          updated_at?: string;
+          valor_estimado?: number | null;
+          workspace_id: string;
+        };
+        Update: {
+          client_id?: string | null;
+          contato_nome?: string | null;
+          created_at?: string;
+          email?: string | null;
+          etapa?: string;
+          id?: string;
+          nome?: string;
+          notas?: string | null;
+          ordem?: number;
+          origem?: string | null;
+          perdido_motivo?: string | null;
+          segmento?: string | null;
+          telefone?: string | null;
+          updated_at?: string;
+          valor_estimado?: number | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "leads_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      integration_connections: {
+        Row: {
+          access_token_enc: string | null;
+          config: Json;
+          conta: string | null;
+          created_at: string;
+          expires_at: string | null;
+          id: string;
+          provider: string;
+          refresh_token_enc: string | null;
+          scopes: string[];
+          simulated: boolean;
+          status: string;
+          updated_at: string;
+          user_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_token_enc?: string | null;
+          config?: Json;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          access_token_enc?: string | null;
+          config?: Json;
+          conta?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider?: string;
+          refresh_token_enc?: string | null;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          updated_at?: string;
+          user_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      published_posts: {
+        Row: {
+          deliverable_id: string;
+          external_id: string;
+          id: string;
+          permalink: string | null;
+          publicado_em: string;
+          simulated: boolean;
+          social_account_id: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          deliverable_id: string;
+          external_id: string;
+          id?: string;
+          permalink?: string | null;
+          publicado_em?: string;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          deliverable_id?: string;
+          external_id?: string;
+          id?: string;
+          permalink?: string | null;
+          publicado_em?: string;
+          simulated?: boolean;
+          social_account_id?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "published_posts_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      publish_jobs: {
+        Row: {
+          agendado_para: string;
+          created_at: string;
+          deliverable_id: string;
+          erro_codigo: string | null;
+          erro_mensagem: string | null;
+          id: string;
+          proxima_tentativa_em: string | null;
+          social_account_id: string;
+          status: string;
+          tentativas: number;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          agendado_para: string;
+          created_at?: string;
+          deliverable_id: string;
+          erro_codigo?: string | null;
+          erro_mensagem?: string | null;
+          id?: string;
+          proxima_tentativa_em?: string | null;
+          social_account_id: string;
+          status?: string;
+          tentativas?: number;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          agendado_para?: string;
+          created_at?: string;
+          deliverable_id?: string;
+          erro_codigo?: string | null;
+          erro_mensagem?: string | null;
+          id?: string;
+          proxima_tentativa_em?: string | null;
+          social_account_id?: string;
+          status?: string;
+          tentativas?: number;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "publish_jobs_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "publish_jobs_social_account_id_fkey";
+            columns: ["social_account_id"];
+            isOneToOne: false;
+            referencedRelation: "social_accounts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      social_accounts: {
+        Row: {
+          avatar_url: string | null;
+          client_id: string | null;
+          connection_id: string;
+          created_at: string;
+          external_id: string;
+          id: string;
+          nome: string;
+          page_id: string | null;
+          plataforma: string;
+          username: string | null;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_url?: string | null;
+          client_id?: string | null;
+          connection_id: string;
+          created_at?: string;
+          external_id: string;
+          id?: string;
+          nome: string;
+          page_id?: string | null;
+          plataforma: string;
+          username?: string | null;
+          workspace_id: string;
+        };
+        Update: {
+          avatar_url?: string | null;
+          client_id?: string | null;
+          connection_id?: string;
+          created_at?: string;
+          external_id?: string;
+          id?: string;
+          nome?: string;
+          page_id?: string | null;
+          plataforma?: string;
+          username?: string | null;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "social_accounts_connection_id_fkey";
+            columns: ["connection_id"];
+            isOneToOne: false;
+            referencedRelation: "social_connections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      social_connections: {
+        Row: {
+          access_token_enc: string | null;
+          conectado_por: string | null;
+          conta_nome: string | null;
+          created_at: string;
+          expires_at: string | null;
+          id: string;
+          provider: string;
+          scopes: string[];
+          simulated: boolean;
+          status: string;
+          ultimo_erro: string | null;
+          updated_at: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          access_token_enc?: string | null;
+          conectado_por?: string | null;
+          conta_nome?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider: string;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          ultimo_erro?: string | null;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          access_token_enc?: string | null;
+          conectado_por?: string | null;
+          conta_nome?: string | null;
+          created_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          provider?: string;
+          scopes?: string[];
+          simulated?: boolean;
+          status?: string;
+          ultimo_erro?: string | null;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      month_plans: {
+        Row: {
+          autor_nome: string | null;
+          client_id: string;
+          comentario: string | null;
+          competencia: string;
+          created_at: string;
+          enviado_em: string;
+          id: string;
+          ip: string | null;
+          respondido_em: string | null;
+          status: string;
+          workspace_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          autor_nome?: string | null;
+          client_id: string;
+          comentario?: string | null;
+          competencia: string;
+          created_at?: string;
+          enviado_em?: string;
+          id?: string;
+          ip?: string | null;
+          respondido_em?: string | null;
+          status?: string;
+          workspace_id: string;
+        };
+        Update: {
+          autor_nome?: string | null;
+          client_id?: string;
+          comentario?: string | null;
+          competencia?: string;
+          created_at?: string;
+          enviado_em?: string;
+          id?: string;
+          ip?: string | null;
+          respondido_em?: string | null;
+          status?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "month_plans_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       ai_connections: {
         Row: {
           access_token_enc: string | null;
@@ -153,7 +914,15 @@ export type Database = {
           origem?: string;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_versions_deliverable_id_fkey";
+            columns: ["deliverable_id"];
+            isOneToOne: false;
+            referencedRelation: "deliverables";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       timeline_events: {
         Row: {
@@ -190,7 +959,15 @@ export type Database = {
           titulo?: string;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "timeline_events_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       client_files: {
         Row: {
@@ -230,7 +1007,15 @@ export type Database = {
           uploaded_by?: string | null;
           workspace_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "client_files_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       brand_kits: {
         Row: {
@@ -348,7 +1133,11 @@ export type Database = {
           decisao: Database["public"]["Enums"]["approval_decision"];
           deliverable_id: string;
           id: string;
+          ip: string | null;
+          ponto: Json | null;
           updated_at: string;
+          user_agent: string | null;
+          versao: number | null;
           workspace_id: string;
         };
         ComputedFields: never;
@@ -359,7 +1148,11 @@ export type Database = {
           decisao: Database["public"]["Enums"]["approval_decision"];
           deliverable_id: string;
           id?: string;
+          ip?: string | null;
+          ponto?: Json | null;
           updated_at?: string;
+          user_agent?: string | null;
+          versao?: number | null;
           workspace_id: string;
         };
         Update: {
@@ -369,7 +1162,11 @@ export type Database = {
           decisao?: Database["public"]["Enums"]["approval_decision"];
           deliverable_id?: string;
           id?: string;
+          ip?: string | null;
+          ponto?: Json | null;
           updated_at?: string;
+          user_agent?: string | null;
+          versao?: number | null;
           workspace_id?: string;
         };
         Relationships: [
@@ -391,6 +1188,7 @@ export type Database = {
       };
       clients: {
         Row: {
+          aprovacao_tacita_horas: number | null;
           briefing: string | null;
           briefing_respondido_em: string | null;
           briefing_respostas: Json | null;
@@ -417,6 +1215,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          aprovacao_tacita_horas?: number | null;
           briefing?: string | null;
           briefing_respondido_em?: string | null;
           briefing_respostas?: Json | null;
@@ -442,6 +1241,7 @@ export type Database = {
           workspace_id: string;
         };
         Update: {
+          aprovacao_tacita_horas?: number | null;
           briefing?: string | null;
           briefing_respondido_em?: string | null;
           briefing_respostas?: Json | null;
@@ -604,6 +1404,7 @@ export type Database = {
           hora_publicacao: string | null;
           id: string;
           legenda: string | null;
+          lembrete_em: string | null;
           midia_urls: string[];
           ordem: number;
           pilar: string | null;
@@ -631,6 +1432,7 @@ export type Database = {
           hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
+          lembrete_em?: string | null;
           midia_urls?: string[];
           ordem?: number;
           pilar?: string | null;
@@ -657,6 +1459,7 @@ export type Database = {
           hora_publicacao?: string | null;
           id?: string;
           legenda?: string | null;
+          lembrete_em?: string | null;
           midia_urls?: string[];
           ordem?: number;
           pilar?: string | null;
@@ -758,12 +1561,18 @@ export type Database = {
         Row: {
           ata_confirmada_em: string | null;
           ata_ia: Json | null;
+          brief_avisado_em: string | null;
           client_id: string;
           created_at: string;
           data: string;
           decisoes: NonNullable<Json>;
+          duracao_min: number;
+          google_event_id: string | null;
+          granola_note_id: string | null;
           id: string;
+          meet_link: string | null;
           notas_brutas: string;
+          origem: string;
           titulo: string;
           updated_at: string;
           workspace_id: string;
@@ -772,12 +1581,18 @@ export type Database = {
         Insert: {
           ata_confirmada_em?: string | null;
           ata_ia?: Json | null;
+          brief_avisado_em?: string | null;
           client_id: string;
           created_at?: string;
           data?: string;
           decisoes?: NonNullable<Json>;
+          duracao_min?: number;
+          google_event_id?: string | null;
+          granola_note_id?: string | null;
           id?: string;
+          meet_link?: string | null;
           notas_brutas?: string;
+          origem?: string;
           titulo?: string;
           updated_at?: string;
           workspace_id: string;
@@ -785,12 +1600,18 @@ export type Database = {
         Update: {
           ata_confirmada_em?: string | null;
           ata_ia?: Json | null;
+          brief_avisado_em?: string | null;
           client_id?: string;
           created_at?: string;
           data?: string;
           decisoes?: NonNullable<Json>;
+          duracao_min?: number;
+          google_event_id?: string | null;
+          granola_note_id?: string | null;
           id?: string;
+          meet_link?: string | null;
           notas_brutas?: string;
+          origem?: string;
           titulo?: string;
           updated_at?: string;
           workspace_id?: string;
@@ -915,11 +1736,27 @@ export type Database = {
       };
       payments: {
         Row: {
+          boleto_url: string | null;
           client_id: string;
+          cobranca_gerada_em: string | null;
           competencia: string;
           created_at: string;
+          descricao: string | null;
           id: string;
+          lembrete_enviado_em: string | null;
+          metodo: string | null;
+          nfse_erro: string | null;
+          nfse_numero: string | null;
+          nfse_pdf_url: string | null;
+          nfse_provider_id: string | null;
+          nfse_status: string;
+          nfse_xml_url: string | null;
+          origem: string;
           pago_em: string | null;
+          pix_code: string | null;
+          provider: string;
+          provider_id: string | null;
+          simulated: boolean;
           status: Database["public"]["Enums"]["payment_status"];
           updated_at: string;
           valor: number;
@@ -928,11 +1765,27 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          boleto_url?: string | null;
           client_id: string;
+          cobranca_gerada_em?: string | null;
           competencia: string;
           created_at?: string;
+          descricao?: string | null;
           id?: string;
+          lembrete_enviado_em?: string | null;
+          metodo?: string | null;
+          nfse_erro?: string | null;
+          nfse_numero?: string | null;
+          nfse_pdf_url?: string | null;
+          nfse_provider_id?: string | null;
+          nfse_status?: string;
+          nfse_xml_url?: string | null;
+          origem?: string;
           pago_em?: string | null;
+          pix_code?: string | null;
+          provider?: string;
+          provider_id?: string | null;
+          simulated?: boolean;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
           valor: number;
@@ -940,11 +1793,27 @@ export type Database = {
           workspace_id: string;
         };
         Update: {
+          boleto_url?: string | null;
           client_id?: string;
+          cobranca_gerada_em?: string | null;
           competencia?: string;
           created_at?: string;
+          descricao?: string | null;
           id?: string;
+          lembrete_enviado_em?: string | null;
+          metodo?: string | null;
+          nfse_erro?: string | null;
+          nfse_numero?: string | null;
+          nfse_pdf_url?: string | null;
+          nfse_provider_id?: string | null;
+          nfse_status?: string;
+          nfse_xml_url?: string | null;
+          origem?: string;
           pago_em?: string | null;
+          pix_code?: string | null;
+          provider?: string;
+          provider_id?: string | null;
+          simulated?: boolean;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
           valor?: number;
@@ -1006,6 +1875,7 @@ export type Database = {
           last_workspace_id: string | null;
           nome: string;
           onboarded_at: string | null;
+          resumo_diario: boolean;
           updated_at: string;
         };
         ComputedFields: never;
@@ -1018,6 +1888,7 @@ export type Database = {
           last_workspace_id?: string | null;
           nome?: string;
           onboarded_at?: string | null;
+          resumo_diario?: boolean;
           updated_at?: string;
         };
         Update: {
@@ -1029,6 +1900,7 @@ export type Database = {
           last_workspace_id?: string | null;
           nome?: string;
           onboarded_at?: string | null;
+          resumo_diario?: boolean;
           updated_at?: string;
         };
         Relationships: [
@@ -1219,7 +2091,9 @@ export type Database = {
       workspaces: {
         Row: {
           ai_mode: string;
+          contrato_modelo: string | null;
           created_at: string;
+          finance_config: Json;
           id: string;
           logo_path: string | null;
           modo_trabalho: string;
@@ -1232,7 +2106,9 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           ai_mode?: string;
+          contrato_modelo?: string | null;
           created_at?: string;
+          finance_config?: Json;
           id?: string;
           logo_path?: string | null;
           modo_trabalho?: string;
@@ -1244,7 +2120,9 @@ export type Database = {
         };
         Update: {
           ai_mode?: string;
+          contrato_modelo?: string | null;
           created_at?: string;
+          finance_config?: Json;
           id?: string;
           logo_path?: string | null;
           modo_trabalho?: string;
@@ -1280,6 +2158,86 @@ export type Database = {
       };
     };
     Functions: {
+      billing_set_invoice: {
+        Args: { p_payment_provider_id: string; p_status: string; p_numero: string; p_pdf: string; p_xml: string; p_erro: string; p_invoice_id: string };
+        Returns: undefined;
+      };
+      billing_mark_paid: {
+        Args: { p_provider_id: string; p_pago_em: string; p_metodo: string };
+        Returns: string;
+      };
+      run_contract_renewals: {
+        Args: never;
+        Returns: number;
+      };
+      sign_contract: {
+        Args: { p_token: string; p_nome: string; p_ip: string };
+        Returns: string;
+      };
+      accept_proposal: {
+        Args: { p_token: string; p_nome: string; p_ip: string };
+        Returns: string;
+      };
+      register_proposal_view: {
+        Args: { p_token: string; p_ip: string; p_user_agent: string };
+        Returns: undefined;
+      };
+      run_meeting_briefs: {
+        Args: never;
+        Returns: number;
+      };
+      get_integration_secret: {
+        Args: { p_workspace_id: string; p_provider: string };
+        Returns: { id: string; access_token_enc: string | null; refresh_token_enc: string | null; expires_at: string | null; simulated: boolean; config: Json }[];
+      };
+      get_social_connection_secret: {
+        Args: { p_connection_id: string };
+        Returns: { access_token_enc: string | null; expires_at: string | null; simulated: boolean; provider: string }[];
+      };
+      fail_publish_job: {
+        Args: { p_job_id: string; p_codigo: string; p_mensagem: string; p_recuperavel: boolean };
+        Returns: undefined;
+      };
+      complete_publish_job: {
+        Args: { p_job_id: string; p_external_id: string; p_permalink: string; p_simulated?: boolean };
+        Returns: undefined;
+      };
+      claim_publish_jobs: {
+        Args: { p_limit?: number };
+        Returns: Database["public"]["Tables"]["publish_jobs"]["Row"][];
+      };
+      retry_publish_job: {
+        Args: { p_job_id: string };
+        Returns: undefined;
+      };
+      cancel_schedule: {
+        Args: { p_deliverable_id: string };
+        Returns: undefined;
+      };
+      schedule_deliverable: {
+        Args: { p_deliverable_id: string; p_account_ids: string[]; p_quando: string };
+        Returns: number;
+      };
+      run_approval_reminders: {
+        Args: never;
+        Returns: { lembretes: number; tacitas: number }[];
+      };
+      send_month_plan: {
+        Args: { p_client_id: string; p_competencia: string };
+        Returns: undefined;
+      };
+      portal_plan_respond: {
+        Args: { p_token: string; p_competencia: string; p_decisao: string; p_comentario: string; p_autor_nome: string; p_ip?: string };
+        Returns: undefined;
+      };
+      portal_approve_all: {
+        Args: { p_token: string; p_autor_nome: string; p_ip?: string; p_user_agent?: string };
+        Returns: number;
+      };
+      portal_respond: {
+        Args: { p_token: string; p_deliverable_id: string; p_decisao: Database["public"]["Enums"]["approval_decision"]; p_comentario: string; p_autor_nome: string; p_ip?: string; p_user_agent?: string; p_ponto?: Json };
+        Returns: undefined;
+      };
       ai_credits_status: {
         Args: { p_workspace_id: string };
         Returns: { usados: number; limite: number }[];
@@ -1423,16 +2381,6 @@ export type Database = {
           p_quantidade: number;
         };
         Returns: string[];
-      };
-      portal_respond: {
-        Args: {
-          p_autor_nome: string;
-          p_comentario: string;
-          p_decisao: Database["public"]["Enums"]["approval_decision"];
-          p_deliverable_id: string;
-          p_token: string;
-        };
-        Returns: undefined;
       };
       regenerate_portal_token: { Args: { p_client_id: string }; Returns: string };
       shares_workspace_with: { Args: { p_user_id: string }; Returns: boolean };

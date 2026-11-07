@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { brand } from "@/config/brand";
-import { PortalItemCard } from "@/features/portal/components/portal-item";
+import { PortalPlan } from "@/features/portal/components/portal-plan";
+import { PortalReview } from "@/features/portal/components/portal-review";
+import { monthLabel } from "@/lib/dates";
 import { getPortal } from "@/features/portal/queries";
-import { formatRelativeTime, plural } from "@/lib/format";
+import { formatRelativeTime } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Aprovação de conteúdo",
@@ -19,46 +21,64 @@ export default async function PortalPage({ params }: PageProps<"/p/[token]">) {
   if (!portal) notFound();
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="border-b border-border bg-surface">
-        <div className="mx-auto flex h-14 w-full max-w-2xl items-center gap-3 px-4">
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="bg-background">
+        <div className="mx-auto flex h-16 w-full max-w-[480px] items-center gap-3 px-4">
           {portal.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- URL assinada temporária do Storage
-            <img
-              src={portal.logoUrl}
-              alt={portal.workspaceNome}
-              className="h-8 w-auto max-w-32 object-contain"
-            />
+            <img src={portal.logoUrl} alt={portal.workspaceNome} className="h-9 w-auto max-w-32 object-contain" />
           ) : (
-            <span className="flex size-8 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-surface">
+            <span className="flex size-9 items-center justify-center rounded-full bg-today font-bold text-today-ink">
               {portal.workspaceNome.slice(0, 1).toUpperCase()}
             </span>
           )}
-          <span className="truncate font-semibold">{portal.workspaceNome}</span>
+          <span className="truncate font-bold">{portal.workspaceNome}</span>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 px-4 py-6">
-        <div className="space-y-1">
-          <h1 className="font-display text-xl">Olá, {portal.clientNome}</h1>
-          <p className="text-sm text-muted">
-            {portal.items.length
-              ? `${plural(portal.items.length, "conteúdo esperando", "conteúdos esperando")} sua aprovação. Veja cada um e responda com Aprovar ou Pedir ajuste. Não precisa criar conta.`
-              : "Nada esperando sua aprovação agora. Avisaremos quando tiver novidade."}
-          </p>
-        </div>
-
+      <main className="mx-auto w-full max-w-[480px] flex-1 space-y-6 px-4 pb-6">
         {portal.items.length ? (
-          <div className="space-y-4">
-            {portal.items.map((item) => (
-              <PortalItemCard key={item.id} token={token} item={item} />
-            ))}
+          <PortalReview
+            token={token}
+            items={portal.items}
+            clientNome={portal.clientNome}
+            clientCor={portal.clientCor}
+            handle={portal.handle}
+            contatoNome={portal.contatoNome}
+          />
+        ) : (
+          <div className="space-y-1 pt-2">
+            <h1 className="font-display text-[28px] leading-tight">
+              {portal.contatoNome ? `Oi, ${portal.contatoNome}!` : "Oi!"} Nada esperando seu ok agora.
+            </h1>
+            <p className="text-md text-ink-2">Quando tiver post novo, a gente avisa pelo WhatsApp.</p>
           </div>
+        )}
+
+        {portal.plan ? (
+          <PortalPlan token={token} plan={portal.plan} monthName={monthLabel(portal.plan.competencia.slice(0, 7)).split(" ")[0].toLowerCase()} />
+        ) : null}
+
+        {portal.reports.length ? (
+          <section aria-labelledby="h-rel" className="space-y-2">
+            <h2 id="h-rel" className="font-display text-lg">
+              Relatórios
+            </h2>
+            <ul className="flex flex-wrap gap-2">
+              {portal.reports.map((r) => (
+                <li key={r.token}>
+                  <a href={`/r/${r.token}`} className="inline-flex h-10 items-center rounded-full bg-surface px-4 text-base font-semibold">
+                    {monthLabel(r.competencia.slice(0, 7))}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
 
         {portal.history.length ? (
           <section aria-labelledby="historico" className="space-y-2">
-            <h2 id="historico" className="text-sm font-semibold">
+            <h2 id="historico" className="font-display text-lg">
               Suas respostas recentes
             </h2>
             <ul className="divide-y divide-border rounded-card bg-surface">

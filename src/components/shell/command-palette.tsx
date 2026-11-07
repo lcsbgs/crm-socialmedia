@@ -46,7 +46,7 @@ export function CommandPalette({
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult>({ deliverables: [], tasks: [] });
+  const [results, setResults] = useState<SearchResult>({ deliverables: [], tasks: [], meetings: [], leads: [] });
   const [, startTransition] = useTransition();
 
   // Busca no servidor com pequeno atraso enquanto digita.
@@ -58,7 +58,7 @@ export function CommandPalette({
     return () => clearTimeout(t);
   }, [query, workspaceId]);
 
-  const shown = query.trim().length < 2 ? { deliverables: [], tasks: [] } : results;
+  const shown: SearchResult = query.trim().length < 2 ? { deliverables: [], tasks: [], meetings: [], leads: [] } : results;
   const base = `/w/${slug}`;
 
   function run(fn: () => void) {
@@ -109,7 +109,7 @@ export function CommandPalette({
               <Command.Group heading="Ir para" className={groupClass}>
                 <Command.Item className={itemClass} onSelect={() => go(base)}>
                   <CircleCheck />
-                  <span className="flex-1">Hoje</span>
+                  <span className="flex-1">Em pauta hoje</span>
                   <Kbd>G</Kbd>
                   <Kbd>H</Kbd>
                 </Command.Item>
@@ -121,7 +121,7 @@ export function CommandPalette({
                 </Command.Item>
                 <Command.Item className={itemClass} onSelect={() => go(`${base}/producao`)}>
                   <KanbanSquare />
-                  Entregas
+                  Produção
                 </Command.Item>
                 <Command.Item className={itemClass} onSelect={() => go(`${base}/calendario`)}>
                   <CalendarDays />
@@ -158,7 +158,7 @@ export function CommandPalette({
               ) : null}
 
               {shown.deliverables.length ? (
-                <Command.Group heading="Entregas" className={groupClass}>
+                <Command.Group heading="Posts" className={groupClass}>
                   {shown.deliverables.map((d) => (
                     <Command.Item
                       key={d.id}
@@ -193,6 +193,29 @@ export function CommandPalette({
                       {t.clientNome && t.cor !== null ? (
                         <ClientTag name={t.clientNome} color={t.cor} />
                       ) : null}
+                    </Command.Item>
+                  ))}
+                </Command.Group>
+              ) : null}
+              {shown.meetings.length ? (
+                <Command.Group heading="Reuniões" className={groupClass}>
+                  {shown.meetings.map((m) => (
+                    <Command.Item key={m.id} value={`reuniao ${m.titulo} ${m.id}`} keywords={[query]} className={itemClass} onSelect={() => go(`${base}/clientes/${m.client_id}/reunioes/${m.id}`)}>
+                      <CalendarDays />
+                      <span className="min-w-0 flex-1 truncate">{m.titulo}</span>
+                      <ClientTag name={m.clientNome} color={m.cor} />
+                    </Command.Item>
+                  ))}
+                </Command.Group>
+              ) : null}
+
+              {shown.leads.length ? (
+                <Command.Group heading="Comercial" className={groupClass}>
+                  {shown.leads.map((l) => (
+                    <Command.Item key={l.id} value={`lead ${l.nome} ${l.id}`} keywords={[query]} className={itemClass} onSelect={() => go(l.proposalId ? `${base}/comercial/propostas/${l.proposalId}` : `${base}/comercial`)}>
+                      <FileText />
+                      <span className="min-w-0 flex-1 truncate">{l.nome}</span>
+                      <span className="text-sm text-muted">{l.proposalId ? "proposta" : "lead"}</span>
                     </Command.Item>
                   ))}
                 </Command.Group>

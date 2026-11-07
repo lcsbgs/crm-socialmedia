@@ -152,3 +152,25 @@ export async function updateClientChannels(input: {
     .eq("id", clientId);
   return error ? { error: "Não foi possível salvar." } : done();
 }
+
+export async function sendMonthPlan(input: { clientId: string; month: string }): Promise<Result> {
+  await requireUser();
+  const clientId = z.uuid().parse(input.clientId);
+  const month = z.string().regex(/^\d{4}-\d{2}$/).parse(input.month);
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("send_month_plan", { p_client_id: clientId, p_competencia: `${month}-01` });
+  return error ? { error: "Não foi possível enviar o planejamento." } : done();
+}
+
+export async function setTacitApproval(input: { workspaceId: string; clientId: string; horas: number | null }): Promise<Result> {
+  await requireUser();
+  const { workspaceId, clientId } = ids.parse(input);
+  const horas = input.horas === null ? null : z.number().int().min(24).max(720).parse(input.horas);
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("clients")
+    .update({ aprovacao_tacita_horas: horas })
+    .eq("workspace_id", workspaceId)
+    .eq("id", clientId);
+  return error ? { error: "Não foi possível salvar." } : done();
+}

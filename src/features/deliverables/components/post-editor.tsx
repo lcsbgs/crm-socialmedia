@@ -16,6 +16,7 @@ import { Select } from "@/components/ui/select";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { toast } from "@/components/ui/toast";
 import { captionAi } from "@/features/ai/actions";
+import { openCanva } from "@/features/integrations/workspace-actions";
 import { portalMessage } from "@/features/portal/components/portal-share";
 import { formatDate, formatRelativeDay, formatRelativeTime, todayISO } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ import {
 } from "../detail-actions";
 import { columnOf, deliverableLabel, formatLabels, stageOrder, statusLabels } from "../schemas";
 import { MediaUploader } from "./media-uploader";
+import { SchedulePanel } from "./schedule-panel";
 
 const LIMIT = 2200;
 const formatOptions = Object.entries(formatLabels).map(([value, label]) => ({ value, label }));
@@ -44,7 +46,6 @@ function nextStep(status: DeliverableDetail["status"]) {
     case "ajuste":
       return { to: "em_aprovacao" as const, label: "Enviar para aprovação" };
     case "aprovado":
-      return { to: "agendado" as const, label: "Agendar publicação" };
     case "agendado":
       return { to: "publicado" as const, label: "Marcar como publicado" };
     default:
@@ -176,10 +177,15 @@ export function PostEditor({
           <p className="text-sm text-muted">Ainda sem arte. Crie no Canva ou traga de onde ela já está.</p>
         ) : null}
         <div className="flex flex-wrap gap-2">
-          <Link href={`${base}/integracoes/canva?post=${detail.id}&acao=criar`} className={buttonClasses("dark", "sm")}>
-            Criar no Canva
-          </Link>
-          <Link href={`${base}/integracoes/canva?post=${detail.id}&acao=importar`} className={buttonClasses("outline", "sm")}>
+          <form action={openCanva}>
+            <input type="hidden" name="workspaceId" value={detail.workspaceId} />
+            <input type="hidden" name="deliverableId" value={detail.id} />
+            <input type="hidden" name="slug" value={workspace.slug} />
+            <button type="submit" className={buttonClasses("dark", "sm")}>
+              Criar no Canva{detail.formato === "carrossel" ? ", 4:5" : detail.formato === "reels" || detail.formato === "story" ? ", 9:16" : ""}
+            </button>
+          </form>
+          <Link href={`${base}/integracoes/canva?post=${detail.id}`} className={buttonClasses("outline", "sm")}>
             Importar do Canva
           </Link>
           <Link href={`${base}/integracoes/drive?post=${detail.id}`} className={buttonClasses("outline", "sm")}>
@@ -187,8 +193,15 @@ export function PostEditor({
           </Link>
         </div>
         <MediaUploader workspaceId={detail.workspaceId} clientId={detail.client.id} deliverableId={detail.id} media={detail.media} onChanged={reload} />
-        <p className="text-xs text-muted">Quando você clicar em &quot;Voltar para o Pauta&quot; no Canva, a arte entra aqui como nova versão.</p>
+        <p className="text-xs text-muted">
+          Quando você clicar em &quot;Voltar para o Pauta&quot; no Canva, a arte entra aqui como nova versão. Código do post para o app do Canva:{" "}
+          <code className="rounded bg-surface px-1">{detail.id}</code>
+        </p>
       </section>
+
+      {["aprovado", "agendado", "publicado"].includes(detail.status) || detail.jobs.length ? (
+        <SchedulePanel detail={detail} reload={reload} />
+      ) : null}
 
       <section aria-labelledby="h-leg" className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center justify-between gap-2">

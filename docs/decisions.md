@@ -215,3 +215,68 @@ Ver `docs/gaps.md`. Decisões tomadas a partir dela:
 - **Prompts versionados em arquivos** (`src/lib/ai/prompts`): mudar o texto exige subir a versão (`legenda@1` etc.).
 - **Conexão do ChatGPT é por pessoa** (`ai_connections`), não por espaço. Tokens cifrados com AES-256-GCM (`src/lib/crypto.ts`, `ENCRYPTION_KEY`); as colunas de token não têm grant de leitura e só saem por `get_ai_connection_secret`, que devolve apenas a linha do próprio usuário. Em demonstração a conexão é simulada e há um botão para simular o fim do limite semanal.
 - **IA nunca salva sozinha**: a sugestão entra no campo e a pessoa revisa.
+
+## 2026-11-07 · Pauta, Fase 7: portal do cliente
+
+- **Portal mobile um post por vez** ("1 de 3"), com Aprovar, Pedir ajuste (comentário obrigatório e ponto opcional tocando na imagem) e "Aprovar os N de uma vez". O nome fica guardado no aparelho (`localStorage`) e é pedido só na primeira resposta.
+- **Cada resposta guarda nome, data, IP, navegador, versão do post e o ponto** (`approvals.ip`, `user_agent`, `versao`, `ponto`). IP vem de `x-forwarded-for` no servidor.
+- **Ajuste pedido move o post para "Ajuste pedido"** (não mais para produção) e soma uma rodada. Passou do limite do pacote: o banco cria uma sugestão em `scope_requests` (`origem = rodadas`, uma por post) e avisa owner/admin.
+- **Planejamento do mês aprovável** (`month_plans`): a equipe envia pela aba Calendário do cliente; o cliente aprova ou pede ajuste no portal; vira evento na linha do tempo e notificação.
+- **Lembrete de 48 h é para a equipe** (notificação in-app com sugestão de reenviar no WhatsApp), porque wa.me exige uma pessoa clicando. No máximo um lembrete a cada 48 h por post.
+- **Aprovação tácita é opcional por cliente** (48 h, 72 h ou 5 dias), desligada por padrão; registra "Aprovação tácita (sem resposta no prazo)" como autor.
+- **Jobs**: `run_approval_reminders()` agendado de hora em hora no pg_cron, e também exposto em `POST /api/jobs/lembretes` protegido por `CRON_SECRET`.
+- **Migrações no remoto pelo MCP** ficam com número de versão diferente do arquivo (ex.: `deliverables` virou `20261107033129`). Antes de usar `supabase db push`, alinhar com `supabase migration repair` (passo a passo em `docs/beta-checklist.md`).
+
+## 2026-11-07 · Pauta, Fase 8: publicação Meta
+
+- **Conexão por espaço, feita por owner/admin** (`social_connections`), com token de longa duração cifrado e sem grant de leitura da coluna. O token da página do Facebook é pedido na hora de publicar, não guardado.
+- **Contas descobertas ficam em `social_accounts`** e são ligadas a um cliente na aba Arquivos do cliente. Só contas do próprio cliente aparecem para agendar (o banco confere).
+- **Fila no banco** (`publish_jobs`) com `claim ... for update skip locked`, backoff de 1, 5, 15 e 60 minutos até 5 tentativas; erro definitivo (token expirado, permissão, mídia recusada) para na hora e avisa a equipe. Processamento em `POST /api/jobs/publicar` (a cada minuto, `CRON_SECRET`), porque a chamada à Meta acontece no servidor do app, não no banco.
+- **Adapter da Meta** (`src/lib/integrations/meta`): imagem, carrossel (itens + container CAROUSEL), reels e vídeo (espera o processamento), stories e página do Facebook (photos, videos ou feed). Erros da Graph API traduzidos para frases legíveis. Testado com uma Graph API falsa.
+- **Instagram sem página** usa o Business Login for Instagram e o host `graph.instagram.com`.
+- **Renovação de tokens** em `POST /api/jobs/renovar-tokens` (diária): renova o que vence em 7 dias; se falhar, marca a conexão como expirada e o erro aparece como "Reconectar".
+- **Tabela genérica `integration_connections`** criada já aqui para Google, Canva, Granola, Asaas e assinatura (pessoais ou do espaço).
+
+## 2026-11-07 · Pauta, Fase 9: Google, Granola e Canva
+
+- **Conexões pessoais** (Google, Canva, Granola) em `integration_connections`, uma por pessoa e espaço; OAuth real genérico com PKCE em `/api/integrations/[id]/start` e `/callback`.
+- **Google Agenda**: "Trazer do Google Agenda" importa os próximos 7 dias e liga cada evento ao cliente pelo e-mail dos convidados (contatos do cliente); eventos sem e-mail de cliente ficam de fora. Reunião criada no Pauta pode virar evento com Meet. **Drive**: escopo `drive.file`; "Criar pasta no Drive" grava o link no cliente. O seletor do Drive real (Google Picker) fica como TODO; em demonstração, uma tela simulada gera a arte.
+- **Granola como cliente MCP** (JSON-RPC via HTTP, chamadas `search_meetings` e `get_meetings`), sem dependência nova. As notas entram nas anotações da reunião e passam pelo fluxo de ata que já existia (sugestões que a pessoa confirma antes de virar tarefa). Colar as notas continua funcionando.
+- **Brief da reunião** montado com dados reais (posts esperando, última decisão, tarefas em aberto, pagamento do mês para owner/admin, publicados no mês passado) e aviso 15 minutos antes (`run_meeting_briefs`, pg_cron a cada 5 minutos e `/api/jobs/briefs`).
+- **Canva nos dois sentidos**: "Criar no Canva" cria o design pela Connect API e abre o editor com `correlation_state`; o retorno (`/api/integrations/canva/return`) exporta PNG e salva como nova versão. App em `apps/canva-app` (Apps SDK) com "Enviar para o Pauta", identificado por um código gerado em Ajustes e o código do post. Em demonstração, uma tela simulada desenha a arte com as cores do kit da marca.
+
+## 2026-11-07 · Pauta, Fase 10: comercial
+
+- **Comercial só para owner/admin** (RLS em `leads`, `proposals`, `proposal_views`, `contracts`; menu e página escondidos para membros).
+- **Funil em 6 etapas** (Novos, Em conversa, Proposta enviada, Negociação, Ganhos, Perdidos), arrastar para mudar. Montar proposta move o lead para "Proposta enviada"; aceitar move para "Negociação"; assinar move para "Ganhos".
+- **Proposta nasce do primeiro pacote** (itens e preço) e pode trocar de pacote; diagnóstico escrito com IA (`diagnostico@1`). Página pública `/pr/[token]` registra cada abertura (`proposal_views`) e avisa a equipe só na primeira do dia.
+- **PDF pela impressão do navegador** (`?imprimir=1` abre a caixa de impressão com CSS próprio). Alternativa: gerar PDF no servidor com uma biblioteca (descartada nesta rodada para não adicionar dependência pesada).
+- **Contrato com variáveis** a partir de um modelo editável por espaço (`workspaces.contrato_modelo`, com padrão no código). Assinatura simples em `/ct/[token]` (nome, data, IP e "li e concordo") ou pelo adapter de Clicksign/ZapSign, com webhook `/api/webhooks/assinatura` protegido por `SIGNATURE_WEBHOOK_TOKEN`. Em demonstração sempre usa a assinatura simples.
+- **Contrato assinado vira cliente no banco** (`sign_contract`): cria o cliente com pacote, valor, vencimento e contato do lead, atribui ao owner, marca "Contrato assinado" no checklist, registra na linha do tempo e roda `generate_month` (cobrança e posts do primeiro mês).
+- **Renovação**: aviso 30 dias antes do fim (`run_contract_renewals`, pg_cron diário) e lista "Renovações chegando" no Comercial.
+- **Na Em pauta hoje**: "abriu a proposta N vezes desde ontem" em Com quem falar e "Contrato para assinar" em Com o cliente (só owner/admin).
+
+## 2026-11-07 · Pauta, Fase 11: financeiro
+
+- **Abas do design** (Recebimentos, Notas fiscais, Despesas, Rentabilidade, Contador) por `?aba=`, com os 4 indicadores (previsto, recebido, a receber, em atraso) e a lateral de cobrança automática, contador e despesas. Só owner/admin.
+- **Cobranças avulsas e de escopo na mesma tabela `payments`** (`origem`). A unicidade passou a valer só para a mensalidade (índice parcial) e o `generate_month` foi recriado com `on conflict ... where origem = 'mensalidade'`. Teste prova que a mensalidade continua sem duplicar.
+- **Adapter `src/lib/billing`**: "manual" (sem integração, a pessoa marca como paga) e "asaas" (cliente, cobrança boleto ou Pix com QR, NFS-e). Asaas em demonstração gera boleto e Pix de exemplo, com botão "Simular pagamento" que faz o mesmo que o webhook. Real usa sandbox por padrão.
+- **Webhook `/api/webhooks/asaas`** valida o cabeçalho `asaas-access-token` com comparação de tempo constante; dá baixa (`billing_mark_paid`), avisa owner/admin e pede a NFS-e se a emissão automática estiver ligada. Eventos de nota atualizam número, PDF, XML ou erro ("Corrigir e emitir" pede de novo).
+- **Cobrança automática** em `/api/jobs/cobrancas` (diária): gera boleto e Pix X dias antes do vencimento. O envio pelo WhatsApp continua sendo um clique (wa.me), com a mensagem pronta incluindo Pix copia e cola.
+- **Escopo extra "Somar na próxima cobrança"** soma no valor da próxima cobrança em aberto sem boleto gerado e marca o extra como cobrado.
+- **Rentabilidade** = recebido no mês menos despesas lançadas para o cliente. Despesas gerais entram só no resultado do mês. Alternativa: ratear despesas gerais por cliente (fica para depois).
+- **Fechamento para o contador** por e-mail com o extrato de recebimentos (com links de PDF e XML das notas) e despesas no corpo, registrado em `accounting_closings`. Sem anexos ZIP nesta rodada (o Asaas já guarda os arquivos das notas).
+
+## 2026-11-07 · Pauta, Fase 12: relatórios e acabamento
+
+- **Métricas diárias** por conta do Instagram ligada a cliente (`metrics_daily`), coletadas por `/api/jobs/metricas` (alcance, visualizações, interações e seguidores pela Graph API). Em demonstração os números são determinísticos por conta e dia e ficam marcados como simulados (o relatório mostra o selo).
+- **Relatório mensal** (`reports`): resumo montado por função pura testada (`buildReportSummary`: soma, variação contra o mês anterior só quando existe, posts por formato, aprovados de primeira, ajustes). O job do dia 1 gera os resumos; a leitura da IA (`relatorio@1`) é escrita quando a equipe gera ou abre, usando o plano de IA de quem revisa. Publicado vira página `/r/[token]` (link no portal) e PDF pela impressão.
+- **Busca ⌘K** passou a achar posts, tarefas, reuniões e leads (leads só para owner/admin, pelo RLS).
+- **Resumo diário por e-mail** opcional em Minha conta (`profiles.resumo_diario`), job `/api/jobs/resumo` às 7h com números reais de cada espaço.
+- **Notificações in-app**: novos tipos (lembrete, escopo, planejamento, publicação, pagamento, proposta) com ícone próprio no sino.
+
+## 2026-11-07 · Pauta, Fase 13: revisão final
+
+- **Seed de demonstração novo** (`demo@pauta.dev` / `demo123456`, Júlia como membro com 5 dos 10 clientes) no lugar do seed do MVP, para exercitar RLS e desempenho com volume (290 posts).
+- **Conferência visual parcial**: só as telas sem login puderam ser renderizadas neste ambiente; o restante fica no checklist do beta.
+- **Migrações restantes no remoto ficam para a pessoa dona do projeto** confirmar, porque o Supabase exige confirmação humana para comandos com `drop`/`delete` (regra 4: nada destrutivo sem confirmação).

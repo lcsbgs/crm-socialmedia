@@ -6,6 +6,7 @@ export type PortalItem = {
   id: string;
   titulo: string;
   formato: string;
+  hora_publicacao: string | null;
   data_publicacao: string | null;
   legenda: string | null;
   midia: { url: string; kind: "image" | "video" | "file" }[];
@@ -29,17 +30,35 @@ export async function getPortal(token: string) {
   const admin = createAdminClient();
   const { data: client } = await admin
     .from("clients")
-    .select("id, workspace_id, nome, status, workspace:workspaces!inner (nome, logo_path)")
+    .select("id, workspace_id, nome, cor, status, contatos, instagram_handle, workspace:workspaces!inner (nome, logo_path)")
     .eq("portal_token", token)
     .neq("status", "encerrado")
     .maybeSingle();
   if (!client) return null;
 
   const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
+  const { data: plan } = await admin
+    .from("month_plans")
+    .select("competencia, status, enviado_em")
+    .eq("client_id", client.id)
+    .eq("status", "enviado")
+    .order("competencia")
+    .limit(1)
+    .maybeSingle();
+  const planEnd = plan ? new Date(Date.UTC(+plan.competencia.slice(0, 4), +plan.competencia.slice(5, 7), 0)).toISOString().slice(0, 10) : null;
+  const { data: planPosts } = plan
+    ? await admin
+        .from("deliverables")
+        .select("id, titulo, slot_label, formato, data_publicacao, pilar")
+        .eq("client_id", client.id)
+        .gte("data_publicacao", plan.competencia)
+        .lte("data_publicacao", planEnd!)
+        .order("data_publicacao")
+    : { data: [] };
   const [{ data: rows }, { data: history }] = await Promise.all([
     admin
       .from("deliverables")
-      .select("id, titulo, slot_label, formato, data_publicacao, legenda, midia_urls")
+      .select("id, titulo, slot_label, formato, data_publicacao, hora_publicacao, legenda, midia_urls")
       .eq("workspace_id", client.workspace_id)
       .eq("client_id", client.id)
       .eq("status", "em_aprovacao")
@@ -72,8 +91,32 @@ export async function getPortal(token: string) {
     midia: midia_urls.filter((p) => signed.has(p)).map((p) => ({ url: signed.get(p)!, kind: kind(p) })),
   }));
 
+  const { data: reports } = await admin
+    .from("reports")
+    .select("competencia, token")
+    .eq("client_id", client.id)
+    .eq("status", "publicado")
+    .order("competencia", { ascending: false })
+    .limit(6);
+  const contato = Array.isArray(client.contatos) ? (client.contatos[0] as { nome?: string } | undefined) : undefined;
   return {
     clientNome: client.nome,
+    clientCor: client.cor ?? 0,
+    handle: client.instagram_handle ?? client.nome.toLowerCase().replace(/[^a-z0-9]+/g, ""),
+    contatoNome: contato?.nome?.split(" ")[0] ?? "",
+    reports: (reports ?? []).map((r) => ({ competencia: r.competencia, token: r.token })),
+    plan: plan
+      ? {
+          competencia: plan.competencia,
+          posts: (planPosts ?? []).map((p) => ({
+            id: p.id,
+            titulo: deliverableLabel(p),
+            formato: formatLabels[p.formato],
+            data: p.data_publicacao as string,
+            pilar: p.pilar,
+          })),
+        }
+      : null,
     workspaceNome: client.workspace.nome,
     logoUrl: logo ? (signed.get(logo) ?? null) : null,
     items,
